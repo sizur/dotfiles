@@ -1,0 +1,39 @@
+;; -*-lisp-*-
+;;
+;; Here is a sample .stumpwmrc file
+
+(in-package :stumpwm)
+
+;; change the prefix key to something else
+;(set-prefix-key (kbd "C-t"))
+
+;; prompt the user for an interactive command. The first arg is an
+;; optional initial contents.
+;(defcommand colon1 (&optional (initial "")) (:rest)
+;  (let ((cmd (read-one-line (current-screen) ": " :initial-input initial)))
+;    (when cmd
+;      (eval-command cmd t))))
+
+(define-key *top-map* (kbd "s-q") "exec rxvt-unicode")
+(define-key *top-map* (kbd "s-w") "exec ~/bin/conkeror")
+(define-key *top-map* (kbd "s-e") "exec ~/emacs/bin/emacs")
+;; Browse somewhere
+;(define-key *root-map* (kbd "b") "colon1 exec firefox http://www.")
+;; Ssh somewhere
+;(define-key *root-map* (kbd "C-s") "colon1 exec xterm -e ssh ")
+;; Lock screen
+;(define-key *root-map* (kbd "C-l") "exec xlock")
+
+;; Web jump (works for Google and Imdb)
+;(defmacro make-web-jump (name prefix)
+;  `(defcommand ,name (search) ((:rest ,(concatenate 'string name " search: ")))
+;    (substitute #\+ #\Space search)
+;    (run-shell-command (concatenate 'string ,prefix search))))
+
+;(make-web-jump "google" "conkeror http://www.google.come/search?q=")
+
+;; C-t M-s is a terrble binding, but you get the idea.
+;(define-key *root-map* (kbd "C-g") "google")
+
+;; Message window font
+;(set-font "-*-proggytiny-*-*-*-*-*-*-*-*-*-*-iso8859-*")

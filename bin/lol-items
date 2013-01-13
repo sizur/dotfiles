@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+wget -nv -O - http://na.leagueoflegends.com/items \
+| hxclean | hxselect .champion_item | hxpipe | grep '^-[^\\]' | perl -lne 's/^-//; print unless /^Buil/' \
+|  perl -MYAML -e 'my @i; my $c=0; my @a; while(my $l = <>) { chomp $l; push @a, $l; unless( ++$c % 6 ) { push @i, [ @a[0,1,4] ]; @a=() } } print Dump \@i'

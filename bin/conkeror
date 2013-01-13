@@ -1,0 +1,2 @@
+#/bin/bash
+cd ~/proj/conkeror && ../xulrunner/xulrunner application.ini "$@"
