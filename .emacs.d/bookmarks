@@ -9,7 +9,7 @@
  (position . 3346))
 ("org-capture-last-stored"
  (filename . "~/org/captures.org")
- (front-context-string)
- (rear-context-string . "nda views\n* Buy\n")
- (position . 252))
+ (front-context-string . "** You have to g")
+ (rear-context-string . "red documents]]\n")
+ (position . 1165))
 )
