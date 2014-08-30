@@ -1,0 +1,15 @@
+[submodule ".emacs.d/src/org-mode"]
+	path = .emacs.d/src/org-mode
+	url = git://orgmode.org/org-mode.git
+[submodule ".emacs.d/src/org-impress-js"]
+	path = .emacs.d/src/org-impress-js
+	url = https://github.com/kinjo/org-impress-js.el.git
+[submodule ".emacs.d/src/yasnippet"]
+	path = .emacs.d/src/yasnippet
+	url = https://github.com/capitaomorte/yasnippet
+[submodule ".emacs.d/src/haskell-mode"]
+	path = .emacs.d/src/haskell-mode
+	url = https://github.com/haskell/haskell-mode.git
+[submodule ".zsh-autosuggestions"]
+	path = .zsh-autosuggestions
+	url = git://github.com/tarruda/zsh-autosuggestions

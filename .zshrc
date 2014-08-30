@@ -135,6 +135,17 @@ unsetopt beep
 bindkey -e
 # End of lines configured by zsh-newuser-install
 
+autoload -U select-word-style
+select-word-style bash
+
+source ~/.zsh-autosuggestions/autosuggestions.zsh
+zle-line-init() {
+    zle autosuggest-start
+}
+zle -N zle-line-init
+bindkey '^T' autosuggest-toggle
+
+
 autoload -U promptinit && promptinit
 prompt adam2
 

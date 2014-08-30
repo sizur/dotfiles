@@ -17,7 +17,11 @@
   (setq load-path (append (list org-dir org-contrib-dir)
                           (or load-path nil)))
   ;; load up Org-mode and Org-babel
-;  (require 'org-install) ; not needed anymore
+;  (require 'org-install) ; not needed anymore(require 'package)
+;  (require 'package)
+;  (package-initialize)
+  (require 'org)
+  (require 'ob)
   (require 'ob-tangle))
 
 ;; load up all literate org-mode files in this directory

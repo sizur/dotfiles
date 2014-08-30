@@ -80,6 +80,13 @@
    #+RESULTS: parentheses
    : highlight-parentheses
    
+** Default path
+   #+NAME: default-path
+   #+BEGIN_SRC emacs-lisp :tangle yes
+    (add-to-list 'load-path
+                 "~/.emacs.d/src")
+   #+END_SRC
+   
 * Orgmode
 ** Basics
    #+NAME: orgmode-basics
@@ -145,16 +152,22 @@
    #+RESULTS: orgmode-babel
    : /home/sizur/.emacs.d/plantuml.jar
 
-** Org-Impress.js
+** Org-Impress-js
    #+NAME: org-impress.js
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (add-to-list 'load-path "~/.emacs.d/src/org-impress-js.el")
-     (require 'org-impress-js)
+     (add-to-list 'load-path "~/.emacs.d/src/org-impress-js")
+     (require 'ox-impress-js)
    #+END_SRC
 
    #+RESULTS: org-impress.js
    : org-impress-js
 
+* PlantUML
+   #+NAME: default-path
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (require 'plantuml-mode)
+   #+END_SRC
+  
 * Calfw
   Calendars in ~/calendar should be updated with cron.
   #+NAME: calendar
@@ -187,10 +200,22 @@
     (add-to-list 'load-path
                  "~/.emacs.d/src/yasnippet")
     (require 'yasnippet)
-    (setq yas/snippet-dirs '("~/.emacs.d/src/yasnippet/snippets"
-                             ;"~/.emacs.d/src/yasnippet/extras/imported"
+    (setq yas-snippet-dirs '("~/.emacs.d/snippets"
+                             "~/.emacs.d/src/yasnippet/yasmate/snippets"
+                             "~/.emacs.d/src/yasnippet/snippets"
                              ))
-    (yas/global-mode 1)
+
+    (defun yas/org-very-safe-expand ()
+      (let ((yas/fallback-behavior 'return-nil)) (yas/expand)))
+
+    (add-hook 'org-mode-hook
+              (lambda ()
+                (make-variable-buffer-local 'yas/trigger-key)
+                (setq yas/trigger-key [tab])
+                (add-to-list 'org-tab-first-hook 'yas/org-very-safe-expand)
+                (define-key yas/keymap [tab] 'yas/next-field)))
+
+    (yas-global-mode 1)
   #+END_SRC
 
   #+RESULTS: yasnippet
@@ -257,11 +282,8 @@
 * Haskell
   #+NAME: haskell
   #+BEGIN_SRC emacs-lisp :tangle yes
-    (load "~/.emacs.d/src/haskell-mode/haskell-site-file")
-    (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
-    (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
-    ;;(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
-    ;;(add-hook 'haskell-mode-hook 'turn-on-haskell-simple-indent)
+    (add-to-list 'load-path "~/.emacs.d/src/haskell-mode")
+    (require 'haskell-mode-autoloads)
   #+END_SRC
 
   #+RESULTS: haskell
