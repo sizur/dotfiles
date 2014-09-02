@@ -227,15 +227,25 @@
     (add-to-list 'load-path
                  "~/.emacs.d/src/multiple-cursors.el")
     (require 'multiple-cursors)
-    (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
-    (global-set-key (kbd "C->") 'mc/mark-next-like-this)
-    (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
-    (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+    (global-set-key (kbd "C-c m /") 'mc/edit-lines)
+    (global-set-key (kbd "C-c m .") 'mc/mark-next-like-this)
+    (global-set-key (kbd "C-c m ,") 'mc/mark-previous-like-this)
+    (global-set-key (kbd "C-c m m") 'mc/mark-all-like-this)
   #+END_SRC
 
   #+RESULTS: emacs-mult-cursor
   : mc/mark-all-like-this
 
+* Phi-search
+  Incremental Search that works with Multiple Cursors.
+  #+NAME: emacs-phi-search
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (add-to-list 'load-path
+                 "~/.emacs.d/src/phi-search")
+    (require 'phi-search)
+    (global-set-key (kbd "C-s") 'phi-search)
+    (global-set-key (kbd "C-r") 'phi-search-backward)
+  #+END_SRC
 * Expand Region
   #+NAME: expand-region
   #+BEGIN_SRC emacs-lisp :tangle yes

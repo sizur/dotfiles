@@ -13,3 +13,9 @@
 [submodule ".zsh-autosuggestions"]
 	path = .zsh-autosuggestions
 	url = git://github.com/tarruda/zsh-autosuggestions
+[submodule ".emacs.d/src/multiple-cursors.el"]
+	path = .emacs.d/src/multiple-cursors.el
+	url = https://github.com/emacsmirror/multiple-cursors.git
+[submodule ".emacs.d/src/phi-search"]
+	path = .emacs.d/src/phi-search
+	url = https://github.com/zk-phi/phi-search.git

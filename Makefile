@@ -2,7 +2,7 @@
 install: zsh emacs
 
 update: submodules
-	cd .emacs.d && wget http://downloads.sourceforge.net/project/plantuml/plantuml.jar
+	cd .emacs.d && wget -O plantuml.jar http://downloads.sourceforge.net/project/plantuml/plantuml.jar
 	cd .emacs.d/src/haskell-mode && make haskell-mode-autoloads.el
 	cd .emacs.d/src/org-mode && make autoloads
 
