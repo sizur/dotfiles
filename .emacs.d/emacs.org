@@ -44,22 +44,11 @@
 ** Font
    #+NAME: emacs-font
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (add-to-list 'default-frame-alist '(font . "-*-proggyclean-*-*-*-*-*-*-*-*-*-*-iso8859-*"))
+     ;(add-to-list 'default-frame-alist '(font . "-*-proggyclean-*-*-*-*-*-*-*-*-*-*-iso8859-*"))
    #+END_SRC
 
    #+RESULTS: emacs-font
    | (font . -*-proggyclean-*-*-*-*-*-*-*-*-*-*-iso8859-*) | (alpha 85 50) |
-
-** Theme
-   #+NAME: emacs-theme
-   #+BEGIN_SRC emacs-lisp :tangle yes
-     (add-to-list 'load-path "~/.emacs.d/src")
-     (require 'zenburn-theme)
-     (load-theme 'zenburn 1)
-   #+END_SRC
-
-   #+RESULTS: emacs-theme
-   : t
 
 ** URL Handling using system
    #+NAME: emacs-url-handling
@@ -70,16 +59,6 @@
    #+RESULTS: emacs-url-handling
    : browse-url-xdg-open
 
-** Parentheses
-   #+NAME: parentheses
-   #+BEGIN_SRC emacs-lisp :tangle yes
-     (show-paren-mode 1)
-     (require 'highlight-parentheses)
-   #+END_SRC
-
-   #+RESULTS: parentheses
-   : highlight-parentheses
-   
 ** Default path
    #+NAME: default-path
    #+BEGIN_SRC emacs-lisp :tangle yes
@@ -87,6 +66,21 @@
                  "~/.emacs.d/src")
    #+END_SRC
    
+* Theme
+  #+NAME: emacs-theme
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (add-to-list 'custom-theme-load-path "~/.emacs.d/src/monokai-emacs")
+    (load-theme 'monokai t)
+  #+END_SRC
+
+* Parentheses
+  #+NAME: emacs-parentheses
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (add-to-list 'load-path "~/.emacs.d/src/highlight-parentheses")
+    (show-paren-mode 1)
+    (require 'highlight-parentheses)
+  #+END_SRC
+  
 * Orgmode
 ** Basics
    #+NAME: orgmode-basics
@@ -258,6 +252,33 @@
   #+RESULTS: expand-region
   : er/expand-region
   
+* Cucumber
+  #+NAME: emacs-cucumber
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (add-to-list 'load-path "~/.emacs.d/src/cucumber.el")
+    (require 'feature-mode)
+  #+END_SRC
+  
+* Yaml
+  #+NAME: emacs-yaml
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (add-to-list 'load-path "~/.emacs.d/src/yaml-mode")
+    (require 'yaml-mode)
+    (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
+    (add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
+  #+END_SRC
+  
+* Magit
+  #+NAME: emacs-magit
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (add-to-list 'load-path "~/.emacs.d/src/git-modes")
+    (add-to-list 'load-path "~/.emacs.d/src/magit")
+    (eval-after-load 'info
+      '(progn (info-initialize)
+              (add-to-list 'Info-directory-list "~/.emacs.d/src/magit")))
+    (require 'magit)
+  #+END_SRC
+  
 * AUCTeX
   #+NAME: auctex
   #+BEGIN_SRC emacs-lisp :tangle yes
@@ -302,15 +323,16 @@
 * Perl
   #+NAME: perl
   #+BEGIN_SRC emacs-lisp :tangle yes
+    (defalias 'perl-mode 'cperl-mode)
     (require 'perltidy)
     (require 'flymake)
     (require 'perl-completion)
     (eval-after-load 'perl-mode
-      '(define-key perl-mode-map (kbd "C-c C-t") 'perltidy-dwim))
+      '(define-key perl-mode-map (kbd "C-c p") 'perltidy-dwim))
     (add-hook 'perl-mode-hook
               (lambda ()
-                (flymake-mode t)
-                (perl-completion-mode t)
+    ;            (flymake-mode t)
+    ;            (perl-completion-mode t)
                 ))
   #+END_SRC
 

@@ -22,3 +22,24 @@
 [submodule ".emacs.d/src/expand-region.el"]
 	path = .emacs.d/src/expand-region.el
 	url = https://github.com/magnars/expand-region.el.git
+[submodule ".emacs.d/src/cucumber.el"]
+	path = .emacs.d/src/cucumber.el
+	url = https://github.com/michaelklishin/cucumber.el.git
+[submodule ".emacs.d/src/yaml-mode"]
+	path = .emacs.d/src/yaml-mode
+	url = https://github.com/yoshiki/yaml-mode.git
+[submodule ".emacs.d/src/magit"]
+	path = .emacs.d/src/magit
+	url = https://github.com/magit/magit.git
+[submodule ".emacs.d/src/git-modes"]
+	path = .emacs.d/src/git-modes
+	url = https://github.com/magit/git-modes.git
+[submodule ".emacs.d/src/el-monokai-theme"]
+	path = .emacs.d/src/el-monokai-theme
+	url = https://github.com/lvillani/el-monokai-theme.git
+[submodule ".emacs.d/src/highlight-parentheses"]
+	path = .emacs.d/src/highlight-parentheses
+	url = https://github.com/nschum/highlight-parentheses.el.git
+[submodule ".emacs.d/src/monokai-emacs"]
+	path = .emacs.d/src/monokai-emacs
+	url = https://github.com/oneKelvinSmith/monokai-emacs.git
