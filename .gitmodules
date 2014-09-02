@@ -19,3 +19,6 @@
 [submodule ".emacs.d/src/phi-search"]
 	path = .emacs.d/src/phi-search
 	url = https://github.com/zk-phi/phi-search.git
+[submodule ".emacs.d/src/expand-region.el"]
+	path = .emacs.d/src/expand-region.el
+	url = https://github.com/magnars/expand-region.el.git

@@ -252,7 +252,7 @@
     (add-to-list 'load-path
                  "~/.emacs.d/src/expand-region.el")
     (require 'expand-region)
-    (global-set-key (kbd "C-=") 'er/expand-region)
+    (global-set-key (kbd "M-=") 'er/expand-region)
   #+END_SRC
 
   #+RESULTS: expand-region
@@ -441,7 +441,7 @@
              (w (length (number-to-string
                          (count-lines (point-min) (point-max))))))
          (concat (format "%d" line-number)
-                 (format (concat "%" (number-to-string (+ 1 w (- w (length (number-to-string line-number))))) "d")
+                 (format (concat "%" (number-to-string (+ 1 w (- w (length (number-to-string line-number))))) "d ")
                          diff))))
      
      (defun goto-line-with-feedback ()
