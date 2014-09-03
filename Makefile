@@ -1,6 +1,6 @@
 SHELL=/bin/bash
 
-install: zsh fish emacs
+install: zsh fish emacs-packages
 
 update: submodules
 	cd .emacs.d && wget -O plantuml.jar http://downloads.sourceforge.net/project/plantuml/plantuml.jar
@@ -30,6 +30,9 @@ fonts-setup:
 zsh-autosuggestions:
 	cp -rf .zsh-autosuggestions ~/
 
-emacs:
+emacs-packages:
 	cp -rf .emacs.d ~/
 
+emacs:
+	cd .emacs && ./autogen.sh && ./configure && make && sudo make install
+	cd .emacs && git reset --hard head && git clean -f

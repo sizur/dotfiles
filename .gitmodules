@@ -46,3 +46,6 @@
 [submodule ".emacs.d/src/emacs-fish"]
 	path = .emacs.d/src/emacs-fish
 	url = https://github.com/wwwjfy/emacs-fish.git
+[submodule ".emacs/emacs"]
+	path = .emacs/emacs
+	url = git://git.savannah.gnu.org/emacs.git
