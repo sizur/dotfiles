@@ -1,5 +1,6 @@
+SHELL=/bin/bash
 
-install: zsh emacs
+install: zsh fish emacs
 
 update: submodules
 	cd .emacs.d && wget -O plantuml.jar http://downloads.sourceforge.net/project/plantuml/plantuml.jar
@@ -12,12 +13,13 @@ submodules:
 	git submodule update --recursive
 
 zsh: zsh-autosuggestions fonts
-	rm -f ~/.zshrc
-	cp .zshrc ~/
+	cp -f .zshrc ~/
+
+fish:
+	cp -rf .config ~/.config
 
 fonts:
-	rm -rf ~/.fonts
-	cp -r .fonts ~/
+	cp -rf .fonts ~/
 
 fonts-setup:
 	mkfontdir ~/.fonts
@@ -26,10 +28,8 @@ fonts-setup:
 	fc-cache -f -v
 
 zsh-autosuggestions:
-	rm -rf ~/.zsh-autosuggestions
-	cp -r .zsh-autosuggestions ~/
+	cp -rf .zsh-autosuggestions ~/
 
 emacs:
-	rm -rf ~/.emacs.d
-	cp -r .emacs.d ~/
+	cp -rf .emacs.d ~/
 
