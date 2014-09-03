@@ -297,17 +297,6 @@
     (add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
   #+END_SRC
   
-* Magit
-  #+NAME: emacs-magit
-  #+BEGIN_SRC emacs-lisp :tangle yes
-    (add-to-list 'load-path "~/.emacs.d/src/git-modes")
-    (add-to-list 'load-path "~/.emacs.d/src/magit")
-    (eval-after-load 'info
-      '(progn (info-initialize)
-              (add-to-list 'Info-directory-list "~/.emacs.d/src/magit")))
-    (require 'magit)
-  #+END_SRC
-  
 * Fish
   #+NAME: emacs-fish
   #+BEGIN_SRC emacs-lisp :tangle yes
@@ -558,7 +547,6 @@
 
    #+RESULTS: remem-pos
    : /home/sizur/.emacs.d/.places
-   
 * Autoload at start
   #+NAME: emacs-at-start
   #+BEGIN_SRC emacs-lisp :tangle yes
@@ -568,4 +556,15 @@
   #+END_SRC
 
   #+RESULTS: emacs-at-start
+  
+* Magit
+  #+NAME: emacs-magit
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (add-to-list 'load-path "~/.emacs.d/src/git-modes")
+    (add-to-list 'load-path "~/.emacs.d/src/magit")
+    (eval-after-load 'info
+      '(progn (info-initialize)
+              (add-to-list 'Info-directory-list "~/.emacs.d/src/magit")))
+    (require 'magit)
+  #+END_SRC
 
