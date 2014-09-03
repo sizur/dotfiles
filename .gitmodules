@@ -43,3 +43,6 @@
 [submodule ".emacs.d/src/monokai-emacs"]
 	path = .emacs.d/src/monokai-emacs
 	url = https://github.com/oneKelvinSmith/monokai-emacs.git
+[submodule ".emacs.d/src/emacs-fish"]
+	path = .emacs.d/src/emacs-fish
+	url = https://github.com/wwwjfy/emacs-fish.git

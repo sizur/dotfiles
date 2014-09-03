@@ -69,9 +69,35 @@
 * Theme
   #+NAME: emacs-theme
   #+BEGIN_SRC emacs-lisp :tangle yes
+    (defun setup-window-system-frame-colours (&rest frame)
+      (if window-system
+          (let ((f (if (car frame)
+                       (car frame)
+                     (selected-frame))))
+            (progn
+              (set-frame-font "Bera Sans Mono-11")
+              (set-face-background 'default "#232F2F" f)
+              (set-face-foreground 'default "#FFFFFF" f)
+              (set-face-background 'fringe  "#000000" f)
+              (set-face-background 'cursor "#2F4F4F" f)
+              (set-face-background 'mode-line "#2F4F4F" f)
+              (set-face-foreground 'mode-line "#BCBf91" f)))))
+
+    (require 'server)
+    (defadvice server-create-window-system-frame
+      (after set-window-system-frame-colours ())
+      "Set custom frame colours when creating the first frame on a display"
+      (message "Running after frame-initialize")
+      (setup-window-system-frame-colours))
+    (ad-activate 'server-create-window-system-frame)
+    (add-hook 'after-make-frame-functions 'setup-window-system-frame-colours t)
+
     (add-to-list 'custom-theme-load-path "~/.emacs.d/src/monokai-emacs")
     (load-theme 'monokai t)
   #+END_SRC
+
+  #+RESULTS: emacs-theme
+  | x-dnd-init-frame | setup-window-system-frame-colours |
 
 * Parentheses
   #+NAME: emacs-parentheses
@@ -141,10 +167,13 @@
         ))
      (setq org-plantuml-jar-path
            (expand-file-name "~/.emacs.d/plantuml.jar"))
+     (setq org-confirm-babel-evaluate nil)
+     (setq org-src-fontify-natively t)
+     (setq org-export-htmlize-output-type 'inline-css)
    #+END_SRC
 
    #+RESULTS: orgmode-babel
-   : /home/sizur/.emacs.d/plantuml.jar
+   : inline-css
 
 ** Org-Impress-js
    #+NAME: org-impress.js
@@ -278,6 +307,18 @@
               (add-to-list 'Info-directory-list "~/.emacs.d/src/magit")))
     (require 'magit)
   #+END_SRC
+  
+* Fish
+  #+NAME: emacs-fish
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (add-to-list 'load-path "~/.emacs.d/src/emacs-fish")
+    (require 'fish-mode)
+    (add-to-list 'auto-mode-alist '("\\.fish\\'" . fish-mode))
+    (add-to-list 'interpreter-mode-alist '("fish" . fish-mode))
+  #+END_SRC
+
+  #+RESULTS: emacs-fish
+  : fish-mode
   
 * AUCTeX
   #+NAME: auctex

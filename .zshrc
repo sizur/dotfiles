@@ -156,3 +156,9 @@ export XDG_DATA_HOME=/usr/local/share
 export LOGTALKUSER=~/logtalk
 
 export P4CONFIG=.p4config
+
+export TERM=xterm-256color
+
+if [[ -r ~/.zshrc_custom ]]; then
+    source ~/.zshrc_custom
+fi
