@@ -49,3 +49,6 @@
 [submodule ".emacs/emacs"]
 	path = .emacs/emacs
 	url = git://git.savannah.gnu.org/emacs.git
+[submodule ".emacs"]
+	path = .emacs
+	url = git://git.savannah.gnu.org/emacs.git
