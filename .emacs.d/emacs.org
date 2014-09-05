@@ -308,25 +308,6 @@
 
   #+RESULTS: emacs-fish
   : fish-mode
-  
-* AUCTeX
-  #+NAME: auctex
-  #+BEGIN_SRC emacs-lisp :tangle yes
-    (load "~/.emacs.d/src/auctex.el" nil t t)
-    (load "~/.emacs.d/src/preview-latex.el" nil t t)
-    (setq TeX-auto-save t)
-    (setq TeX-parse-self t)
-    (setq-default TeX-master nil)
-    (add-hook 'LaTeX-mode-hook 'visual-line-mode)
-    (add-hook 'LaTeX-mode-hook 'flyspell-mode)
-    (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
-    (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
-    (setq reftex-plug-into-AUCTeX t)
-    (setq TeX-PDF-mode t)
-  #+END_SRC
-
-  #+RESULTS: auctex
-  : t
 
 * XPath -> XML
   #+NAME: xpath2xml
@@ -369,6 +350,46 @@
   #+RESULTS: perl
   | lambda | nil | (flymake-mode t) | (perl-completion-mode t) |
   | lambda | nil | (flymake-mode 1) |                          |
+* OCaml
+  #+NAME: emacs-ocaml
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (load "~/.emacs.d/src/tuareg/tuareg-site-file.el")
+    (add-to-list 'load-path "~/.opam/system/share/emacs/site-lisp")
+    ;(require 'merlin)
+    ;(add-hook 'tuareg-mode-hook 'merlin-mode)
+    ;(add-hook 'caml-mode-hook 'merlin-mode)
+    ;(require 'ocp-index)
+  #+END_SRC
+  
+* Magit
+  #+NAME: emacs-magit
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (add-to-list 'load-path "~/.emacs.d/src/git-modes")
+    (add-to-list 'load-path "~/.emacs.d/src/magit")
+    (eval-after-load 'info
+      '(progn (info-initialize)
+              (add-to-list 'Info-directory-list "~/.emacs.d/src/magit")))
+    (require 'magit)
+  #+END_SRC
+  
+* AUCTeX
+  #+NAME: auctex
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (load "~/.emacs.d/src/auctex.el" nil t t)
+    (load "~/.emacs.d/src/preview-latex.el" nil t t)
+    (setq TeX-auto-save t)
+    (setq TeX-parse-self t)
+    (setq-default TeX-master nil)
+    (add-hook 'LaTeX-mode-hook 'visual-line-mode)
+    (add-hook 'LaTeX-mode-hook 'flyspell-mode)
+    (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
+    (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+    (setq reftex-plug-into-AUCTeX t)
+    (setq TeX-PDF-mode t)
+  #+END_SRC
+
+  #+RESULTS: auctex
+  : t
 
 * Definitions
 ** Eval elips anywhere and replace with result
@@ -546,7 +567,7 @@
    #+END_SRC
 
    #+RESULTS: remem-pos
-   : /home/sizur/.emacs.d/.places
+   : /home/sizur/.emacs.d/.places  
 * Autoload at start
   #+NAME: emacs-at-start
   #+BEGIN_SRC emacs-lisp :tangle yes
@@ -556,15 +577,4 @@
   #+END_SRC
 
   #+RESULTS: emacs-at-start
-  
-* Magit
-  #+NAME: emacs-magit
-  #+BEGIN_SRC emacs-lisp :tangle yes
-    (add-to-list 'load-path "~/.emacs.d/src/git-modes")
-    (add-to-list 'load-path "~/.emacs.d/src/magit")
-    (eval-after-load 'info
-      '(progn (info-initialize)
-              (add-to-list 'Info-directory-list "~/.emacs.d/src/magit")))
-    (require 'magit)
-  #+END_SRC
 

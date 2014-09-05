@@ -16,7 +16,7 @@ zsh: zsh-autosuggestions fonts
 	cp -f .zshrc ~/
 
 fish:
-	cp -rf .config ~/.config
+	cp -rf .config ~/
 
 fonts:
 	cp -rf .fonts ~/

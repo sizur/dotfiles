@@ -52,3 +52,6 @@
 [submodule ".emacs"]
 	path = .emacs
 	url = git://git.savannah.gnu.org/emacs.git
+[submodule ".emacs.d/src/tuareg"]
+	path = .emacs.d/src/tuareg
+	url = https://github.com/ocaml/tuareg.git
