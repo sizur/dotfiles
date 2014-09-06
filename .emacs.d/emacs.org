@@ -354,11 +354,13 @@
   #+NAME: emacs-ocaml
   #+BEGIN_SRC emacs-lisp :tangle yes
     (load "~/.emacs.d/src/tuareg/tuareg-site-file.el")
-    (add-to-list 'load-path "~/.opam/system/share/emacs/site-lisp")
-    ;(require 'merlin)
-    ;(add-hook 'tuareg-mode-hook 'merlin-mode)
-    ;(add-hook 'caml-mode-hook 'merlin-mode)
-    ;(require 'ocp-index)
+    (setq opam-share (substring (shell-command-to-string "opam config var share 2> /dev/null") 0 -1))
+    (add-to-list 'load-path (concat opam-share "/emacs/site-lisp"))
+
+    (require 'merlin)
+    (add-hook 'tuareg-mode-hook 'merlin-mode)
+    (add-hook 'caml-mode-hook 'merlin-mode)
+    (setq merlin-use-auto-complete-mode t)
   #+END_SRC
   
 * Magit
@@ -505,18 +507,19 @@
    #+NAME: linum-relative
    #+BEGIN_SRC emacs-lisp :tangle yes
      (setq linum-last-pos 0) ; needed during sturtup
-     
+
      (defadvice linum-update (before linum-relativenumber-linum-update activate)
        (setq linum-last-pos (line-number-at-pos)))
-     
+
      (defun linum-relativenumber-format (line-number)
        (let ((diff (abs (- line-number linum-last-pos)))
              (w (length (number-to-string
                          (count-lines (point-min) (point-max))))))
-         (concat (format "%d" line-number)
-                 (format (concat "%" (number-to-string (+ 1 w (- w (length (number-to-string line-number))))) "d ")
+         (concat (format "%d " line-number)
+                 (format (concat "%" (number-to-string
+                                      (+ w (- w (length (number-to-string line-number))))) "d ")
                          diff))))
-     
+
      (defun goto-line-with-feedback ()
        "Show line numbers temporarily, while prompting for the line number input"
        (interactive)
@@ -525,7 +528,7 @@
              (linum-mode 1)
              (goto-line (read-number "Goto line: ")))
          (linum-mode -1)))
-     
+
      ;(global-set-key [remap goto-line] 'goto-line-with-feedback)
      (setq linum-format 'linum-relativenumber-format)
    #+END_SRC
