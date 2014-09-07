@@ -66,47 +66,12 @@
                  "~/.emacs.d/src")
    #+END_SRC
    
-* Theme
-  #+NAME: emacs-theme
-  #+BEGIN_SRC emacs-lisp :tangle yes
-    (defun setup-window-system-frame-colours (&rest frame)
-      (if window-system
-          (let ((f (if (car frame)
-                       (car frame)
-                     (selected-frame))))
-            (progn
-              (set-frame-font "Bera Sans Mono-11")
-              (set-face-background 'default "#232F2F" f)
-              (set-face-foreground 'default "#FFFFFF" f)
-              (set-face-background 'fringe  "#000000" f)
-              (set-face-background 'cursor "#2F4F4F" f)
-              (set-face-background 'mode-line "#2F4F4F" f)
-              (set-face-foreground 'mode-line "#BCBf91" f)))))
-
-    (require 'server)
-    (defadvice server-create-window-system-frame
-      (after set-window-system-frame-colours ())
-      "Set custom frame colours when creating the first frame on a display"
-      (message "Running after frame-initialize")
-      (setup-window-system-frame-colours))
-    (ad-activate 'server-create-window-system-frame)
-    (add-hook 'after-make-frame-functions 'setup-window-system-frame-colours t)
-
-    (add-to-list 'custom-theme-load-path "~/.emacs.d/src/monokai-emacs")
-    (load-theme 'monokai t)
-  #+END_SRC
-
-  #+RESULTS: emacs-theme
-  | x-dnd-init-frame | setup-window-system-frame-colours |
-
-* Parentheses
-  #+NAME: emacs-parentheses
-  #+BEGIN_SRC emacs-lisp :tangle yes
-    (add-to-list 'load-path "~/.emacs.d/src/highlight-parentheses")
-    (show-paren-mode 1)
-    (require 'highlight-parentheses)
-  #+END_SRC
-  
+** Customizations File
+   #+NAME: emacs-customizations
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (setq custom-file "~/.emacs.d/customizations.el")
+     (load custom-file)
+   #+END_SRC
 * Orgmode
 ** Basics
    #+NAME: orgmode-basics
@@ -184,7 +149,218 @@
 
    #+RESULTS: org-impress.js
    : org-impress-js
+** Org-Eldoc
+   #+NAME: org-eldoc
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (add-to-list 'load-path "~/.emacs.d/src/org-eldoc")
+     (require 'org-eldoc)
+     (org-eldoc-hook-setup)
+   #+END_SRC
+   
+* Autocompletion/Expansion
+** Yasnippet
+   #+NAME: yasnippet
+   #+BEGIN_SRC emacs-lisp :tangle yes  
+     (add-to-list 'load-path
+                  "~/.emacs.d/src/yasnippet")
+     (require 'yasnippet)
+     (setq yas-snippet-dirs '("~/.emacs.d/snippets"
+                              "~/.emacs.d/src/yasnippet/yasmate/snippets"
+                              "~/.emacs.d/src/yasnippet/snippets"
+                              ))
 
+     (defun yas/org-very-safe-expand ()
+       (let ((yas/fallback-behavior 'return-nil)) (yas/expand)))
+
+     (add-hook 'org-mode-hook
+               (lambda ()
+                 (make-variable-buffer-local 'yas/trigger-key)
+                 (setq yas/trigger-key [tab])
+                 (add-to-list 'org-tab-first-hook 'yas/org-very-safe-expand)
+                 (define-key yas/keymap [tab] 'yas/next-field)))
+
+     (yas-global-mode 1)
+   #+END_SRC
+
+   #+RESULTS: yasnippet
+   : t
+    
+** Predictive
+   #+NAME: emacs-predictive
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (add-to-list 'load-path "~/.emacs.d/src/predictive")
+     (require 'predictive)
+   #+END_SRC
+
+** Company
+   #+NAME: emacs-company
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (add-to-list 'load-path "~/.emacs.d/src/company-mode")
+     (require 'company)
+   #+END_SRC
+   
+*** Yasnippet Integration
+    #+NAME: emacs-company-yasnippet
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (define-key company-active-map "\t" 'company-yasnippet-or-completion)
+
+      (defun company-yasnippet-or-completion ()
+        (interactive)
+        (if (yas/expansion-at-point)
+            (progn (company-abort)
+                   (yas/expand))
+          (company-complete-common)))
+
+      (defun yas/expansion-at-point ()
+        "Tested with v0.6.1. Extracted from `yas/expand-1'"
+            (first (yas/current-key)))
+    #+END_SRC
+*** Predictive Integration
+    #+NAME: emacs-company-predictive
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (defun company-predictive (command &optional arg &rest ignored)
+        (prefix (let* ((text (downcase (word-at-point))))
+                  (set-text-properties 0 (length text) nil text)
+                  text))
+        (candidates (predictive-complete arg)))
+      (add-to-list 'company-backends '(company-predictive))
+    #+END_SRC
+
+    #+RESULTS: emacs-company-predictive
+    | (company-predictive) | merlin-company-backend | company-bbdb | company-nxml | company-css | company-eclim | company-semantic | company-clang | company-xcode | company-ropemacs | company-cmake | company-capf | (company-dabbrev-code company-gtags company-etags company-keywords) | company-oddmuse | company-files | company-dabbrev |
+
+** Icicles
+   #+NAME: emacs-icicles
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (add-to-list 'load-path "~/.emacs.d/src/icicles")
+     (require 'icicles)
+     (icy-mode 1)
+   #+END_SRC
+
+   #+RESULTS: emacs-icicles
+   : t
+   
+* Theme
+** Color Theme
+   #+NAME: emacs-color-theme
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     ; elisp code here
+   #+END_SRC
+   
+** Monokai
+  #+NAME: emacs-monokai
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    ;; (defun setup-window-system-frame-colours (&rest frame)
+    ;;   (if window-system
+    ;;       (let ((f (if (car frame)
+    ;;                    (car frame)
+    ;;                  (selected-frame))))
+    ;;         (progn
+    ;;           (set-frame-font "Bera Sans Mono-11")
+    ;;           (set-face-background 'default "#232F2F" f)
+    ;;           (set-face-foreground 'default "#FFFFFF" f)
+    ;;           (set-face-background 'fringe  "#000000" f)
+    ;;           (set-face-background 'cursor "#2F4F4F" f)
+    ;;           (set-face-background 'mode-line "#2F4F4F" f)
+    ;;           (set-face-foreground 'mode-line "#BCBf91" f)))))
+
+    ;; (require 'server)
+    ;; (defadvice server-create-window-system-frame
+    ;;   (after set-window-system-frame-colours ())
+    ;;   "Set custom frame colours when creating the first frame on a display"
+    ;;   (message "Running after frame-initialize")
+    ;;   (setup-window-system-frame-colours))
+    ;; (ad-activate 'server-create-window-system-frame)
+    ;; (add-hook 'after-make-frame-functions 'setup-window-system-frame-colours t)
+
+    (add-to-list 'custom-theme-load-path "~/.emacs.d/src/monokai-emacs")
+    (load-theme 'monokai t)
+  #+END_SRC
+
+  #+RESULTS: emacs-theme
+  : t
+* Tiling
+  #+NAME: emacs-tiling
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (require 'buffer-move)
+    (require 'tiling)
+
+    ;;; Windows related operations
+    ;; Split & Resize
+    (define-key global-map (kbd "C-x |") 'split-window-horizontally)
+    (define-key global-map (kbd "C-x _") 'split-window-vertically)
+    ;; (define-key global-map (kbd "C-{") 'shrink-window-horizontally)
+    ;; (define-key global-map (kbd "C-}") 'enlarge-window-horizontally)
+    ;; (define-key global-map (kbd "C-^") 'enlarge-window)
+    ;; Navgating: Windmove uses C-<up> etc.
+    (define-key global-map (kbd "C-<up>"   ) 'windmove-up)
+    (define-key global-map (kbd "C-<down>" ) 'windmove-down)
+    (define-key global-map (kbd "C-<left>" ) 'windmove-right)
+    (define-key global-map (kbd "C-<right>") 'windmove-left)
+    ;; Swap buffers: M-<up> etc.
+    (define-key global-map (kbd "M-<up>"   ) 'buf-move-up)
+    (define-key global-map (kbd "M-<down>" ) 'buf-move-down)
+    (define-key global-map (kbd "M-<right>") 'buf-move-right)
+    (define-key global-map (kbd "M-<left>" ) 'buf-move-left)
+    ;; Tile
+    (define-key global-map (kbd "C-\\") 'tiling-cycle) ; accepts prefix number
+    (define-key global-map (kbd "C-M-<up>") 'tiling-tile-up)
+    (define-key global-map (kbd "C-M-<down>") 'tiling-tile-down)
+    (define-key global-map (kbd "C-M-<right>") 'tiling-tile-right)
+    (define-key global-map (kbd "C-M-<left>") 'tiling-tile-left)
+    ;; Another type of representation of same keys, in case your terminal doesn't
+    ;; recognize above key-binding. Tip: C-h k C-up etc. to see into what your
+    ;; terminal tranlated the key sequence.
+    ;; (define-key global-map (kbd "M-[ a"     ) 'windmove-up)
+    ;; (define-key global-map (kbd "M-[ b"     ) 'windmove-down)
+    ;; (define-key global-map (kbd "M-[ c"     ) 'windmove-right)
+    ;; (define-key global-map (kbd "M-[ d"     ) 'windmove-left)
+    ;; (define-key global-map (kbd "ESC <up>"   ) 'buf-move-up)
+    ;; (define-key global-map (kbd "ESC <down>" ) 'buf-move-down)
+    ;; (define-key global-map (kbd "ESC <right>") 'buf-move-right)
+    ;; (define-key global-map (kbd "ESC <left>" ) 'buf-move-left)
+    ;; (define-key global-map (kbd "ESC M-[ a" ) 'tiling-tile-up)
+    ;; (define-key global-map (kbd "ESC M-[ b" ) 'tiling-tile-down)
+    ;; (define-key global-map (kbd "ESC M-[ c" ) 'tiling-tile-right)
+    ;; (define-key global-map (kbd "ESC M-[ d" ) 'tiling-tile-left)
+  #+END_SRC
+* Parentheses
+** Highlight
+  #+NAME: emacs-parentheses
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (add-to-list 'load-path "~/.emacs.d/src/highlight-parentheses")
+    (show-paren-mode 1)
+    (require 'highlight-parentheses)
+  #+END_SRC
+** Paredit
+   #+NAME: emacs-paredit
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (add-to-list 'load-path "~/.emacs.d/src/paredit")
+     (require 'paredit)
+     (add-hook 'emacs-lisp-mode-hook
+               (lambda ()
+                 (paredit-mode t)
+                 (turn-on-eldoc-mode)
+                 (eldoc-add-command
+                  'paredit-backward-delete
+                  'paredit-close-round)
+                 (local-set-key (kbd "RET") 'electrify-return-if-match)
+                 (eldoc-add-command 'electrify-return-if-match)
+                 (show-paren-mode t)))
+   #+END_SRC
+* Comments
+  #+NAME: emacs-hide-comnt
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (require 'hide-comnt)
+  #+END_SRC
+  
+* Columnize
+  select and M-x columnize-strings <ret>
+
+  #+NAME: emacs-columnize
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (require 'columnize)
+  #+END_SRC
 * PlantUML
    #+NAME: default-path
    #+BEGIN_SRC emacs-lisp :tangle yes
@@ -217,33 +393,6 @@
   #+RESULTS: calendar
   : my-open-calendar
 
-* Yasnippet
-  #+NAME: yasnippet
-  #+BEGIN_SRC emacs-lisp :tangle yes  
-    (add-to-list 'load-path
-                 "~/.emacs.d/src/yasnippet")
-    (require 'yasnippet)
-    (setq yas-snippet-dirs '("~/.emacs.d/snippets"
-                             "~/.emacs.d/src/yasnippet/yasmate/snippets"
-                             "~/.emacs.d/src/yasnippet/snippets"
-                             ))
-
-    (defun yas/org-very-safe-expand ()
-      (let ((yas/fallback-behavior 'return-nil)) (yas/expand)))
-
-    (add-hook 'org-mode-hook
-              (lambda ()
-                (make-variable-buffer-local 'yas/trigger-key)
-                (setq yas/trigger-key [tab])
-                (add-to-list 'org-tab-first-hook 'yas/org-very-safe-expand)
-                (define-key yas/keymap [tab] 'yas/next-field)))
-
-    (yas-global-mode 1)
-  #+END_SRC
-
-  #+RESULTS: yasnippet
-  : t
-
 * Multiple Cursors
   #+NAME: emacs-mult-cursor
   #+BEGIN_SRC emacs-lisp :tangle yes
@@ -269,7 +418,7 @@
     (global-set-key (kbd "C-s") 'phi-search)
     (global-set-key (kbd "C-r") 'phi-search-backward)
   #+END_SRC
-* Expand Region
+* Expand Selection
   #+NAME: expand-region
   #+BEGIN_SRC emacs-lisp :tangle yes
     (add-to-list 'load-path
@@ -288,15 +437,6 @@
     (require 'feature-mode)
   #+END_SRC
   
-* Yaml
-  #+NAME: emacs-yaml
-  #+BEGIN_SRC emacs-lisp :tangle yes
-    (add-to-list 'load-path "~/.emacs.d/src/yaml-mode")
-    (require 'yaml-mode)
-    (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
-    (add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
-  #+END_SRC
-  
 * Fish
   #+NAME: emacs-fish
   #+BEGIN_SRC emacs-lisp :tangle yes
@@ -308,19 +448,34 @@
 
   #+RESULTS: emacs-fish
   : fish-mode
-
-* XPath -> XML
-  #+NAME: xpath2xml
+  
+* Yaml
+  #+NAME: emacs-yaml
   #+BEGIN_SRC emacs-lisp :tangle yes
-    (add-to-list 'load-path
-                 "~/.emacs.d/src/zencoding")
-    (require 'zencoding-mode)
-    (add-hook 'nxml-mode-hook 'zencoding-mode)
+    (add-to-list 'load-path "~/.emacs.d/src/yaml-mode")
+    (require 'yaml-mode)
+    (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
+    (add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
   #+END_SRC
 
-  #+RESULTS: xpath2xml
-  | zencoding-mode |
-  
+* XML
+** Emmet
+   #+NAME: emacs-emmet
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (add-to-list 'load-path
+                  "~/.emacs.d/src/emmet-mode")
+     (require 'emmet-mode)
+     (add-hook 'sgml-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
+     (add-hook 'css-mode-hook  'emmet-mode) ;; enable Emmet's css abbreviation.
+     ;; (add-hook 'emmet-mode-hook (lambda () (setq emmet-indent-after-insert nil)))
+     ;; (add-hook 'emmet-mode-hook (lambda () (setq emmet-indentation 2))) ;; indent 2 spaces.
+     ;; (setq emmet-move-cursor-between-quotes t) ;; default nil
+     ;; (setq emmet-move-cursor-after-expanding nil) ;; default t
+   #+END_SRC
+
+   #+RESULTS: xpath2xml
+   | zencoding-mode |
+   
 * Haskell
   #+NAME: haskell
   #+BEGIN_SRC emacs-lisp :tangle yes
@@ -351,18 +506,34 @@
   | lambda | nil | (flymake-mode t) | (perl-completion-mode t) |
   | lambda | nil | (flymake-mode 1) |                          |
 * OCaml
-  #+NAME: emacs-ocaml
-  #+BEGIN_SRC emacs-lisp :tangle yes
-    (load "~/.emacs.d/src/tuareg/tuareg-site-file.el")
-    (setq opam-share (substring (shell-command-to-string "opam config var share 2> /dev/null") 0 -1))
-    (add-to-list 'load-path (concat opam-share "/emacs/site-lisp"))
+** Tuareg
+   #+NAME: emacs-tuareg
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (load "~/.emacs.d/src/tuareg/tuareg-site-file.el")
+   #+END_SRC
 
-    (require 'merlin)
-    (add-hook 'tuareg-mode-hook 'merlin-mode)
-    (add-hook 'caml-mode-hook 'merlin-mode)
-    (setq merlin-use-auto-complete-mode t)
-  #+END_SRC
-  
+** Opam
+   #+NAME: emacs-opam
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (setq opam-share (substring (shell-command-to-string "opam config var share 2> /dev/null") 0 -1))
+     (add-to-list 'load-path (concat opam-share "/emacs/site-lisp"))
+   #+END_SRC
+   
+** Merlin
+   #+NAME: emacs-merlin
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (require 'merlin)
+     (add-hook 'tuareg-mode-hook 'merlin-mode)
+     (add-hook 'caml-mode-hook 'merlin-mode)
+   #+END_SRC
+
+*** Company Integration
+    #+NAME: emacs-merlin-company
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (add-to-list 'company-backends 'merlin-company-backend)
+      (add-hook 'merlin-mode-hook 'company-mode)
+    #+END_SRC
+    
 * Magit
   #+NAME: emacs-magit
   #+BEGIN_SRC emacs-lisp :tangle yes
@@ -577,6 +748,7 @@
     (server-start)
     (require 'org-protocol)
     (org-agenda-list)
+    (global-company-mode)
   #+END_SRC
 
   #+RESULTS: emacs-at-start
