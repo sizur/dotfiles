@@ -1,3 +1,7 @@
+Eugene Grigoriev's Dotemacs.
+
+Order is important for compatibility.
+
 * Basics
 ** The Very Basics
    #+NAME: emacs-very-basic
@@ -71,6 +75,30 @@
    #+BEGIN_SRC emacs-lisp :tangle yes
      (setq custom-file "~/.emacs.d/customizations.el")
      (load custom-file)
+   #+END_SRC
+* Parentheses
+** Highlight
+  #+NAME: emacs-parentheses
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (add-to-list 'load-path "~/.emacs.d/src/highlight-parentheses")
+    (show-paren-mode 1)
+    (require 'highlight-parentheses)
+  #+END_SRC
+** Paredit
+   #+NAME: emacs-paredit
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (add-to-list 'load-path "~/.emacs.d/src/paredit")
+     (require 'paredit)
+     (add-hook 'emacs-lisp-mode-hook
+               (lambda ()
+                 (paredit-mode t)
+                 (turn-on-eldoc-mode)
+                 (eldoc-add-command
+                  'paredit-backward-delete
+                  'paredit-close-round)
+                 (local-set-key (kbd "RET") 'electrify-return-if-match)
+                 (eldoc-add-command 'electrify-return-if-match)
+                 (show-paren-mode t)))
    #+END_SRC
 * Orgmode
 ** Basics
@@ -157,6 +185,16 @@
      (org-eldoc-hook-setup)
    #+END_SRC
    
+** Remember
+   #+NAME: emacs-org-remember
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (add-to-list 'load-path "~/.emacs.d/src/remember-el")
+     (require 'remember)
+     (setq remember-annotation-functions '(org-remember-annotation))
+     (setq remember-handler-functions '(org-remember-handler))
+     (add-hook 'remember-mode-hook 'org-remember-apply-template)
+   #+END_SRC
+   
 * Autocompletion/Expansion
 ** Yasnippet
    #+NAME: yasnippet
@@ -239,14 +277,7 @@
 
    #+RESULTS: emacs-icicles
    : t
-   
 * Theme
-** Color Theme
-   #+NAME: emacs-color-theme
-   #+BEGIN_SRC emacs-lisp :tangle yes
-     ; elisp code here
-   #+END_SRC
-   
 ** Monokai
   #+NAME: emacs-monokai
   #+BEGIN_SRC emacs-lisp :tangle yes
@@ -324,30 +355,6 @@
     ;; (define-key global-map (kbd "ESC M-[ c" ) 'tiling-tile-right)
     ;; (define-key global-map (kbd "ESC M-[ d" ) 'tiling-tile-left)
   #+END_SRC
-* Parentheses
-** Highlight
-  #+NAME: emacs-parentheses
-  #+BEGIN_SRC emacs-lisp :tangle yes
-    (add-to-list 'load-path "~/.emacs.d/src/highlight-parentheses")
-    (show-paren-mode 1)
-    (require 'highlight-parentheses)
-  #+END_SRC
-** Paredit
-   #+NAME: emacs-paredit
-   #+BEGIN_SRC emacs-lisp :tangle yes
-     (add-to-list 'load-path "~/.emacs.d/src/paredit")
-     (require 'paredit)
-     (add-hook 'emacs-lisp-mode-hook
-               (lambda ()
-                 (paredit-mode t)
-                 (turn-on-eldoc-mode)
-                 (eldoc-add-command
-                  'paredit-backward-delete
-                  'paredit-close-round)
-                 (local-set-key (kbd "RET") 'electrify-return-if-match)
-                 (eldoc-add-command 'electrify-return-if-match)
-                 (show-paren-mode t)))
-   #+END_SRC
 * Comments
   #+NAME: emacs-hide-comnt
   #+BEGIN_SRC emacs-lisp :tangle yes

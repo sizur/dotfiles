@@ -79,3 +79,6 @@
 [submodule ".emacs.d/src/org-eldoc"]
 	path = .emacs.d/src/org-eldoc
 	url = https://bitbucket.org/ukaszg/org-eldoc.git
+[submodule ".emacs.d/src/remember-el"]
+	path = .emacs.d/src/remember-el
+	url = git://repo.or.cz/remember-el.git
