@@ -157,6 +157,8 @@ Order is important for compatibility.
       '((R . t)
         (emacs-lisp . t)
         (plantuml . t)
+        (latex . t)
+        (dot . t)
         ))
      (setq org-plantuml-jar-path
            (expand-file-name "~/.emacs.d/plantuml.jar"))
@@ -368,6 +370,12 @@ Order is important for compatibility.
   #+BEGIN_SRC emacs-lisp :tangle yes
     (require 'columnize)
   #+END_SRC
+* Graphviz
+  #+NAME: emacs-graphviz
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (load-file "~/.emacs.d/src/graphviz-dot-mode.el")
+  #+END_SRC
+  
 * PlantUML
    #+NAME: default-path
    #+BEGIN_SRC emacs-lisp :tangle yes
@@ -517,6 +525,7 @@ Order is important for compatibility.
    #+NAME: emacs-tuareg
    #+BEGIN_SRC emacs-lisp :tangle yes
      (load "~/.emacs.d/src/tuareg/tuareg-site-file.el")
+     (add-to-list 'auto-mode-alist '("\\.eliom$" . tuareg-mode))
    #+END_SRC
 
 ** Opam
@@ -532,6 +541,7 @@ Order is important for compatibility.
      (require 'merlin)
      (add-hook 'tuareg-mode-hook 'merlin-mode)
      (add-hook 'caml-mode-hook 'merlin-mode)
+     (setq merlin-command 'opam)
    #+END_SRC
 
 *** Company Integration

@@ -372,7 +372,22 @@
       lacarte-execute-menu-command
       (fboundp
        (quote lacarte-execute-menu-command))))))
- '(magit-use-overlays nil))
+ '(magit-use-overlays nil)
+ '(org-src-lang-modes
+   (quote
+    (("ocaml" . tuareg)
+     ("elisp" . emacs-lisp)
+     ("ditaa" . artist)
+     ("asymptote" . asy)
+     ("dot" . graphviz-dot)
+     ("sqlite" . sql)
+     ("calc" . fundamental)
+     ("C" . c)
+     ("cpp" . c++)
+     ("C++" . c++)
+     ("screen" . shell-script)
+     ("shell" . sh)
+     ("bash" . sh)))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

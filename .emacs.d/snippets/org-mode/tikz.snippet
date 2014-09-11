@@ -1,0 +1,12 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: tikz
+# key: tikz
+# binding: direct-keybinding
+# --
+#+name: $1
+#+header: :exports results :file $1.png 
+#+header: :imagemagick yes :iminoptions -density ${2:600} :imoutoptions -geometry ${3:800}
+#+header: :fit yes :noweb yes :headers '("${4:\\\\usepackage{tikz}\\\\usepackage[fancy,color=orange]{tikz-inet}}")
+#+begin_src latex :buffer no
+  $0
+#+end_src

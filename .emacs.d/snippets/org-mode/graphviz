@@ -1,0 +1,9 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: graphviz
+# key: graphviz
+# binding: direct-keybinding
+# --
+#+name: $1
+#+begin_src dot :file $1.png :exports results
+  $0
+#+end_src
