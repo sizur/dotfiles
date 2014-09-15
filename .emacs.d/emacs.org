@@ -15,9 +15,12 @@ Order is important for compatibility.
      (column-number-mode t)
      (global-linum-mode t)
      (auto-compression-mode t)
+     (delete-selection-mode t)
+     (setq show-paren-style 'expression)
      (setq-default indent-tabs-mode nil)
      (setq frame-title-format "%b - emacs")
      (setq require-final-newline 't)
+     (global-prettify-symbols-mode 1)
    #+END_SRC
 
    #+RESULTS: emacs-very-basic
@@ -76,6 +79,122 @@ Order is important for compatibility.
      (setq custom-file "~/.emacs.d/customizations.el")
      (load custom-file)
    #+END_SRC
+* Elisp libs
+** Dash (List lib)
+   #+NAME: emacs-dash
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (add-to-list 'load-path "~/.emacs.d/src/dash.el")
+     (require 'dash)
+     (require 'dash-functional)
+     (eval-after-load "dash" '(dash-enable-font-lock))
+   #+END_SRC
+** S (String lib)
+   String library
+   #+NAME: emacs-s
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (add-to-list 'load-path "~/.emacs.d/src/s.el")
+     (require 's)
+   #+END_SRC
+** Ht (Hashtable lib)
+   #+NAME: emacs-ht
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (add-to-list 'load-path "~/.emacs.d/src/ht.el")
+     (require 'ht)
+   #+END_SRC
+** Loop
+   #+NAME: emacs-loop
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (add-to-list 'load-path "~/.emacs.d/src/loop.el")
+     (require 'loop)
+   #+END_SRC
+** Tco (Tail call optimization)
+   #+NAME: emacs-tco
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (add-to-list 'load-path "~/.emacs.d/src/tco.el")
+     (require 'tco)
+   #+END_SRC
+* Autocompletion/Expansion
+** Yasnippet
+   #+NAME: yasnippet
+   #+BEGIN_SRC emacs-lisp :tangle yes  
+     (add-to-list 'load-path
+                  "~/.emacs.d/src/yasnippet")
+     (require 'yasnippet)
+     (setq yas-snippet-dirs '("~/.emacs.d/snippets"
+                              "~/.emacs.d/src/yasnippet/yasmate/snippets"
+                              "~/.emacs.d/src/yasnippet/snippets"
+                              ))
+
+     (defun yas/org-very-safe-expand ()
+       (let ((yas/fallback-behavior 'return-nil)) (yas/expand)))
+
+     (add-hook 'org-mode-hook
+               (lambda ()
+                 (make-variable-buffer-local 'yas/trigger-key)
+                 (setq yas/trigger-key [tab])
+                 (add-to-list 'org-tab-first-hook 'yas/org-very-safe-expand)
+                 (define-key yas/keymap [tab] 'yas/next-field)))
+
+     (yas-global-mode 1)
+   #+END_SRC
+
+   #+RESULTS: yasnippet
+   : t
+    
+** Predictive
+   #+NAME: emacs-predictive
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (add-to-list 'load-path "~/.emacs.d/src/predictive")
+     (require 'predictive)
+   #+END_SRC
+
+** Company
+   #+NAME: emacs-company
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (add-to-list 'load-path "~/.emacs.d/src/company-mode")
+     (require 'company)
+   #+END_SRC
+   
+*** Yasnippet Integration
+    #+NAME: emacs-company-yasnippet
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (define-key company-active-map "\t" 'company-yasnippet-or-completion)
+
+      (defun company-yasnippet-or-completion ()
+        (interactive)
+        (if (yas/expansion-at-point)
+            (progn (company-abort)
+                   (yas/expand))
+          (company-complete-common)))
+
+      (defun yas/expansion-at-point ()
+        "Tested with v0.6.1. Extracted from `yas/expand-1'"
+            (first (yas/current-key)))
+    #+END_SRC
+*** Predictive Integration
+    #+NAME: emacs-company-predictive
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (defun company-predictive (command &optional arg &rest ignored)
+        (prefix (let* ((text (downcase (word-at-point))))
+                  (set-text-properties 0 (length text) nil text)
+                  text))
+        (candidates (predictive-complete arg)))
+      (add-to-list 'company-backends '(company-predictive))
+    #+END_SRC
+
+    #+RESULTS: emacs-company-predictive
+    | (company-predictive) | merlin-company-backend | company-bbdb | company-nxml | company-css | company-eclim | company-semantic | company-clang | company-xcode | company-ropemacs | company-cmake | company-capf | (company-dabbrev-code company-gtags company-etags company-keywords) | company-oddmuse | company-files | company-dabbrev |
+
+** Icicles
+   #+NAME: emacs-icicles
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (add-to-list 'load-path "~/.emacs.d/src/icicles")
+     (require 'icicles)
+     (icy-mode 1)
+   #+END_SRC
+
+   #+RESULTS: emacs-icicles
+   : t
 * Parentheses
 ** Highlight
   #+NAME: emacs-parentheses
@@ -179,6 +298,12 @@ Order is important for compatibility.
 
    #+RESULTS: org-impress.js
    : org-impress-js
+** Ob-Metapost
+   #+NAME: emacs-ob-metapost
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (require 'ob-metapost)
+   #+END_SRC
+   
 ** Org-Eldoc
    #+NAME: org-eldoc
    #+BEGIN_SRC emacs-lisp :tangle yes
@@ -196,89 +321,6 @@ Order is important for compatibility.
      (setq remember-handler-functions '(org-remember-handler))
      (add-hook 'remember-mode-hook 'org-remember-apply-template)
    #+END_SRC
-   
-* Autocompletion/Expansion
-** Yasnippet
-   #+NAME: yasnippet
-   #+BEGIN_SRC emacs-lisp :tangle yes  
-     (add-to-list 'load-path
-                  "~/.emacs.d/src/yasnippet")
-     (require 'yasnippet)
-     (setq yas-snippet-dirs '("~/.emacs.d/snippets"
-                              "~/.emacs.d/src/yasnippet/yasmate/snippets"
-                              "~/.emacs.d/src/yasnippet/snippets"
-                              ))
-
-     (defun yas/org-very-safe-expand ()
-       (let ((yas/fallback-behavior 'return-nil)) (yas/expand)))
-
-     (add-hook 'org-mode-hook
-               (lambda ()
-                 (make-variable-buffer-local 'yas/trigger-key)
-                 (setq yas/trigger-key [tab])
-                 (add-to-list 'org-tab-first-hook 'yas/org-very-safe-expand)
-                 (define-key yas/keymap [tab] 'yas/next-field)))
-
-     (yas-global-mode 1)
-   #+END_SRC
-
-   #+RESULTS: yasnippet
-   : t
-    
-** Predictive
-   #+NAME: emacs-predictive
-   #+BEGIN_SRC emacs-lisp :tangle yes
-     (add-to-list 'load-path "~/.emacs.d/src/predictive")
-     (require 'predictive)
-   #+END_SRC
-
-** Company
-   #+NAME: emacs-company
-   #+BEGIN_SRC emacs-lisp :tangle yes
-     (add-to-list 'load-path "~/.emacs.d/src/company-mode")
-     (require 'company)
-   #+END_SRC
-   
-*** Yasnippet Integration
-    #+NAME: emacs-company-yasnippet
-    #+BEGIN_SRC emacs-lisp :tangle yes
-      (define-key company-active-map "\t" 'company-yasnippet-or-completion)
-
-      (defun company-yasnippet-or-completion ()
-        (interactive)
-        (if (yas/expansion-at-point)
-            (progn (company-abort)
-                   (yas/expand))
-          (company-complete-common)))
-
-      (defun yas/expansion-at-point ()
-        "Tested with v0.6.1. Extracted from `yas/expand-1'"
-            (first (yas/current-key)))
-    #+END_SRC
-*** Predictive Integration
-    #+NAME: emacs-company-predictive
-    #+BEGIN_SRC emacs-lisp :tangle yes
-      (defun company-predictive (command &optional arg &rest ignored)
-        (prefix (let* ((text (downcase (word-at-point))))
-                  (set-text-properties 0 (length text) nil text)
-                  text))
-        (candidates (predictive-complete arg)))
-      (add-to-list 'company-backends '(company-predictive))
-    #+END_SRC
-
-    #+RESULTS: emacs-company-predictive
-    | (company-predictive) | merlin-company-backend | company-bbdb | company-nxml | company-css | company-eclim | company-semantic | company-clang | company-xcode | company-ropemacs | company-cmake | company-capf | (company-dabbrev-code company-gtags company-etags company-keywords) | company-oddmuse | company-files | company-dabbrev |
-
-** Icicles
-   #+NAME: emacs-icicles
-   #+BEGIN_SRC emacs-lisp :tangle yes
-     (add-to-list 'load-path "~/.emacs.d/src/icicles")
-     (require 'icicles)
-     (icy-mode 1)
-   #+END_SRC
-
-   #+RESULTS: emacs-icicles
-   : t
 * Theme
 ** Monokai
   #+NAME: emacs-monokai
@@ -445,6 +487,37 @@ Order is important for compatibility.
   #+RESULTS: expand-region
   : er/expand-region
   
+* Smart Movement
+  Requires expand-region
+  #+NAME: emacs-smart-forward
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (add-to-list 'load-path "~/.emacs.d/src/smart-forward")
+    (require 'smart-forward)
+    ;(global-set-key (kbd "M-<up>") 'smart-up)
+    ;(global-set-key (kbd "M-<down>") 'smart-down)
+    ;(global-set-key (kbd "M-<left>") 'smart-backward)
+    ;(global-set-key (kbd "M-<right>") 'smart-forward)
+  #+END_SRC
+  
+* Change Inner
+  Requires expand-region
+  #+NAME: emacs-change-inner
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (add-to-list 'load-path "~/.emacs.d/src/change-inner.el")
+    (require 'change-inner)
+    (global-set-key (kbd "M-i") 'change-inner)
+    (global-set-key (kbd "M-o") 'change-outer)
+  #+END_SRC
+  
+* Wrap Selection
+  #+NAME: emacs-wrap-region
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (add-to-list 'load-path "~/.emacs.d/src/wrap-region")
+    (require 'wrap-region)
+    (wrap-region-mode t)
+    ;(add-to-list 'wrap-region-except-modes 'conflicting-mode)
+  #+END_SRC
+  
 * Cucumber
   #+NAME: emacs-cucumber
   #+BEGIN_SRC emacs-lisp :tangle yes
@@ -560,6 +633,23 @@ Order is important for compatibility.
       '(progn (info-initialize)
               (add-to-list 'Info-directory-list "~/.emacs.d/src/magit")))
     (require 'magit)
+  #+END_SRC
+  
+* String Edit
+  #+NAME: emacs-string-edit
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (add-to-list 'load-path "~/.emacs.d/src/string-edit.el")
+    (require 'string-edit)
+    ;string-edit-at-point
+  #+END_SRC
+  
+* Flycheck
+  not working atm.
+  #+NAME: emacs-flycheck
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    ;(add-to-list 'load-path "~/.emacs.d/src/flycheck")
+    ;(require 'flycheck)
+    ;(add-hook 'after-init-hook #'global-flycheck-mode)
   #+END_SRC
   
 * AUCTeX

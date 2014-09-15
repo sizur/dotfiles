@@ -82,3 +82,33 @@
 [submodule ".emacs.d/src/remember-el"]
 	path = .emacs.d/src/remember-el
 	url = git://repo.or.cz/remember-el.git
+[submodule ".emacs.d/src/flycheck"]
+	path = .emacs.d/src/flycheck
+	url = https://github.com/magnars/flycheck.git
+[submodule ".emacs.d/src/smart-forward"]
+	path = .emacs.d/src/smart-forward
+	url = https://github.com/magnars/smart-forward.el.git
+[submodule ".emacs.d/src/wrap-region"]
+	path = .emacs.d/src/wrap-region
+	url = https://github.com/magnars/wrap-region.git
+[submodule ".emacs.d/src/change-inner.el"]
+	path = .emacs.d/src/change-inner.el
+	url = https://github.com/magnars/change-inner.el.git
+[submodule ".emacs.d/src/dash.el"]
+	path = .emacs.d/src/dash.el
+	url = https://github.com/magnars/dash.el.git
+[submodule ".emacs.d/src/string-edit.el"]
+	path = .emacs.d/src/string-edit.el
+	url = https://github.com/magnars/string-edit.el.git
+[submodule ".emacs.d/src/s.el"]
+	path = .emacs.d/src/s.el
+	url = https://github.com/magnars/s.el.git
+[submodule ".emacs.d/src/ht.el"]
+	path = .emacs.d/src/ht.el
+	url = https://github.com/Wilfred/ht.el.git
+[submodule ".emacs.d/src/loop.el"]
+	path = .emacs.d/src/loop.el
+	url = https://github.com/Wilfred/loop.el.git
+[submodule ".emacs.d/src/tco.el"]
+	path = .emacs.d/src/tco.el
+	url = https://github.com/Wilfred/tco.el.git
