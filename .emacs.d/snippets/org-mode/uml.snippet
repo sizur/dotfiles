@@ -4,6 +4,7 @@
 # binding: direct-keybinding
 # --
 #+NAME: $1
-#+BEGIN_SRC plantuml :file ${1}.png :java -Djava.awt.headless=true -Xmx256m
+#+header: :imagemagick yes :iminoptions -density 300 :imoutoptions -resize "${2:850x}" -transparent white
+#+BEGIN_SRC plantuml :file $1.png :java -Djava.awt.headless=true -Xmx256m
   $0
 #+END_SRC

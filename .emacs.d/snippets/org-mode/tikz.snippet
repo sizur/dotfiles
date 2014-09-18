@@ -5,8 +5,8 @@
 # --
 #+name: $1
 #+header: :exports results :file $1.png 
-#+header: :imagemagick yes :iminoptions -density ${2:600} :imoutoptions -geometry ${3:800}
-#+header: :fit yes :noweb yes :headers '("${4:\\\\usepackage{tikz}\\\\usepackage[fancy,color=orange]{tikz-inet}}")
+#+header: :imagemagick yes :iminoptions -density ${2:300} :imoutoptions -geometry ${3:850} -transparent ${4:white}
+#+header: :fit yes :noweb yes :headers '("${5:\\\\usepackage{tikz}\\\\usepackage[fancy,color=orange]{tikz-inet}}")
 #+begin_src latex :buffer no
   $0
 #+end_src

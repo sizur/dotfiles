@@ -32,7 +32,7 @@
 
 ;; mpost
 (require 'xml)
-
+(require 's)
 ;;; Code:
 (require 'ob)
 
@@ -40,12 +40,7 @@
   '((:results . "file") (:exports . "results"))
   "Default arguments for evaluating a plantuml source block.")
 
-(defcustom org-mpost-path "/usr/bin/mpost"
-  "Path to the mpost binary."
-  :group 'org-metapost
-  :version "24.1"
-  :type 'string)
-(defcustom org-convert-path "/usr/bin/convert"
+(defcustom org-mpost-path "/usr/bin/mptopdf"
   "Path to the mpost binary."
   :group 'org-metapost
   :version "24.1"
@@ -58,8 +53,14 @@
          (factor (/ (float new-width) (string-to-number width)))
          (svg-attr-new (--map-when
                         (or (eq 'width (car it))
-                            (eq 'height (car it)))
-                        (cons (car it) (number-to-string (* factor (string-to-number (cdr it)))))
+                            (eq 'height (car it))
+                            (eq 'viewBox (car it)))
+                        (cons (car it)
+                              (if (eq 'viewBox (car it))
+                                  (s-join " " (--map-when (string= "0" it)
+                                                          "-1"
+                                                          (s-split " " (cdr it))))
+                                (number-to-string (* factor (string-to-number (cdr it))))))
                         svg-attr)))
     (cons 'svg (cons svg-attr-new (cdr (cdr svg))))))
 
@@ -70,29 +71,42 @@ This function is called by `org-babel-execute-src-block'."
 	 (out-file (or (cdr (assoc :file params))
 		       (error "Metapost requires a \":file\" header argument")))
 	 (header (or (cdr (assoc :header params)) ""))
-         (width (or (cdr (assoc :width params)) 0))
-	 (in-file (org-babel-temp-file "metapost-"))
+         ;; (width (or (cdr (assoc :width params)) 0))
+         (imagemagick (cdr (assoc :imagemagick params)))
+         (im-in-options (cdr (assoc :iminoptions params)))
+         (im-out-options (cdr (assoc :imoutoptions params)))
+	 (in-file (concat "metapost-" (file-name-sans-extension out-file) ".mp"))
+         (transient-file (concat "metapost-" (file-name-sans-extension out-file) ".1"))
+         (transient-pdf-file (concat "metapost-" (file-name-sans-extension out-file) "-1.pdf"))
 	 (cmd (if (string= "" org-mpost-path)
 		  (error "`org-mpost-path' is not set")
 		(concat org-mpost-path " " in-file))))
     (unless (file-exists-p org-mpost-path)
       (error "Could not find mpost binary at %s" org-mpost-path))
-    (with-temp-file in-file (insert (concat "outputtemplate := \"" out-file "\";\n"
-                                            "outputformat := \""
-                                            (file-name-extension out-file)
-                                            "\";\n"
+    (with-temp-file in-file (insert (concat ;"outputtemplate := \"" out-file "\";\n"
+                                            ;"outputformat := \""
+                                            ;(file-name-extension out-file)
+                                            ;"\";\n"
                                             header "\n"
                                             "beginfig(1);\n"
                                             body
                                             "\nendfig;\n"
                                             "end\n")))
-    (message "%s" cmd) (org-babel-eval cmd "")
-    (if (eq width 0) nil
-      (with-temp-buffer
-        (xml-print (list (svg-rezise-to-width
-                          (car (xml-parse-file out-file))
-                          width)))
-        (write-file out-file)))
+    (message "%s" cmd) ;(org-babel-eval cmd "")
+    (shell-command cmd)
+    (org-babel-latex-convert-pdf transient-pdf-file out-file im-in-options im-out-options)
+    (when (file-exists-p transient-pdf-file)
+      (delete-file transient-pdf-file))
+    (when (file-exists-p transient-file)
+      (delete-file transient-file))
+    (when (file-exists-p in-file)
+      (delete-file in-file))
+    ;; (if (eq width 0) nil
+    ;;   (with-temp-buffer
+    ;;     (xml-print (list (svg-rezise-to-width
+    ;;                       (car (xml-parse-file out-file))
+    ;;                       width)))
+    ;;     (write-file out-file)))
     nil)) ;; signal that output has already been written to file
 
 (defun org-babel-prep-session:metapost (session params)

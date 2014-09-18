@@ -112,3 +112,9 @@
 [submodule ".emacs.d/src/tco.el"]
 	path = .emacs.d/src/tco.el
 	url = https://github.com/Wilfred/tco.el.git
+[submodule ".emacs.d/src/paren-face"]
+	path = .emacs.d/src/paren-face
+	url = https://github.com/tarsius/paren-face.git
+[submodule ".emacs.d/src/geiser"]
+	path = .emacs.d/src/geiser
+	url = git://git.sv.gnu.org/geiser.git

@@ -200,7 +200,7 @@ Order is important for compatibility.
   #+NAME: emacs-parentheses
   #+BEGIN_SRC emacs-lisp :tangle yes
     (add-to-list 'load-path "~/.emacs.d/src/highlight-parentheses")
-    (show-paren-mode 1)
+    (show-paren-mode t)
     (require 'highlight-parentheses)
   #+END_SRC
 ** Paredit
@@ -218,6 +218,13 @@ Order is important for compatibility.
                  (local-set-key (kbd "RET") 'electrify-return-if-match)
                  (eldoc-add-command 'electrify-return-if-match)
                  (show-paren-mode t)))
+   #+END_SRC
+** Paren-Face
+   #+NAME: emacs-paren-face
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (add-to-list 'load-path "~/.emacs.d/src/paren-face")
+     (require 'paren-face)
+     (global-paren-face-mode t)
    #+END_SRC
 * Orgmode
 ** Basics
@@ -320,6 +327,25 @@ Order is important for compatibility.
      (setq remember-annotation-functions '(org-remember-annotation))
      (setq remember-handler-functions '(org-remember-handler))
      (add-hook 'remember-mode-hook 'org-remember-apply-template)
+   #+END_SRC
+** Ob-PlantUML ImageMagick Support
+   #+NAME: emacs-ob-plantuml-imagemagick
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (require 'ob-plantuml)
+     (require 'ob-latex) ; for convert shell-out
+     (require 'advice)
+
+     (defadvice org-babel-execute:plantuml (after org-babel-execute:plantuml:imagemagick)
+       (let* ((params (ad-get-arg 1))
+              (out-file (cdr (assoc :file params)))
+              (imagemagick (cdr (assoc :imagemagick params)))
+              (im-in-options (cdr (assoc :iminoptions params)))
+              (im-out-options (cdr (assoc :imoutoptions params))))
+         (cond (imagemagick
+                (org-babel-latex-convert-pdf out-file out-file im-in-options im-out-options)))))
+
+     (ad-enable-advice 'org-babel-execute:plantuml 'after 'org-babel-execute:plantuml:imagemagick)
+     (ad-activate 'org-babel-execute:plantuml)
    #+END_SRC
 * Theme
 ** Monokai
@@ -624,6 +650,18 @@ Order is important for compatibility.
       (add-hook 'merlin-mode-hook 'company-mode)
     #+END_SRC
     
+* Racket
+  Order important
+** Geiser
+   #+NAME: emacs-geiser
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (load-file "~/.emacs.d/src/geiser/elisp/geiser.el")
+   #+END_SRC
+** Quack
+   #+NAME: emacs-quack
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (require 'quack)
+   #+END_SRC
 * Magit
   #+NAME: emacs-magit
   #+BEGIN_SRC emacs-lisp :tangle yes

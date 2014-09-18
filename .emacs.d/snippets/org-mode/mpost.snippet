@@ -1,0 +1,10 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: mpost
+# key: mpost
+# binding: direct-keybinding
+# --
+#+name: $1
+#+header: :imagemagick yes :iminoptions -density 300 :imoutoptions -resize "{$2:850x}" -transparent white
+#+begin_src metapost :file $1.png :header "input metauml;\n"
+$0
+#+end_src
