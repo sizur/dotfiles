@@ -218,6 +218,11 @@ Order is important for compatibility.
                  (local-set-key (kbd "RET") 'electrify-return-if-match)
                  (eldoc-add-command 'electrify-return-if-match)
                  (show-paren-mode t)))
+     (add-hook 'geiser-mode-hook
+               (lambda ()
+                 (paredit-mode t)
+                 (local-set-key (kbd "RET") 'electrify-return-if-match)
+                 (show-paren-mode t)))
    #+END_SRC
 ** Paren-Face
    #+NAME: emacs-paren-face
@@ -328,6 +333,11 @@ Order is important for compatibility.
      (setq remember-handler-functions '(org-remember-handler))
      (add-hook 'remember-mode-hook 'org-remember-apply-template)
    #+END_SRC
+** TaskJuggler
+   #+NAME: emacs-taskjuggler
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (require 'ox-taskjuggler)
+   #+END_SRC
 ** Ob-PlantUML ImageMagick Support
    #+NAME: emacs-ob-plantuml-imagemagick
    #+BEGIN_SRC emacs-lisp :tangle yes
@@ -346,6 +356,41 @@ Order is important for compatibility.
 
      (ad-enable-advice 'org-babel-execute:plantuml 'after 'org-babel-execute:plantuml:imagemagick)
      (ad-activate 'org-babel-execute:plantuml)
+   #+END_SRC
+** Graphviz ImageMagick and Notugly Xslt Integration
+   #+NAME: emacs-graphviz-notugly
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (require 'ob-dot)
+     (require 'ob-latex) ; for convert shell-out
+     (require 'advice)
+
+     (defadvice org-babel-execute:dot (around org-babel-execute:dot:notugly)
+       (let* ((params (ad-get-arg 1))
+              (out-file (cdr (assoc :file params)))
+              (out-file-svg (concat (file-name-sans-extension out-file) ".svg"))
+              (imagemagick (cdr (assoc :imagemagick params)))
+              (im-in-options (cdr (assoc :iminoptions params)))
+              (im-out-options (cdr (assoc :imoutoptions params))))
+         (if imagemagick
+             (progn
+               (with-temp-buffer
+                 (ad-set-arg 1 (cons (cons :file out-file-svg)
+                                     (assq-delete-all :file (copy-alist params))))
+                 ad-do-it
+                 (let* ((cmd (concat
+                              "xsltproc ~/.emacs.d/src/diagram-tools/notugly.xsl "
+                              out-file-svg)))
+                   (message "Shell command: %s" cmd)
+                   (insert
+                    (shell-command-to-string cmd)))
+                 (write-file out-file-svg))
+               (org-babel-latex-convert-pdf out-file-svg out-file im-in-options im-out-options)
+               (when (file-exists-p out-file-svg)
+                 (delete-file out-file-svg)))
+           ad-do-it)))
+
+     (ad-enable-advice 'org-babel-execute:dot 'around 'org-babel-execute:dot:notugly)
+     (ad-activate 'org-babel-execute:dot)
    #+END_SRC
 * Theme
 ** Monokai

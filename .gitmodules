@@ -118,3 +118,15 @@
 [submodule ".emacs.d/src/geiser"]
 	path = .emacs.d/src/geiser
 	url = git://git.sv.gnu.org/geiser.git
+[submodule "ledger"]
+	path = ledger
+	url = https://github.com/ledger/ledger.git
+[submodule "ofxclient"]
+	path = ofxclient
+	url = git://github.com/captin411/ofxclient.git
+[submodule ".emacs.d/diagram-tools"]
+	path = .emacs.d/diagram-tools
+	url = https://github.com/vidarh/diagram-tools.git
+[submodule ".emacs.d/src/diagram-tools"]
+	path = .emacs.d/src/diagram-tools
+	url = https://github.com/vidarh/diagram-tools.git

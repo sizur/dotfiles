@@ -5,6 +5,6 @@
 # --
 #+name: $1
 #+header: :imagemagick yes :iminoptions -density 300 :imoutoptions -resize "{$2:850x}" -transparent white
-#+begin_src metapost :file $1.png :header "input metauml;\n"
+#+begin_src metapost :file $1.png :header "input metauml;\ninput TEX;\n"
 $0
 #+end_src
