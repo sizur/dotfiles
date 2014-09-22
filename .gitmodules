@@ -130,3 +130,6 @@
 [submodule ".emacs.d/src/diagram-tools"]
 	path = .emacs.d/src/diagram-tools
 	url = https://github.com/vidarh/diagram-tools.git
+[submodule ".emacs.d/src/o-blog"]
+	path = .emacs.d/src/o-blog
+	url = https://github.com/renard/o-blog.git

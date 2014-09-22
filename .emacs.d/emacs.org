@@ -338,6 +338,12 @@ Order is important for compatibility.
    #+BEGIN_SRC emacs-lisp :tangle yes
      (require 'ox-taskjuggler)
    #+END_SRC
+** O-Blog
+   #+NAME: emacs-o-blog
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (add-to-list 'load-path "~/.emacs.d/src/o-blog/lisp")
+     (require 'o-blog)
+   #+END_SRC
 ** Ob-PlantUML ImageMagick Support
    #+NAME: emacs-ob-plantuml-imagemagick
    #+BEGIN_SRC emacs-lisp :tangle yes
@@ -381,8 +387,7 @@ Order is important for compatibility.
                               "xsltproc ~/.emacs.d/src/diagram-tools/notugly.xsl "
                               out-file-svg)))
                    (message "Shell command: %s" cmd)
-                   (insert
-                    (shell-command-to-string cmd)))
+                   (insert (shell-command-to-string cmd)))
                  (write-file out-file-svg))
                (org-babel-latex-convert-pdf out-file-svg out-file im-in-options im-out-options)
                (when (file-exists-p out-file-svg)
@@ -735,6 +740,13 @@ Order is important for compatibility.
     ;(add-hook 'after-init-hook #'global-flycheck-mode)
   #+END_SRC
   
+* Ledger
+  #+NAME: emacs-ledger
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (add-to-list 'load-path "~/.emacs.d/src/ledger")
+    (require 'ledger-mode)
+    (add-to-list 'auto-mode-alist '("\\.ledger$" . ledger-mode))
+  #+END_SRC
 * AUCTeX
   #+NAME: auctex
   #+BEGIN_SRC emacs-lisp :tangle yes
