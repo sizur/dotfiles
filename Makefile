@@ -1,6 +1,6 @@
-SHELL=/bin/bash
+qSHELL=/bin/bash
 
-install: zsh fish emacs-packages
+install: tmux zsh fish emacs-packages
 
 update: submodules
 	cd .emacs.d && wget -O plantuml.jar http://downloads.sourceforge.net/project/plantuml/plantuml.jar
@@ -11,6 +11,9 @@ update: submodules
 submodules:
 	git submodule update --init --recursive
 	git submodule update --recursive
+
+tmux:
+	cp -f .tmux.conf ~/
 
 zsh: zsh-autosuggestions fonts
 	cp -f .zshrc ~/
@@ -32,6 +35,7 @@ zsh-autosuggestions:
 
 emacs-packages:
 	cp -rf .emacs.d ~/
+	rm ~/.emacs.d/emacs.el
 
 emacs:
 	cd .emacs && ./autogen.sh && ./configure && make && sudo make install

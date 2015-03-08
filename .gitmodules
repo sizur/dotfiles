@@ -34,15 +34,9 @@
 [submodule ".emacs.d/src/git-modes"]
 	path = .emacs.d/src/git-modes
 	url = https://github.com/magit/git-modes.git
-[submodule ".emacs.d/src/el-monokai-theme"]
-	path = .emacs.d/src/el-monokai-theme
-	url = https://github.com/lvillani/el-monokai-theme.git
 [submodule ".emacs.d/src/highlight-parentheses"]
 	path = .emacs.d/src/highlight-parentheses
 	url = https://github.com/nschum/highlight-parentheses.el.git
-[submodule ".emacs.d/src/monokai-emacs"]
-	path = .emacs.d/src/monokai-emacs
-	url = https://github.com/oneKelvinSmith/monokai-emacs.git
 [submodule ".emacs.d/src/emacs-fish"]
 	path = .emacs.d/src/emacs-fish
 	url = https://github.com/wwwjfy/emacs-fish.git
@@ -76,9 +70,6 @@
 [submodule ".emacs.d/src/paredit"]
 	path = .emacs.d/src/paredit
 	url = http://mumble.net/~campbell/git/paredit.git
-[submodule ".emacs.d/src/org-eldoc"]
-	path = .emacs.d/src/org-eldoc
-	url = https://bitbucket.org/ukaszg/org-eldoc.git
 [submodule ".emacs.d/src/remember-el"]
 	path = .emacs.d/src/remember-el
 	url = git://repo.or.cz/remember-el.git
@@ -133,3 +124,6 @@
 [submodule ".emacs.d/src/o-blog"]
 	path = .emacs.d/src/o-blog
 	url = https://github.com/renard/o-blog.git
+[submodule ".emacs.d/src/monokai-emacs"]
+	path = .emacs.d/src/monokai-emacs
+	url = https://github.com/oneKelvinSmith/monokai-emacs.git

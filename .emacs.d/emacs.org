@@ -30,9 +30,12 @@ Order is important for compatibility.
    #+NAME: emacs-no-fluff
    #+BEGIN_SRC emacs-lisp :tangle yes
      (setq inhibit-splash-screen t)
-     (tool-bar-mode -1)
-     (menu-bar-mode -1)
-     (scroll-bar-mode -1)
+     (add-hook 'window-setup-hook
+               (progn
+                 (menu-bar-mode -1)
+                 (if (display-graphic-p)
+                     (progn (tool-bar-mode -1)
+                            (scroll-bar-mode -1)))))
    #+END_SRC
 
    #+RESULTS: emacs-no-fluff
@@ -41,12 +44,11 @@ Order is important for compatibility.
 ** Transparency
    #+NAME: emacs-transparency
    #+BEGIN_SRC emacs-lisp :tangle yes
-      (set-frame-parameter (selected-frame) 'alpha '(85 50))
-      (add-to-list 'default-frame-alist '(alpha 85 50))
+     ;;(set-frame-parameter (selected-frame) 'alpha '(85 50))
+     ;;(add-to-list 'default-frame-alist '(alpha 85 50))
    #+END_SRC
 
    #+RESULTS: emacs-transparency
-   | (font . -*-proggyclean-*-*-*-*-*-*-*-*-*-*-iso8859-*) | (alpha 85 50) |
 
 ** Font
    #+NAME: emacs-font
@@ -319,9 +321,9 @@ Order is important for compatibility.
 ** Org-Eldoc
    #+NAME: org-eldoc
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (add-to-list 'load-path "~/.emacs.d/src/org-eldoc")
-     (require 'org-eldoc)
-     (org-eldoc-hook-setup)
+     ; (add-to-list 'load-path "~/.emacs.d/src/org-eldoc")
+     ;(require 'org-eldoc)
+     ;(org-eldoc-hook-setup)
    #+END_SRC
    
 ** Remember
@@ -344,6 +346,10 @@ Order is important for compatibility.
      (add-to-list 'load-path "~/.emacs.d/src/o-blog/lisp")
      (require 'o-blog)
    #+END_SRC
+
+   #+RESULTS: emacs-o-blog
+   : o-blog
+
 ** Ob-PlantUML ImageMagick Support
    #+NAME: emacs-ob-plantuml-imagemagick
    #+BEGIN_SRC emacs-lisp :tangle yes
@@ -363,6 +369,10 @@ Order is important for compatibility.
      (ad-enable-advice 'org-babel-execute:plantuml 'after 'org-babel-execute:plantuml:imagemagick)
      (ad-activate 'org-babel-execute:plantuml)
    #+END_SRC
+
+   #+RESULTS: emacs-ob-plantuml-imagemagick
+   : org-babel-execute:plantuml
+
 ** Graphviz ImageMagick and Notugly Xslt Integration
    #+NAME: emacs-graphviz-notugly
    #+BEGIN_SRC emacs-lisp :tangle yes
@@ -397,6 +407,10 @@ Order is important for compatibility.
      (ad-enable-advice 'org-babel-execute:dot 'around 'org-babel-execute:dot:notugly)
      (ad-activate 'org-babel-execute:dot)
    #+END_SRC
+
+   #+RESULTS: emacs-graphviz-notugly
+   : org-babel-execute:dot
+
 * Theme
 ** Monokai
   #+NAME: emacs-monokai
@@ -427,6 +441,9 @@ Order is important for compatibility.
     (add-to-list 'custom-theme-load-path "~/.emacs.d/src/monokai-emacs")
     (load-theme 'monokai t)
   #+END_SRC
+
+  #+RESULTS: emacs-monokai
+  : t
 
   #+RESULTS: emacs-theme
   : t
@@ -497,7 +514,7 @@ Order is important for compatibility.
 * PlantUML
    #+NAME: default-path
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (require 'plantuml-mode)
+    ; (require 'plantuml-mode)
    #+END_SRC
   
 * Calfw
@@ -673,31 +690,31 @@ Order is important for compatibility.
 ** Tuareg
    #+NAME: emacs-tuareg
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (load "~/.emacs.d/src/tuareg/tuareg-site-file.el")
-     (add-to-list 'auto-mode-alist '("\\.eliom$" . tuareg-mode))
+     ;;(load "~/.emacs.d/src/tuareg/tuareg-site-file.el")
+     ;;(add-to-list 'auto-mode-alist '("\\.eliom$" . tuareg-mode))
    #+END_SRC
 
 ** Opam
    #+NAME: emacs-opam
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (setq opam-share (substring (shell-command-to-string "opam config var share 2> /dev/null") 0 -1))
-     (add-to-list 'load-path (concat opam-share "/emacs/site-lisp"))
+     ;;(setq opam-share (substring (shell-command-to-string "opam config var share 2> /dev/null") 0 -1))
+     ;;(add-to-list 'load-path (concat opam-share "/emacs/site-lisp"))
    #+END_SRC
    
 ** Merlin
    #+NAME: emacs-merlin
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (require 'merlin)
-     (add-hook 'tuareg-mode-hook 'merlin-mode)
-     (add-hook 'caml-mode-hook 'merlin-mode)
-     (setq merlin-command 'opam)
+     ;;(require 'merlin)
+     ;;(add-hook 'tuareg-mode-hook 'merlin-mode)
+     ;;(add-hook 'caml-mode-hook 'merlin-mode)
+     ;;(setq merlin-command 'opam)
    #+END_SRC
 
 *** Company Integration
     #+NAME: emacs-merlin-company
     #+BEGIN_SRC emacs-lisp :tangle yes
-      (add-to-list 'company-backends 'merlin-company-backend)
-      (add-hook 'merlin-mode-hook 'company-mode)
+      ;;(add-to-list 'company-backends 'merlin-company-backend)
+      ;;(add-hook 'merlin-mode-hook 'company-mode)
     #+END_SRC
     
 * Racket
@@ -743,9 +760,9 @@ Order is important for compatibility.
 * Ledger
   #+NAME: emacs-ledger
   #+BEGIN_SRC emacs-lisp :tangle yes
-    (add-to-list 'load-path "~/.emacs.d/src/ledger")
-    (require 'ledger-mode)
-    (add-to-list 'auto-mode-alist '("\\.ledger$" . ledger-mode))
+    ;(add-to-list 'load-path "~/.emacs.d/src/ledger")
+    ;(require 'ledger-mode)
+    ;(add-to-list 'auto-mode-alist '("\\.ledger$" . ledger-mode))
   #+END_SRC
 * AUCTeX
   #+NAME: auctex
