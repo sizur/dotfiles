@@ -35,7 +35,7 @@ zsh-autosuggestions:
 
 emacs-packages:
 	cp -rf .emacs.d ~/
-	rm ~/.emacs.d/emacs.el
+	rm ~/.emacs.d/emacs.el || true
 
 emacs:
 	cd .emacs && ./autogen.sh && ./configure && make && sudo make install
