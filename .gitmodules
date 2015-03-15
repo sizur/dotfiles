@@ -127,3 +127,12 @@
 [submodule ".emacs.d/src/monokai-emacs"]
 	path = .emacs.d/src/monokai-emacs
 	url = https://github.com/oneKelvinSmith/monokai-emacs.git
+[submodule ".emacs.d/src/undo-tree"]
+	path = .emacs.d/src/undo-tree
+	url = http://www.dr-qubit.org/git/undo-tree.git
+[submodule ".emacs.d/src/names"]
+	path = .emacs.d/src/names
+	url = https://github.com/Bruce-Connor/names.git
+[submodule ".emacs.d/src/aggressive-indent-mode"]
+	path = .emacs.d/src/aggressive-indent-mode
+	url = https://github.com/Bruce-Connor/aggressive-indent-mode.git

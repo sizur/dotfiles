@@ -805,6 +805,26 @@ Order is important for compatibility.
 
   #+RESULTS: emacs-crontab-mode
 
+* UndoTree
+  #+NAME: emacs-undotree
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (add-to-list 'load-path "~/.emacs.d/src/undo-tree")
+    (require 'undo-tree)
+    (global-undo-tree-mode)
+  #+END_SRC
+
+  #+RESULTS: emacs-undotree
+  : t
+
+* Aggressive Indent
+  #+NAME: emacs-aggressive-indent
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (add-to-list 'load-path "~/.emacs.d/src/names")
+    (add-to-list 'load-path "~/.emacs.d/src/aggressive-indent-mode")
+    (require 'aggressive-indent)
+    (global-aggressive-indent-mode 1)
+    (add-to-list 'aggressive-indent-excluded-modes 'html-mode)
+  #+END_SRC
 * Definitions
 ** Eval elips anywhere and replace with result
    #+NAME: eval-and-replace
