@@ -192,13 +192,14 @@ Order is important for compatibility.
 *** Predictive Integration
     #+NAME: emacs-company-predictive
     #+BEGIN_SRC emacs-lisp :tangle yes
-      (defun company-predictive (command &optional arg &rest ignored)
-        (case command
-          (prefix (let* ((text (downcase (word-at-point))))
-                    (set-text-properties 0 (length text) nil text)
-                    text))
-          (candidates (predictive-complete arg))))
-      (add-to-list 'company-backends '(company-predictive))
+                                              ; does not work
+      ;; (defun company-predictive (command &optional arg &rest ignored)
+      ;;   (case command
+      ;;     (prefix (let* ((text (downcase (word-at-point))))
+      ;;               (set-text-properties 0 (length text) nil text)
+      ;;               text))
+      ;;     (candidates (predictive-complete arg))))
+      ;; (add-to-list 'company-backends '(company-predictive))
     #+END_SRC
 
     #+RESULTS: emacs-company-predictive
