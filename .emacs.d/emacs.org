@@ -81,6 +81,12 @@ Order is important for compatibility.
      (setq custom-file "~/.emacs.d/customizations.el")
      (load custom-file)
    #+END_SRC
+** Zone
+   #+NAME: emacs-zone
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (require 'zone)
+     (zone-when-idle 120)
+   #+END_SRC
 * Elisp libs
 ** Dash (List lib)
    #+NAME: emacs-dash
@@ -114,6 +120,12 @@ Order is important for compatibility.
    #+BEGIN_SRC emacs-lisp :tangle yes
      (add-to-list 'load-path "~/.emacs.d/src/tco.el")
      (require 'tco)
+   #+END_SRC
+** Names
+   Required by Aggressive Indent
+   #+NAME: names
+   #+BEGIN_SRC emacs-lisp :tangle yes
+   (add-to-list 'load-path "~/.emacs.d/src/names")
    #+END_SRC
 * Autocompletion/Expansion
 ** Yasnippet
@@ -156,6 +168,10 @@ Order is important for compatibility.
      (add-to-list 'load-path "~/.emacs.d/src/company-mode")
      (require 'company)
    #+END_SRC
+
+   #+RESULTS: emacs-company
+   : company
+
    
 *** Yasnippet Integration
     #+NAME: emacs-company-yasnippet
@@ -177,15 +193,16 @@ Order is important for compatibility.
     #+NAME: emacs-company-predictive
     #+BEGIN_SRC emacs-lisp :tangle yes
       (defun company-predictive (command &optional arg &rest ignored)
-        (prefix (let* ((text (downcase (word-at-point))))
-                  (set-text-properties 0 (length text) nil text)
-                  text))
-        (candidates (predictive-complete arg)))
+        (case command
+          (prefix (let* ((text (downcase (word-at-point))))
+                    (set-text-properties 0 (length text) nil text)
+                    text))
+          (candidates (predictive-complete arg))))
       (add-to-list 'company-backends '(company-predictive))
     #+END_SRC
 
     #+RESULTS: emacs-company-predictive
-    | (company-predictive) | merlin-company-backend | company-bbdb | company-nxml | company-css | company-eclim | company-semantic | company-clang | company-xcode | company-ropemacs | company-cmake | company-capf | (company-dabbrev-code company-gtags company-etags company-keywords) | company-oddmuse | company-files | company-dabbrev |
+    | (company-predictive) | company-bbdb | company-nxml | company-css | company-eclim | company-semantic | company-clang | company-xcode | company-ropemacs | company-cmake | company-capf | (company-dabbrev-code company-gtags company-etags company-keywords) | company-oddmuse | company-files | company-dabbrev |
 
 ** Icicles
    #+NAME: emacs-icicles
@@ -819,12 +836,15 @@ Order is important for compatibility.
 * Aggressive Indent
   #+NAME: emacs-aggressive-indent
   #+BEGIN_SRC emacs-lisp :tangle yes
-    (add-to-list 'load-path "~/.emacs.d/src/names")
     (add-to-list 'load-path "~/.emacs.d/src/aggressive-indent-mode")
     (require 'aggressive-indent)
     (global-aggressive-indent-mode 1)
     (add-to-list 'aggressive-indent-excluded-modes 'html-mode)
   #+END_SRC
+
+  #+RESULTS: emacs-aggressive-indent
+  | html-mode | bibtex-mode | cider-repl-mode | coffee-mode | conf-mode | Custom-mode | diff-mode | dos-mode | erc-mode | jabber-chat-mode | haml-mode | haskell-mode | makefile-mode | makefile-gmake-mode | minibuffer-inactive-mode | netcmd-mode | python-mode | sass-mode | slim-mode | special-mode | shell-mode | snippet-mode | eshell-mode | tabulated-list-mode | term-mode | TeX-output-mode | text-mode | yaml-mode |
+
 * Definitions
 ** Eval elips anywhere and replace with result
    #+NAME: eval-and-replace
