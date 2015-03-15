@@ -523,25 +523,37 @@ Order is important for compatibility.
   #+BEGIN_SRC emacs-lisp :tangle yes
     (add-to-list 'load-path
                  "~/.emacs.d/src/emacs-calfw")
-    (require 'calfw-cal)
+    (require 'calfw)
+    ;(require 'calfw-cal)
     (require 'calfw-ical)
     (require 'calfw-org)
-    
+
     (defun my-open-calendar ()
       (interactive)
       (cfw:open-calendar-buffer
        :contents-sources
        (list
         ;(cfw:org-create-source "Green")  ; orgmode source
-        (cfw:cal-create-source "Orange") ; diary source
+        ;(cfw:cal-create-source "Orange") ; diary source
         (cfw:ical-create-source "main"  "~/calendars/my-main.ics" "IndianRed")
         (cfw:ical-create-source "bdays" "~/calendars/my-birthdays.ics" "Orange")
+        (cfw:org-create-source "Green")
        )))
-    
+
   #+END_SRC
 
   #+RESULTS: calendar
   : my-open-calendar
+
+* mu4e
+  #+NAME: emacs-mu4e
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (if (file-exists-p "~/.mu4e.el")
+        (load-file "~/.mu4e.el"))
+  #+END_SRC
+
+  #+RESULTS: emacs-mu4e
+  : t
 
 * Multiple Cursors
   #+NAME: emacs-mult-cursor
@@ -782,6 +794,16 @@ Order is important for compatibility.
 
   #+RESULTS: auctex
   : t
+
+* Crontab
+  #+NAME: emacs-crontab-mode
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (require 'crontab-mode)
+    (add-to-list 'auto-mode-alist '("\\.cron\\(tab\\)?\\'" . crontab-mode))
+    (add-to-list 'auto-mode-alist '("cron\\(tab\\)?\\."    . crontab-mode))
+  #+END_SRC
+
+  #+RESULTS: emacs-crontab-mode
 
 * Definitions
 ** Eval elips anywhere and replace with result
