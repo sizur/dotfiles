@@ -159,6 +159,13 @@ export P4CONFIG=.p4config
 
 export TERM=xterm-256color
 
+export EDITOR="emacsclient -t"
+
+alias e=$EDITOR
+
+alias ls='ls --color'
+export LS_COLORS='di=94:fi=0:ln=31:pi=5:so=5:bd=5:cd=5:or=31:mi=0:ex=35:*.rpm=90'
+
 if [[ -r ~/.zshrc_custom ]]; then
     source ~/.zshrc_custom
 fi
