@@ -85,7 +85,7 @@ Order is important for compatibility.
    #+NAME: emacs-zone
    #+BEGIN_SRC emacs-lisp :tangle yes
      (require 'zone)
-     (zone-when-idle 120)
+     ;(zone-when-idle 120)
    #+END_SRC
 * Elisp libs
 ** Dash (List lib)
@@ -243,7 +243,15 @@ Order is important for compatibility.
                  (paredit-mode t)
                  (local-set-key (kbd "RET") 'electrify-return-if-match)
                  (show-paren-mode t)))
+     (global-set-key (kbd "M-]") 'paredit-forward-slurp-sexp)
+     (global-set-key (kbd "M-}") 'paredit-forward-barf-sexp)
+     (global-set-key (kbd "M-[") 'paredit-backward-slurp-sexp)
+     (global-set-key (kbd "M-{") 'paredit-backward-barf-sexp)
    #+END_SRC
+
+   #+RESULTS: emacs-paredit
+   : paredit-backward-barf-sexp
+
 ** Paren-Face
    #+NAME: emacs-paren-face
    #+BEGIN_SRC emacs-lisp :tangle yes
@@ -573,43 +581,6 @@ Order is important for compatibility.
   #+RESULTS: emacs-mu4e
   : t
 
-* Multiple Cursors
-  #+NAME: emacs-mult-cursor
-  #+BEGIN_SRC emacs-lisp :tangle yes
-    (add-to-list 'load-path
-                 "~/.emacs.d/src/multiple-cursors.el")
-    (require 'multiple-cursors)
-    (global-set-key (kbd "C-c m /") 'mc/edit-lines)
-    (global-set-key (kbd "C-c m .") 'mc/mark-next-like-this)
-    (global-set-key (kbd "C-c m ,") 'mc/mark-previous-like-this)
-    (global-set-key (kbd "C-c m m") 'mc/mark-all-like-this)
-  #+END_SRC
-
-  #+RESULTS: emacs-mult-cursor
-  : mc/mark-all-like-this
-
-* Phi-search
-  Incremental Search that works with Multiple Cursors.
-  #+NAME: emacs-phi-search
-  #+BEGIN_SRC emacs-lisp :tangle yes
-    (add-to-list 'load-path
-                 "~/.emacs.d/src/phi-search")
-    (require 'phi-search)
-    (global-set-key (kbd "C-s") 'phi-search)
-    (global-set-key (kbd "C-r") 'phi-search-backward)
-  #+END_SRC
-* Expand Selection
-  #+NAME: expand-region
-  #+BEGIN_SRC emacs-lisp :tangle yes
-    (add-to-list 'load-path
-                 "~/.emacs.d/src/expand-region.el")
-    (require 'expand-region)
-    (global-set-key (kbd "M-=") 'er/expand-region)
-  #+END_SRC
-
-  #+RESULTS: expand-region
-  : er/expand-region
-  
 * Smart Movement
   Requires expand-region
   #+NAME: emacs-smart-forward
@@ -845,6 +816,72 @@ Order is important for compatibility.
 
   #+RESULTS: emacs-aggressive-indent
   | html-mode | bibtex-mode | cider-repl-mode | coffee-mode | conf-mode | Custom-mode | diff-mode | dos-mode | erc-mode | jabber-chat-mode | haml-mode | haskell-mode | makefile-mode | makefile-gmake-mode | minibuffer-inactive-mode | netcmd-mode | python-mode | sass-mode | slim-mode | special-mode | shell-mode | snippet-mode | eshell-mode | tabulated-list-mode | term-mode | TeX-output-mode | text-mode | yaml-mode |
+
+* Markdown
+  #+NAME: emacs-markdown
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (autoload 'markdown-mode "markdown-mode"
+      "Major mode for editing Markdown files" t)
+    (add-to-list 'auto-mode-alist '("\\.text\\'" . markdown-mode))
+    (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
+    (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
+  #+END_SRC
+* Expand Selection
+  #+NAME: expand-region
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (add-to-list 'load-path
+                 "~/.emacs.d/src/expand-region.el")
+    (require 'expand-region)
+    (global-set-key (kbd "M-=") 'er/expand-region)
+  #+END_SRC
+
+  #+RESULTS: expand-region
+  : er/expand-region
+  
+* Region Bindings
+  #+NAME: emacs-region-bindings
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (add-to-list 'load-path "~/.emacs.d/src/region-bindings-mode")
+    (require 'region-bindings-mode)
+    (region-bindings-mode-enable)
+    (define-key region-bindings-mode-map (kbd "M--") 'mc/mark-all-like-this)
+    (define-key region-bindings-mode-map (kbd "M-[") 'mc/mark-previous-like-this)
+    (define-key region-bindings-mode-map (kbd "M-]") 'mc/mark-next-like-this)
+  #+END_SRC
+
+  #+RESULTS: emacs-region-bindings
+  : mc/mark-next-like-this
+
+* Multiple Cursors
+  #+NAME: emacs-mult-cursor
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (add-to-list 'load-path
+                 "~/.emacs.d/src/multiple-cursors.el")
+    (require 'multiple-cursors)
+    (global-set-key (kbd "C-c m /") 'mc/edit-lines)
+    (global-set-key (kbd "C-c m .") 'mc/mark-next-like-this)
+    (global-set-key (kbd "C-c m ,") 'mc/mark-previous-like-this)
+    (global-set-key (kbd "C-c m m") 'mc/mark-all-like-this)
+  #+END_SRC
+
+  #+RESULTS: emacs-mult-cursor
+  : mc/mark-all-like-this
+
+* Phi-search
+  Incremental Search that works with Multiple Cursors.
+  #+NAME: emacs-phi-search
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (add-to-list 'load-path
+                 "~/.emacs.d/src/phi-search")
+    (require 'phi-search)
+    (require 'phi-replace)
+    (global-set-key (kbd "C-s") 'phi-search)
+    (global-set-key (kbd "C-r") 'phi-search-backward)
+    (global-set-key (kbd "M-%") 'phi-replace-query)
+  #+END_SRC
+
+  #+RESULTS: emacs-phi-search
+  : phi-replace-query
 
 * Definitions
 ** Eval elips anywhere and replace with result

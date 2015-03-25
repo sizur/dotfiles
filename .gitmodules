@@ -136,3 +136,6 @@
 [submodule ".emacs.d/src/aggressive-indent-mode"]
 	path = .emacs.d/src/aggressive-indent-mode
 	url = https://github.com/Bruce-Connor/aggressive-indent-mode.git
+[submodule ".emacs.d/src/region-bindings-mode"]
+	path = .emacs.d/src/region-bindings-mode
+	url = https://github.com/fgallina/region-bindings-mode.git
