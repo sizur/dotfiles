@@ -3,6 +3,10 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   (quote
+    ("3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" default)))
+ '(global-paren-face-mode t)
  '(icicle-top-level-key-bindings
    (quote
     (([pause]
@@ -401,4 +405,5 @@
  '(icicle-mode-line-help ((t (:foreground "white"))))
  '(icicle-proxy-candidate ((t (:background "brightmagenta" :box (:line-width 2 :color "White" :style released-button)))))
  '(icicle-saved-candidate ((t (:background "green"))))
- '(icicle-special-candidate ((t (:background "color-16")))))
+ '(icicle-special-candidate ((t (:background "color-16"))))
+ '(quack-pltish-defn-face ((t (:foreground "brightyellow" :weight bold)))))

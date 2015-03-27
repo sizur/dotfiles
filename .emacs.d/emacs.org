@@ -1,14 +1,15 @@
 Eugene Grigoriev's Dotemacs.
 
-Order is important for compatibility.
+Order is important for some items for compatibility.
 
 * Basics
 ** The Very Basics
    #+NAME: emacs-very-basic
    #+BEGIN_SRC emacs-lisp :tangle yes
+
      (setq user-mail-address "eugene.grigoriev@gmail.com")
      (setq user-full-name "Eugene Grigoriev")
-     ;(set-face-attribute 'default nil :height 100)
+     ;; (set-face-attribute 'default nil :height 100)
      (put 'overwrite-mode 'disabled t)
      (global-set-key "\C-c\C-a" 'mark-whole-buffer)
      (global-font-lock-mode t)
@@ -20,7 +21,8 @@ Order is important for compatibility.
      (setq-default indent-tabs-mode nil)
      (setq frame-title-format "%b - emacs")
      (setq require-final-newline 't)
-     (global-prettify-symbols-mode 1)
+     (if (version<= "24.4" emacs-version)
+         (global-prettify-symbols-mode 1))
    #+END_SRC
 
    #+RESULTS: emacs-very-basic
@@ -44,8 +46,8 @@ Order is important for compatibility.
 ** Transparency
    #+NAME: emacs-transparency
    #+BEGIN_SRC emacs-lisp :tangle yes
-     ;;(set-frame-parameter (selected-frame) 'alpha '(85 50))
-     ;;(add-to-list 'default-frame-alist '(alpha 85 50))
+     (set-frame-parameter (selected-frame) 'alpha '(85 50))
+     (add-to-list 'default-frame-alist '(alpha 85 50))
    #+END_SRC
 
    #+RESULTS: emacs-transparency
@@ -53,11 +55,17 @@ Order is important for compatibility.
 ** Font
    #+NAME: emacs-font
    #+BEGIN_SRC emacs-lisp :tangle yes
-     ;(add-to-list 'default-frame-alist '(font . "-*-proggyclean-*-*-*-*-*-*-*-*-*-*-iso8859-*"))
+     ;; (add-to-list 'default-frame-alist '(font . "-*-proggyclean-*-*-*-*-*-*-*-*-*-*-iso8859-*"))
+     ;; (let* ((sys (lambda (s) (eq system-type s))))
+     ;;   (cond ((sys 'cygwin) (set-default-font "Consolas-9"))
+     ;;         ))
+     (add-to-list 'default-frame-alist '(font . "Consolas-9"))
+     (set-face-attribute 'default t :font "Consolas-9")
+     (set-face-attribute 'default nil :font "Consolas-9")
+     (set-frame-font "Consolas-9" nil t)
    #+END_SRC
 
    #+RESULTS: emacs-font
-   | (font . -*-proggyclean-*-*-*-*-*-*-*-*-*-*-iso8859-*) | (alpha 85 50) |
 
 ** URL Handling using system
    #+NAME: emacs-url-handling
@@ -437,6 +445,28 @@ Order is important for compatibility.
    #+RESULTS: emacs-graphviz-notugly
    : org-babel-execute:dot
 
+** Font Size
+   #+NAME: emacs-orgmode-font-size
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (custom-set-faces
+      '(org-level-1 ((t (:inherit outline-1 :height 1.0))))
+      '(org-level-2 ((t (:inherit outline-2 :height 1.0))))
+      '(org-level-3 ((t (:inherit outline-3 :height 1.0))))
+      '(org-level-4 ((t (:inherit outline-4 :height 1.0))))
+      '(org-level-5 ((t (:inherit outline-5 :height 1.0))))
+      )
+   #+END_SRC
+* Smart Mode Line
+  #+NAME: emacs-smart-modeline
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (add-to-list 'load-path "~/.emacs.d/src/rich-minority")
+    (add-to-list 'load-path "~/.emacs.d/src/smart-mode-line")
+    (require 'rich-minority)
+    (require 'smart-mode-line)
+    (rich-minority-mode 1)
+    (sml/setup)
+    (sml/apply-theme 'dark)
+  #+END_SRC
 * Theme
 ** Monokai
   #+NAME: emacs-monokai
@@ -581,6 +611,63 @@ Order is important for compatibility.
   #+RESULTS: emacs-mu4e
   : t
 
+* Expand Region
+  #+NAME: expand-region
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (add-to-list 'load-path
+                 "~/.emacs.d/src/expand-region.el")
+    (require 'expand-region)
+    (global-set-key (kbd "M-=") 'er/expand-region)
+  #+END_SRC
+
+  #+RESULTS: expand-region
+  : er/expand-region
+  
+* Region Bindings
+  #+NAME: emacs-region-bindings
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (add-to-list 'load-path "~/.emacs.d/src/region-bindings-mode")
+    (require 'region-bindings-mode)
+    (region-bindings-mode-enable)
+    (define-key region-bindings-mode-map (kbd "M--") 'mc/mark-all-like-this)
+    (define-key region-bindings-mode-map (kbd "M-[") 'mc/mark-previous-like-this)
+    (define-key region-bindings-mode-map (kbd "M-]") 'mc/mark-next-like-this)
+  #+END_SRC
+
+  #+RESULTS: emacs-region-bindings
+  : mc/mark-next-like-this
+
+* Multiple Cursors
+  #+NAME: emacs-mult-cursor
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (add-to-list 'load-path
+                 "~/.emacs.d/src/multiple-cursors.el")
+    (require 'multiple-cursors)
+    (global-set-key (kbd "C-c m /") 'mc/edit-lines)
+    (global-set-key (kbd "C-c m .") 'mc/mark-next-like-this)
+    (global-set-key (kbd "C-c m ,") 'mc/mark-previous-like-this)
+    (global-set-key (kbd "C-c m m") 'mc/mark-all-like-this)
+  #+END_SRC
+
+  #+RESULTS: emacs-mult-cursor
+  : mc/mark-all-like-this
+
+* Phi-search
+  Incremental Search that works with Multiple Cursors.
+  #+NAME: emacs-phi-search
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (add-to-list 'load-path
+                 "~/.emacs.d/src/phi-search")
+    (require 'phi-search)
+    (require 'phi-replace)
+    (global-set-key (kbd "C-s") 'phi-search)
+    (global-set-key (kbd "C-r") 'phi-search-backward)
+    (global-set-key (kbd "M-%") 'phi-replace-query)
+  #+END_SRC
+
+  #+RESULTS: emacs-phi-search
+  : phi-replace-query
+
 * Smart Movement
   Requires expand-region
   #+NAME: emacs-smart-forward
@@ -698,8 +785,10 @@ Order is important for compatibility.
 ** Opam
    #+NAME: emacs-opam
    #+BEGIN_SRC emacs-lisp :tangle yes
-     ;;(setq opam-share (substring (shell-command-to-string "opam config var share 2> /dev/null") 0 -1))
-     ;;(add-to-list 'load-path (concat opam-share "/emacs/site-lisp"))
+     ;; (if (executable-find "opam")
+     ;;     (progn
+     ;;       (setq opam-share (substring (shell-command-to-string "opam config var share 2> /dev/null") 0 -1))
+     ;;       (add-to-list 'load-path (concat opam-share "/emacs/site-lisp"))))
    #+END_SRC
    
 ** Merlin
@@ -723,22 +812,26 @@ Order is important for compatibility.
 ** Geiser
    #+NAME: emacs-geiser
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (load-file "~/.emacs.d/src/geiser/elisp/geiser.el")
+     (if (executable-find "racket")
+         (load-file "~/.emacs.d/src/geiser/elisp/geiser.el"))
    #+END_SRC
 ** Quack
    #+NAME: emacs-quack
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (require 'quack)
+     (if (executable-find "racket")
+         (require 'quack))
    #+END_SRC
 * Magit
   #+NAME: emacs-magit
   #+BEGIN_SRC emacs-lisp :tangle yes
-    (add-to-list 'load-path "~/.emacs.d/src/git-modes")
-    (add-to-list 'load-path "~/.emacs.d/src/magit")
-    (eval-after-load 'info
-      '(progn (info-initialize)
-              (add-to-list 'Info-directory-list "~/.emacs.d/src/magit")))
-    (require 'magit)
+    (if (executable-find "git")
+        (progn
+          (add-to-list 'load-path "~/.emacs.d/src/git-modes")
+          (add-to-list 'load-path "~/.emacs.d/src/magit")
+          (eval-after-load 'info
+            '(progn (info-initialize)
+                    (add-to-list 'Info-directory-list "~/.emacs.d/src/magit")))
+          (require 'magit)))
   #+END_SRC
   
 * String Edit
@@ -761,24 +854,28 @@ Order is important for compatibility.
 * Ledger
   #+NAME: emacs-ledger
   #+BEGIN_SRC emacs-lisp :tangle yes
-    ;(add-to-list 'load-path "~/.emacs.d/src/ledger")
-    ;(require 'ledger-mode)
-    ;(add-to-list 'auto-mode-alist '("\\.ledger$" . ledger-mode))
+    (if (executable-find "ledger")
+        (progn
+          (add-to-list 'load-path "~/.emacs.d/src/ledger")
+          (require 'ledger-mode)
+          (add-to-list 'auto-mode-alist '("\\.ledger$" . ledger-mode))))
   #+END_SRC
 * AUCTeX
   #+NAME: auctex
   #+BEGIN_SRC emacs-lisp :tangle yes
-    (load "~/.emacs.d/src/auctex.el" nil t t)
-    (load "~/.emacs.d/src/preview-latex.el" nil t t)
-    (setq TeX-auto-save t)
-    (setq TeX-parse-self t)
-    (setq-default TeX-master nil)
-    (add-hook 'LaTeX-mode-hook 'visual-line-mode)
-    (add-hook 'LaTeX-mode-hook 'flyspell-mode)
-    (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
-    (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
-    (setq reftex-plug-into-AUCTeX t)
-    (setq TeX-PDF-mode t)
+    (if (executable-find "pdflatex")
+        (progn
+          (load "~/.emacs.d/src/auctex.el" nil t t)
+          (load "~/.emacs.d/src/preview-latex.el" nil t t)
+          (setq TeX-auto-save t)
+          (setq TeX-parse-self t)
+          (setq-default TeX-master nil)
+          (add-hook 'LaTeX-mode-hook 'visual-line-mode)
+          (add-hook 'LaTeX-mode-hook 'flyspell-mode)
+          (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
+          (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+          (setq reftex-plug-into-AUCTeX t)
+          (setq TeX-PDF-mode t)))
   #+END_SRC
 
   #+RESULTS: auctex
@@ -826,63 +923,6 @@ Order is important for compatibility.
     (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
     (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
   #+END_SRC
-* Expand Selection
-  #+NAME: expand-region
-  #+BEGIN_SRC emacs-lisp :tangle yes
-    (add-to-list 'load-path
-                 "~/.emacs.d/src/expand-region.el")
-    (require 'expand-region)
-    (global-set-key (kbd "M-=") 'er/expand-region)
-  #+END_SRC
-
-  #+RESULTS: expand-region
-  : er/expand-region
-  
-* Region Bindings
-  #+NAME: emacs-region-bindings
-  #+BEGIN_SRC emacs-lisp :tangle yes
-    (add-to-list 'load-path "~/.emacs.d/src/region-bindings-mode")
-    (require 'region-bindings-mode)
-    (region-bindings-mode-enable)
-    (define-key region-bindings-mode-map (kbd "M--") 'mc/mark-all-like-this)
-    (define-key region-bindings-mode-map (kbd "M-[") 'mc/mark-previous-like-this)
-    (define-key region-bindings-mode-map (kbd "M-]") 'mc/mark-next-like-this)
-  #+END_SRC
-
-  #+RESULTS: emacs-region-bindings
-  : mc/mark-next-like-this
-
-* Multiple Cursors
-  #+NAME: emacs-mult-cursor
-  #+BEGIN_SRC emacs-lisp :tangle yes
-    (add-to-list 'load-path
-                 "~/.emacs.d/src/multiple-cursors.el")
-    (require 'multiple-cursors)
-    (global-set-key (kbd "C-c m /") 'mc/edit-lines)
-    (global-set-key (kbd "C-c m .") 'mc/mark-next-like-this)
-    (global-set-key (kbd "C-c m ,") 'mc/mark-previous-like-this)
-    (global-set-key (kbd "C-c m m") 'mc/mark-all-like-this)
-  #+END_SRC
-
-  #+RESULTS: emacs-mult-cursor
-  : mc/mark-all-like-this
-
-* Phi-search
-  Incremental Search that works with Multiple Cursors.
-  #+NAME: emacs-phi-search
-  #+BEGIN_SRC emacs-lisp :tangle yes
-    (add-to-list 'load-path
-                 "~/.emacs.d/src/phi-search")
-    (require 'phi-search)
-    (require 'phi-replace)
-    (global-set-key (kbd "C-s") 'phi-search)
-    (global-set-key (kbd "C-r") 'phi-search-backward)
-    (global-set-key (kbd "M-%") 'phi-replace-query)
-  #+END_SRC
-
-  #+RESULTS: emacs-phi-search
-  : phi-replace-query
-
 * Definitions
 ** Eval elips anywhere and replace with result
    #+NAME: eval-and-replace

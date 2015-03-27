@@ -1,4 +1,4 @@
-qSHELL=/bin/bash
+SHELL=/bin/bash
 
 install: tmux zsh fish emacs-packages
 
@@ -35,8 +35,11 @@ zsh-autosuggestions:
 
 emacs-packages:
 	cp -rf .emacs.d ~/
-	rm ~/.emacs.d/emacs.el || true
+	rm ~/.emacs.d/emacs.el ~/.emacs.d/.#emacs.org || true
 
 emacs:
 	cd .emacs && ./autogen.sh && ./configure && make && sudo make install
 	cd .emacs && git reset --hard head && git clean -f
+
+customizations:
+	cp ~/.emacs.d/customizations.el .emacs.d/

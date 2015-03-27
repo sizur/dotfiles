@@ -139,3 +139,9 @@
 [submodule ".emacs.d/src/region-bindings-mode"]
 	path = .emacs.d/src/region-bindings-mode
 	url = https://github.com/fgallina/region-bindings-mode.git
+[submodule ".emacs.d/src/smart-mode-line"]
+	path = .emacs.d/src/smart-mode-line
+	url = https://github.com/Malabarba/smart-mode-line.git
+[submodule ".emacs.d/src/rich-minority"]
+	path = .emacs.d/src/rich-minority
+	url = https://github.com/Malabarba/rich-minority.git
