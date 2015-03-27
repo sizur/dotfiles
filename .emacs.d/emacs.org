@@ -56,13 +56,19 @@ Order is important for some items for compatibility.
    #+NAME: emacs-font
    #+BEGIN_SRC emacs-lisp :tangle yes
      ;; (add-to-list 'default-frame-alist '(font . "-*-proggyclean-*-*-*-*-*-*-*-*-*-*-iso8859-*"))
-     ;; (let* ((sys (lambda (s) (eq system-type s))))
-     ;;   (cond ((sys 'cygwin) (set-default-font "Consolas-9"))
-     ;;         ))
-     (add-to-list 'default-frame-alist '(font . "Consolas-9"))
-     (set-face-attribute 'default t :font "Consolas-9")
-     (set-face-attribute 'default nil :font "Consolas-9")
-     (set-frame-font "Consolas-9" nil t)
+     (let* ((set-font (lambda (f)
+                        (progn (add-to-list 'default-frame-alist '(font . f))
+                               (set-face-attribute 'default t :font f)
+                               (set-face-attribute 'default nil :font f)
+                               (set-frame-font f nil t)))))
+       (case system-type
+         ('gnu ())
+         ('gnu/linux ())
+         ('gnu/kfreebsd ())
+         ('darwin ())
+         ('ms-dos ())
+         ('windows-nt (set-font "Consolas-9"))
+         ('cygwin (set-font "Consolas-9"))))
    #+END_SRC
 
    #+RESULTS: emacs-font
