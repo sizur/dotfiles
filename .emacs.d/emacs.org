@@ -469,9 +469,9 @@ Order is important for some items for compatibility.
     (add-to-list 'load-path "~/.emacs.d/src/smart-mode-line")
     (require 'rich-minority)
     (require 'smart-mode-line)
-    (rich-minority-mode 1)
     (sml/setup)
     (sml/apply-theme 'dark)
+    (rich-minority-mode 1)    
   #+END_SRC
 * Theme
 ** Monokai
@@ -576,7 +576,7 @@ Order is important for some items for compatibility.
 * PlantUML
    #+NAME: default-path
    #+BEGIN_SRC emacs-lisp :tangle yes
-    ; (require 'plantuml-mode)
+    (require 'plantuml-mode)
    #+END_SRC
   
 * Calfw
