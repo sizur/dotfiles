@@ -21,7 +21,7 @@ Order is important for some items for compatibility.
      (setq-default indent-tabs-mode nil)
      (setq frame-title-format "%b - emacs")
      (setq require-final-newline 't)
-     (if (version<= "24.4" emacs-version)
+     (when (version<= "24.4" emacs-version)
          (global-prettify-symbols-mode 1))
    #+END_SRC
 
@@ -181,39 +181,48 @@ Order is important for some items for compatibility.
    #+BEGIN_SRC emacs-lisp :tangle yes
      (add-to-list 'load-path "~/.emacs.d/src/company-mode")
      (require 'company)
+     (setf company-idle-delay 0
+           company-minimum-prefix-length 2
+           company-show-numbers t
+           company-selection-wrap-around t
+           company-dabbrev-ignore-case t
+           company-dabbrev-ignore-invisible t
+           company-dabbrev-downcase nil)
    #+END_SRC
 
    #+RESULTS: emacs-company
    : company
-
    
 *** Yasnippet Integration
     #+NAME: emacs-company-yasnippet
     #+BEGIN_SRC emacs-lisp :tangle yes
-      (define-key company-active-map "\t" 'company-yasnippet-or-completion)
+      (when (and (featurep 'yasnippet) (featurep 'company))
 
-      (defun company-yasnippet-or-completion ()
-        (interactive)
-        (if (yas/expansion-at-point)
-            (progn (company-abort)
-                   (yas/expand))
-          (company-complete-common)))
+        (define-key company-active-map "\t" 'company-yasnippet-or-completion)
 
-      (defun yas/expansion-at-point ()
-        "Tested with v0.6.1. Extracted from `yas/expand-1'"
-            (first (yas/current-key)))
+        (defun company-yasnippet-or-completion ()
+          (interactive)
+          (if (yas/expansion-at-point)
+              (progn (company-abort)
+                     (yas/expand))
+            (company-complete-common)))
+
+        (defun yas/expansion-at-point ()
+          "Tested with v0.6.1. Extracted from `yas/expand-1'"
+          (first (yas/current-key))))
     #+END_SRC
 *** Predictive Integration
     #+NAME: emacs-company-predictive
     #+BEGIN_SRC emacs-lisp :tangle yes
-                                              ; does not work
-      ;; (defun company-predictive (command &optional arg &rest ignored)
-      ;;   (case command
-      ;;     (prefix (let* ((text (downcase (word-at-point))))
-      ;;               (set-text-properties 0 (length text) nil text)
-      ;;               text))
-      ;;     (candidates (predictive-complete arg))))
-      ;; (add-to-list 'company-backends '(company-predictive))
+      (when (and (featurep 'predictive) (featurep 'company))
+        (defun company-predictive (command &optional arg &rest ignored)
+          (case command
+            (prefix (let* ((text (downcase (word-at-point))))
+                      (set-text-properties 0 (length text) nil text)
+                      text))
+            (candidates (predictive-complete arg))))
+        (load "dict-english")
+        (add-to-list 'company-backends '(company-predictive)))
     #+END_SRC
 
     #+RESULTS: emacs-company-predictive
@@ -784,33 +793,36 @@ Order is important for some items for compatibility.
 ** Tuareg
    #+NAME: emacs-tuareg
    #+BEGIN_SRC emacs-lisp :tangle yes
-     ;;(load "~/.emacs.d/src/tuareg/tuareg-site-file.el")
-     ;;(add-to-list 'auto-mode-alist '("\\.eliom$" . tuareg-mode))
+     (load "~/.emacs.d/src/tuareg/tuareg-site-file.el")
+     (add-to-list 'auto-mode-alist '("\\.eliom$" . tuareg-mode))
    #+END_SRC
 
 ** Opam
    #+NAME: emacs-opam
    #+BEGIN_SRC emacs-lisp :tangle yes
-     ;; (if (executable-find "opam")
-     ;;     (progn
-     ;;       (setq opam-share (substring (shell-command-to-string "opam config var share 2> /dev/null") 0 -1))
-     ;;       (add-to-list 'load-path (concat opam-share "/emacs/site-lisp"))))
+     (when (executable-find "opam")
+       (setq opam-share (substring (shell-command-to-string
+                                    "opam config var share 2> /dev/null") 0 -1))
+       (add-to-list 'load-path (concat opam-share "/emacs/site-lisp"))
+       (provide 'opam-executable-integration))
    #+END_SRC
    
 ** Merlin
    #+NAME: emacs-merlin
    #+BEGIN_SRC emacs-lisp :tangle yes
-     ;;(require 'merlin)
-     ;;(add-hook 'tuareg-mode-hook 'merlin-mode)
-     ;;(add-hook 'caml-mode-hook 'merlin-mode)
-     ;;(setq merlin-command 'opam)
+     (when (featurep 'opam-executable-integration)
+       (require 'merlin)
+       (add-hook 'tuareg-mode-hook 'merlin-mode)
+       (add-hook 'caml-mode-hook 'merlin-mode)
+       (setq merlin-command 'opam))
    #+END_SRC
 
 *** Company Integration
     #+NAME: emacs-merlin-company
     #+BEGIN_SRC emacs-lisp :tangle yes
-      ;;(add-to-list 'company-backends 'merlin-company-backend)
-      ;;(add-hook 'merlin-mode-hook 'company-mode)
+      (when (and (featurep 'merlin) (featurep 'company))
+        (add-to-list 'company-backends 'merlin-company-backend)
+        (add-hook 'merlin-mode-hook 'company-mode))
     #+END_SRC
     
 * Racket
@@ -818,26 +830,25 @@ Order is important for some items for compatibility.
 ** Geiser
    #+NAME: emacs-geiser
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (if (executable-find "racket")
-         (load-file "~/.emacs.d/src/geiser/elisp/geiser.el"))
+     (when (executable-find "racket")
+       (load-file "~/.emacs.d/src/geiser/elisp/geiser.el"))
    #+END_SRC
 ** Quack
    #+NAME: emacs-quack
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (if (executable-find "racket")
-         (require 'quack))
+     (when (executable-find "racket")
+       (require 'quack))
    #+END_SRC
 * Magit
   #+NAME: emacs-magit
   #+BEGIN_SRC emacs-lisp :tangle yes
-    (if (executable-find "git")
-        (progn
-          (add-to-list 'load-path "~/.emacs.d/src/git-modes")
-          (add-to-list 'load-path "~/.emacs.d/src/magit")
-          (eval-after-load 'info
-            '(progn (info-initialize)
-                    (add-to-list 'Info-directory-list "~/.emacs.d/src/magit")))
-          (require 'magit)))
+    (when (executable-find "git")
+      (add-to-list 'load-path "~/.emacs.d/src/git-modes")
+      (add-to-list 'load-path "~/.emacs.d/src/magit")
+      (eval-after-load 'info
+        '(progn (info-initialize)
+                (add-to-list 'Info-directory-list "~/.emacs.d/src/magit")))
+      (require 'magit))
   #+END_SRC
   
 * String Edit
@@ -860,28 +871,26 @@ Order is important for some items for compatibility.
 * Ledger
   #+NAME: emacs-ledger
   #+BEGIN_SRC emacs-lisp :tangle yes
-    (if (executable-find "ledger")
-        (progn
-          (add-to-list 'load-path "~/.emacs.d/src/ledger")
-          (require 'ledger-mode)
-          (add-to-list 'auto-mode-alist '("\\.ledger$" . ledger-mode))))
+    (when (executable-find "ledger")
+      (add-to-list 'load-path "~/.emacs.d/src/ledger")
+      (require 'ledger-mode)
+      (add-to-list 'auto-mode-alist '("\\.ledger$" . ledger-mode)))
   #+END_SRC
 * AUCTeX
   #+NAME: auctex
   #+BEGIN_SRC emacs-lisp :tangle yes
-    (if (executable-find "pdflatex")
-        (progn
-          (load "~/.emacs.d/src/auctex.el" nil t t)
-          (load "~/.emacs.d/src/preview-latex.el" nil t t)
-          (setq TeX-auto-save t)
-          (setq TeX-parse-self t)
-          (setq-default TeX-master nil)
-          (add-hook 'LaTeX-mode-hook 'visual-line-mode)
-          (add-hook 'LaTeX-mode-hook 'flyspell-mode)
-          (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
-          (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
-          (setq reftex-plug-into-AUCTeX t)
-          (setq TeX-PDF-mode t)))
+    (when (executable-find "pdflatex")
+      (load "~/.emacs.d/src/auctex.el" nil t t)
+      (load "~/.emacs.d/src/preview-latex.el" nil t t)
+      (setq TeX-auto-save t)
+      (setq TeX-parse-self t)
+      (setq-default TeX-master nil)
+      (add-hook 'LaTeX-mode-hook 'visual-line-mode)
+      (add-hook 'LaTeX-mode-hook 'flyspell-mode)
+      (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
+      (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+      (setq reftex-plug-into-AUCTeX t)
+      (setq TeX-PDF-mode t))
   #+END_SRC
 
   #+RESULTS: auctex
@@ -902,7 +911,9 @@ Order is important for some items for compatibility.
   #+BEGIN_SRC emacs-lisp :tangle yes
     (add-to-list 'load-path "~/.emacs.d/src/undo-tree")
     (require 'undo-tree)
-    (global-undo-tree-mode)
+    (global-undo-tree-mode 1)
+    (global-set-key (kbd "C-z") 'undo)
+    (global-set-key (kbd "C-M-z") 'redo)
   #+END_SRC
 
   #+RESULTS: emacs-undotree
@@ -942,6 +953,7 @@ Order is important for some items for compatibility.
                   (current-buffer))
          (error (message "Invalid expression")
                 (insert (current-kill 0)))))
+     (global-set-key (kbd "C-x C-M-e") 'eval-and-replace)
    #+END_SRC
 
    #+RESULTS: eval-and-replace

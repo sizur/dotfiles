@@ -7,6 +7,7 @@ update: submodules
 	cd .emacs.d/src/haskell-mode && make haskell-mode-autoloads.el
 	cd .emacs.d/src/org-mode && make autoloads
 	cd .emacs.d/src/magit && EFLAGS="-L ../git-modes" make lisp docs
+	cd .emacs.d/src/predictive && make
 
 submodules:
 	git submodule update --init --recursive
