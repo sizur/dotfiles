@@ -6,10 +6,10 @@ Order is important for some items for compatibility.
 ** The Very Basics
    #+NAME: emacs-very-basic
    #+BEGIN_SRC emacs-lisp :tangle yes
-
      (setq user-mail-address "eugene.grigoriev@gmail.com")
      (setq user-full-name "Eugene Grigoriev")
      ;; (set-face-attribute 'default nil :height 100)
+     (setq visible-bell 1)
      (put 'overwrite-mode 'disabled t)
      (global-set-key "\C-c\C-a" 'mark-whole-buffer)
      (global-font-lock-mode t)
@@ -46,8 +46,8 @@ Order is important for some items for compatibility.
 ** Transparency
    #+NAME: emacs-transparency
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (set-frame-parameter (selected-frame) 'alpha '(85 50))
-     (add-to-list 'default-frame-alist '(alpha 85 50))
+     (set-frame-parameter (selected-frame) 'alpha '(95 85))
+     (add-to-list 'default-frame-alist '(alpha 95 85))
    #+END_SRC
 
    #+RESULTS: emacs-transparency
@@ -56,11 +56,11 @@ Order is important for some items for compatibility.
    #+NAME: emacs-font
    #+BEGIN_SRC emacs-lisp :tangle yes
      ;; (add-to-list 'default-frame-alist '(font . "-*-proggyclean-*-*-*-*-*-*-*-*-*-*-iso8859-*"))
-     (let* ((set-font (lambda (f)
-                        (progn (add-to-list 'default-frame-alist '(font . f))
-                               (set-face-attribute 'default t :font f)
-                               (set-face-attribute 'default nil :font f)
-                               (set-frame-font f nil t)))))
+     (flet ((set-font (f)
+                 (progn (add-to-list 'default-frame-alist (cons 'font f))
+                        (set-face-attribute 'default t :font f)
+                        (set-face-attribute 'default nil :font f)
+                        (set-frame-font f nil t))))
        (case system-type
          ('gnu ())
          ('gnu/linux ())
@@ -172,8 +172,8 @@ Order is important for some items for compatibility.
 ** Predictive
    #+NAME: emacs-predictive
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (add-to-list 'load-path "~/.emacs.d/src/predictive")
-     (require 'predictive)
+     ;; (add-to-list 'load-path "~/.emacs.d/src/predictive")
+     ;; (require 'predictive)
    #+END_SRC
 
 ** Company
@@ -260,11 +260,6 @@ Order is important for some items for compatibility.
                   'paredit-close-round)
                  (local-set-key (kbd "RET") 'electrify-return-if-match)
                  (eldoc-add-command 'electrify-return-if-match)
-                 (show-paren-mode t)))
-     (add-hook 'geiser-mode-hook
-               (lambda ()
-                 (paredit-mode t)
-                 (local-set-key (kbd "RET") 'electrify-return-if-match)
                  (show-paren-mode t)))
      (global-set-key (kbd "M-]") 'paredit-forward-slurp-sexp)
      (global-set-key (kbd "M-}") 'paredit-forward-barf-sexp)
@@ -585,7 +580,8 @@ Order is important for some items for compatibility.
 * PlantUML
    #+NAME: default-path
    #+BEGIN_SRC emacs-lisp :tangle yes
-    (require 'plantuml-mode)
+     ;; (when (file-exists-p "~/.emacs.d/plantuml.jar")
+     ;;   (require 'plantuml-mode))
    #+END_SRC
   
 * Calfw
@@ -830,8 +826,12 @@ Order is important for some items for compatibility.
 ** Geiser
    #+NAME: emacs-geiser
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (when (executable-find "racket")
-       (load-file "~/.emacs.d/src/geiser/elisp/geiser.el"))
+     (load-file "~/.emacs.d/src/geiser/elisp/geiser.el")
+     (add-hook 'geiser-mode-hook
+               (lambda ()
+                 (paredit-mode t)
+                 (local-set-key (kbd "RET") 'electrify-return-if-match)
+                 (show-paren-mode t)))
    #+END_SRC
 ** Quack
    #+NAME: emacs-quack
