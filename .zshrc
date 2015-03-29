@@ -138,12 +138,12 @@ bindkey -e
 autoload -U select-word-style
 select-word-style bash
 
-source ~/.zsh-autosuggestions/autosuggestions.zsh
-zle-line-init() {
-    zle autosuggest-start
-}
-zle -N zle-line-init
-bindkey '^T' autosuggest-toggle
+# source ~/.zsh-autosuggestions/autosuggestions.zsh
+# zle-line-init() {
+#     zle autosuggest-start
+# }
+# zle -N zle-line-init
+# bindkey '^T' autosuggest-toggle
 
 
 autoload -U promptinit && promptinit

@@ -35,7 +35,7 @@ zsh-autosuggestions:
 	cp -rf .zsh-autosuggestions ~/
 
 emacs-packages:
-	cp -rf .emacs.d ~/
+	rsync -vurl .emacs.d/ ~/.emacs.d/
 	rm ~/.emacs.d/emacs.el ~/.emacs.d/.#emacs.org || true
 
 emacs:

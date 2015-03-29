@@ -27,12 +27,18 @@
 
 
 (require 'thingatpt)
+(require 's)
 
 (defgroup plantuml-mode nil
   "Major mode for editing plantuml file."
   :group 'languages)
 
-(defvar plantuml-jar-path (expand-file-name "~/.emacs.d/plantuml.jar"))
+(defvar plantuml-jar-path
+  (let ((jar (expand-file-name "~/.emacs.d/plantuml.jar")))
+    (if (and (eq system-type 'cygwin)
+             (executable-find "cygpath"))
+        (s-chomp (shell-command-to-string (concat "cygpath -w " jar)))
+      jar)))
 
 (defvar plantuml-mode-hook nil "Standard hook for plantuml-mode.")
 

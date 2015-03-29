@@ -5,8 +5,9 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    (quote
-    ("3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" default)))
+    ("a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" default)))
  '(global-paren-face-mode t)
+ '(icicle-Completions-text-scale-decrease 0.0)
  '(icicle-top-level-key-bindings
    (quote
     (([pause]
@@ -406,4 +407,9 @@
  '(icicle-proxy-candidate ((t (:background "brightmagenta" :box (:line-width 2 :color "White" :style released-button)))))
  '(icicle-saved-candidate ((t (:background "green"))))
  '(icicle-special-candidate ((t (:background "color-16"))))
+ '(org-level-1 ((t (:inherit outline-1 :height 1.0))))
+ '(org-level-2 ((t (:inherit outline-2 :height 1.0))))
+ '(org-level-3 ((t (:inherit outline-3 :height 1.0))))
+ '(org-level-4 ((t (:inherit outline-4 :height 1.0))))
+ '(org-level-5 ((t (:inherit outline-5 :height 1.0))))
  '(quack-pltish-defn-face ((t (:foreground "brightyellow" :weight bold)))))
