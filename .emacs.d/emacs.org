@@ -13,6 +13,7 @@ Order is important for some items for compatibility.
      (put 'overwrite-mode 'disabled t)
      (global-set-key "\C-c\C-a" 'mark-whole-buffer)
      (global-font-lock-mode t)
+     (setq font-lock-maximum-decoration 1)
      (column-number-mode t)
      (global-linum-mode t)
      (auto-compression-mode t)
@@ -255,25 +256,38 @@ Order is important for some items for compatibility.
     (show-paren-mode t)
     (require 'highlight-parentheses)
   #+END_SRC
+** Smartparens
+   #+NAME: emacs-smartparens
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     ;; (add-to-list 'load-path "~/.emacs.d/src/smartparens")
+     ;; (require 'smartparens-config)
+     ;; (require 'smartparens-latex)
+     ;; (require 'smartparens-haskell)
+     ;; (require 'smartparens-html)
+   #+END_SRC
+
+   #+RESULTS: emacs-smartparens
+   : smartparens-html
+
 ** Paredit
    #+NAME: emacs-paredit
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (add-to-list 'load-path "~/.emacs.d/src/paredit")
-     (require 'paredit)
-     (add-hook 'emacs-lisp-mode-hook
-               (lambda ()
-                 (paredit-mode t)
-                 (turn-on-eldoc-mode)
-                 (eldoc-add-command
-                  'paredit-backward-delete
-                  'paredit-close-round)
-                 (local-set-key (kbd "RET") 'electrify-return-if-match)
-                 (eldoc-add-command 'electrify-return-if-match)
-                 (show-paren-mode t)))
-     (global-set-key (kbd "M-]") 'paredit-forward-slurp-sexp)
-     (global-set-key (kbd "M-}") 'paredit-forward-barf-sexp)
-     (global-set-key (kbd "M-[") 'paredit-backward-slurp-sexp)
-     (global-set-key (kbd "M-{") 'paredit-backward-barf-sexp)
+     ;; (add-to-list 'load-path "~/.emacs.d/src/paredit")
+     ;; (require 'paredit)
+     ;; (add-hook 'emacs-lisp-mode-hook
+     ;;           (lambda ()
+     ;;             (paredit-mode t)
+     ;;             (turn-on-eldoc-mode)
+     ;;             (eldoc-add-command
+     ;;              'paredit-backward-delete
+     ;;              'paredit-close-round)
+     ;;             (local-set-key (kbd "RET") 'electrify-return-if-match)
+     ;;             (eldoc-add-command 'electrify-return-if-match)
+     ;;             (show-paren-mode t)))
+     ;; (global-set-key (kbd "M-]") 'paredit-forward-slurp-sexp)
+     ;; (global-set-key (kbd "M-}") 'paredit-forward-barf-sexp)
+     ;; (global-set-key (kbd "M-[") 'paredit-backward-slurp-sexp)
+     ;; (global-set-key (kbd "M-{") 'paredit-backward-barf-sexp)
    #+END_SRC
 
    #+RESULTS: emacs-paredit
@@ -286,6 +300,17 @@ Order is important for some items for compatibility.
      (require 'paren-face)
      (global-paren-face-mode t)
    #+END_SRC
+
+** Rainbow-blocks
+   #+NAME: elisp-raindbow-blocks
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (add-to-list 'load-path "~/.emacs.d/src/rainbow-blocks")
+     (require 'rainbow-blocks)
+   #+END_SRC
+
+   #+RESULTS: elisp-raindbow-blocks
+   : rainbow-blocks
+
 * Orgmode
 ** Basics
    #+NAME: orgmode-basics
@@ -1060,34 +1085,36 @@ Order is important for some items for compatibility.
    #+RESULTS: open-line
    : open-line-above
 
-** Relative Line Numbers
+** TODO Relative Line Numbers
+   TODO: make it contextual to C-u or macros
+
    #+NAME: linum-relative
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (setq linum-last-pos 0) ; needed during sturtup
+     ;; (setq linum-last-pos 0) ; needed during sturtup
 
-     (defadvice linum-update (before linum-relativenumber-linum-update activate)
-       (setq linum-last-pos (line-number-at-pos)))
+     ;; (defadvice linum-update (before linum-relativenumber-linum-update activate)
+     ;;   (setq linum-last-pos (line-number-at-pos)))
 
-     (defun linum-relativenumber-format (line-number)
-       (let ((diff (abs (- line-number linum-last-pos)))
-             (w (length (number-to-string
-                         (count-lines (point-min) (point-max))))))
-         (concat (format "%d " line-number)
-                 (format (concat "%" (number-to-string
-                                      (+ w (- w (length (number-to-string line-number))))) "d ")
-                         diff))))
+     ;; (defun linum-relativenumber-format (line-number)
+     ;;   (let ((diff (abs (- line-number linum-last-pos)))
+     ;;         (w (length (number-to-string
+     ;;                     (count-lines (point-min) (point-max))))))
+     ;;     (concat (format "%d " line-number)
+     ;;             (format (concat "%" (number-to-string
+     ;;                                  (+ w (- w (length (number-to-string line-number))))) "d ")
+     ;;                     diff))))
 
-     (defun goto-line-with-feedback ()
-       "Show line numbers temporarily, while prompting for the line number input"
-       (interactive)
-       (unwind-protect
-           (progn
-             (linum-mode 1)
-             (goto-line (read-number "Goto line: ")))
-         (linum-mode -1)))
+     ;; (defun goto-line-with-feedback ()
+     ;;   "Show line numbers temporarily, while prompting for the line number input"
+     ;;   (interactive)
+     ;;   (unwind-protect
+     ;;       (progn
+     ;;         (linum-mode 1)
+     ;;         (goto-line (read-number "Goto line: ")))
+     ;;     (linum-mode -1)))
 
-     ;(global-set-key [remap goto-line] 'goto-line-with-feedback)
-     (setq linum-format 'linum-relativenumber-format)
+     ;; ;(global-set-key [remap goto-line] 'goto-line-with-feedback)
+     ;; (setq linum-format 'linum-relativenumber-format)
    #+END_SRC
 
    #+RESULTS: linum-relative

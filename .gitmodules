@@ -145,3 +145,9 @@
 [submodule ".emacs.d/src/rich-minority"]
 	path = .emacs.d/src/rich-minority
 	url = https://github.com/Malabarba/rich-minority.git
+[submodule ".emacs.d/src/smartparens"]
+	path = .emacs.d/src/smartparens
+	url = https://github.com/Fuco1/smartparens.git
+[submodule ".emacs.d/src/rainbow-blocks"]
+	path = .emacs.d/src/rainbow-blocks
+	url = https://github.com/istib/rainbow-blocks.git
