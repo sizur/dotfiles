@@ -13,6 +13,7 @@ Order is important for some items for compatibility.
      (put 'overwrite-mode 'disabled t)
      (global-set-key "\C-c\C-a" 'mark-whole-buffer)
      (global-font-lock-mode t)
+     (global-subword-mode t)
      (setq font-lock-maximum-decoration 1)
      (column-number-mode t)
      (global-linum-mode t)
@@ -28,6 +29,21 @@ Order is important for some items for compatibility.
 
    #+RESULTS: emacs-very-basic
    : t
+
+** Smooth Scrolling
+   #+NAME: emacs-smooth-scrolling
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (setq scroll-margin 1
+           scroll-conservatively 10000
+           scroll-up-aggressively 0.01
+           scroll-down-aggressively 0.01
+           auto-window-vscroll nil)
+     (setq-default scroll-up-aggressively 0.01
+                   scroll-down-aggressively 0.01)
+   #+END_SRC
+
+   #+RESULTS: emacs-smooth-scrolling
+   : 0.01
 
 ** Disable GUI fluff
    #+NAME: emacs-no-fluff
@@ -47,8 +63,8 @@ Order is important for some items for compatibility.
 ** Transparency
    #+NAME: emacs-transparency
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (set-frame-parameter (selected-frame) 'alpha '(95 85))
-     (add-to-list 'default-frame-alist '(alpha 95 85))
+     (set-frame-parameter (selected-frame) 'alpha '(95 90))
+     (add-to-list 'default-frame-alist '(alpha 95 90))
    #+END_SRC
 
    #+RESULTS: emacs-transparency
@@ -56,11 +72,11 @@ Order is important for some items for compatibility.
 ** Font
    Good fonts are:
    - Consolas
-   - Inconsolata
-   - BitstreamVeraSansMono
+   - Source Code Pro (adobe)
+   - Bitstream Vera Sans Mono
    - DejaVuSansMono
+   - Inconsolata
    - Proggy
-   - SourceCodePro (adobe)
    - DroidSansMono
 
    #+NAME: emacs-font
@@ -73,7 +89,7 @@ Order is important for some items for compatibility.
                         (set-frame-font f nil t))))
        (case system-type
          ('gnu ())
-         ('gnu/linux (set-font "Inconsolata-11"))
+         ('gnu/linux (set-font "Source Code Pro-10"))
          ('gnu/kfreebsd ())
          ('darwin ())
          ('ms-dos ())
@@ -259,11 +275,12 @@ Order is important for some items for compatibility.
 ** Smartparens
    #+NAME: emacs-smartparens
    #+BEGIN_SRC emacs-lisp :tangle yes
-     ;; (add-to-list 'load-path "~/.emacs.d/src/smartparens")
-     ;; (require 'smartparens-config)
-     ;; (require 'smartparens-latex)
-     ;; (require 'smartparens-haskell)
-     ;; (require 'smartparens-html)
+     (add-to-list 'load-path "~/.emacs.d/src/smartparens")
+     (require 'smartparens-config)
+     (require 'smartparens-latex)
+     (require 'smartparens-haskell)
+     (require 'smartparens-html)
+     (smartparens-global-mode 1)
    #+END_SRC
 
    #+RESULTS: emacs-smartparens
@@ -310,6 +327,16 @@ Order is important for some items for compatibility.
 
    #+RESULTS: elisp-raindbow-blocks
    : rainbow-blocks
+
+* Highlight Indentation
+  #+NAME: emacs-highlight-indentation
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (add-to-list 'load-path "~/.emacs.d/src/highlight-indentation")
+    (require 'highlight-indentation)
+  #+END_SRC
+
+  #+RESULTS: emacs-highlight-indentation
+  : highlight-indentation
 
 * Orgmode
 ** Basics
@@ -547,6 +574,40 @@ Order is important for some items for compatibility.
 
   #+RESULTS: emacs-theme
   : t
+* Popwin
+  #+NAME: emacs-popwin
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (add-to-list 'load-path "~/.emacs.d/src/popwin")
+    (require 'popwin)
+    ;; (popwin-mode 1)
+  #+END_SRC
+
+  #+RESULTS: emacs-popwin
+  : t
+
+* Guide Key
+  #+NAME: emacs-guide-key
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (add-to-list 'load-path "~/.emacs.d/src/guide-key")
+    (require 'guide-key)
+    (setq guide-key/guide-key-sequence '("C-x r" "C-x 4" "C-c"))
+    (guide-key-mode 1)
+  #+END_SRC
+
+  #+RESULTS: emacs-guide-key
+  : t
+
+* Golden Ratio
+  #+NAME: emacs-golden-ratio
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (add-to-list 'load-path "~/.emacs.d/src/golden-ratio")
+    (require 'golden-ratio)
+    (golden-ratio-mode 1)
+  #+END_SRC
+
+  #+RESULTS: emacs-golden-ratio
+  : t
+
 * Tiling
   #+NAME: emacs-tiling
   #+BEGIN_SRC emacs-lisp :tangle yes
@@ -561,10 +622,10 @@ Order is important for some items for compatibility.
     ;; (define-key global-map (kbd "C-}") 'enlarge-window-horizontally)
     ;; (define-key global-map (kbd "C-^") 'enlarge-window)
     ;; Navgating: Windmove uses C-<up> etc.
-    (define-key global-map (kbd "C-<up>"   ) 'windmove-up)
-    (define-key global-map (kbd "C-<down>" ) 'windmove-down)
-    (define-key global-map (kbd "C-<left>" ) 'windmove-right)
-    (define-key global-map (kbd "C-<right>") 'windmove-left)
+    (define-key global-map (kbd "C-<up>"   )  'windmove-up)
+    (define-key global-map (kbd "C-<down>" )  'windmove-down)
+    (define-key global-map (kbd "C-<right>" ) 'windmove-right)
+    (define-key global-map (kbd "C-<left>")   'windmove-left)
     ;; Swap buffers: M-<up> etc.
     (define-key global-map (kbd "M-<up>"   ) 'buf-move-up)
     (define-key global-map (kbd "M-<down>" ) 'buf-move-down)

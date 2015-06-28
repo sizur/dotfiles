@@ -151,3 +151,15 @@
 [submodule ".emacs.d/src/rainbow-blocks"]
 	path = .emacs.d/src/rainbow-blocks
 	url = https://github.com/istib/rainbow-blocks.git
+[submodule ".emacs.d/src/highlight-indentation"]
+	path = .emacs.d/src/highlight-indentation
+	url = https://github.com/antonj/Highlight-Indentation-for-Emacs.git
+[submodule ".emacs.d/src/golden-ratio"]
+	path = .emacs.d/src/golden-ratio
+	url = https://github.com/roman/golden-ratio.el.git
+[submodule ".emacs.d/src/guide-key"]
+	path = .emacs.d/src/guide-key
+	url = https://github.com/kai2nenobu/guide-key.git
+[submodule ".emacs.d/src/popwin"]
+	path = .emacs.d/src/popwin
+	url = https://github.com/m2ym/popwin-el.git
