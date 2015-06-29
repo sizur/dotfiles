@@ -338,6 +338,17 @@ Order is important for some items for compatibility.
   #+RESULTS: emacs-highlight-indentation
   : highlight-indentation
 
+* Origami
+  #+NAME: emacs-origami
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (add-to-list 'load-path "~/.emacs.d/src/origami")
+    (require 'origami)
+    (global-origami-mode 1)
+  #+END_SRC
+
+  #+RESULTS: emacs-origami
+  : t
+
 * Orgmode
 ** Basics
    #+NAME: orgmode-basics
@@ -1035,6 +1046,253 @@ Order is important for some items for compatibility.
     (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
     (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
   #+END_SRC
+* Relative Line Numbers
+  #+NAME: emacs-relinum
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (add-to-list 'load-path "~/.emacs.d/src/linum-relative")
+    (require 'linum-relative)
+    (linum-relative-toggle) ;; turn off by default
+
+    (defun call-macro-linum (arg)
+      "blablah"
+      (interactive "nTimes: ")
+      (kmacro-end-and-call-macro arg))
+
+    (defmacro with-linum-relative (&rest body)
+      (let ((linum-format-current (make-symbol "linum-format-current")))
+        `(let ((,linum-format-current linum-format))
+           (setq linum-format 'linum-relative)
+           (linum-update (current-buffer))
+           (unwind-protect (progn ,@body)
+             (setq linum-format ,linum-format-current)))))
+
+    (defun call-macro-linum-wrap ()
+      (interactive)
+      (with-linum-relative
+       (call-interactively 'call-macro-linum)))
+
+    (global-set-key (kbd "C-x E")
+                    'call-macro-linum-wrap)       
+  #+END_SRC
+
+  #+RESULTS: emacs-relinum
+  : call-macro-linum-wrap
+
+* Key Chord
+  #+NAME: emacs-key-Chord
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (require 'key-chord)
+    (key-chord-mode 1)
+  #+END_SRC
+
+  #+RESULTS: emacs-key-Chord
+  : Key Chord mode on
+
+* Hydra
+  #+NAME: emacs-hydra
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (add-to-list 'load-path "~/.emacs.d/src/hydra")
+    (require 'hydra)
+  #+END_SRC
+
+  #+RESULTS: emacs-hydra
+  : hydra
+
+** Scale Text
+   #+NAME: emacs-scale-text
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (key-chord-define-global
+      "ts"
+      (defhydra hydra-zoom ()
+        "zoom"
+        ("k" text-scale-increase "in")
+        ("j" text-scale-decrease "out")))
+   #+END_SRC
+
+   #+RESULTS: emacs-scale-text
+   : hydra-zoom/body
+
+** Move Text
+   #+NAME: emacs-hydra-move-text
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (require 'move-text)
+     (key-chord-define-global
+      "tm"
+      (defhydra hydra-move-text ()
+        "Move text"
+        ("k" move-text-up "up")
+        ("j" move-text-down "down")))
+   #+END_SRC
+
+   #+RESULTS: emacs-hydra-move-text
+   : hydra-move-text/body
+
+** Org clock
+   #+NAME: emacs-org-clock
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (key-chord-define-global
+      "wc"
+      (defhydra hydra-org-clock (:color blue :hint nil)
+        "
+     Clock   In/out^     ^Edit^   ^Summary     (_?_)
+     -----------------------------------------
+             _i_n         _e_dit   _g_oto entry
+             _c_ontinue   _q_uit   _d_isplay
+             _o_ut        ^ ^      _r_eport
+           "
+        ("i" org-clock-in)
+        ("o" org-clock-out)
+        ("c" org-clock-in-last)
+        ("e" org-clock-modify-effort-estimate)
+        ("q" org-clock-cancel)
+        ("g" org-clock-goto)
+        ("d" org-clock-display)
+        ("r" org-clock-report)
+        ("?" (org-info "Clocking commands"))))
+   #+END_SRC
+
+   #+RESULTS: emacs-org-clock
+   : hydra-org-clock/body
+
+** Smartparens
+   #+NAME: emacs-hydra-smartparens
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (when (featurep 'smartparens)
+       (key-chord-define-global
+        "sp"
+        (defhydra hydra-learn-sp (:hint nil)
+          "
+       _B_ backward-sexp            -----
+       _F_ forward-sexp               _s_ splice-sexp
+       _L_ backward-down-sexp         _df_ splice-sexp-killing-forward
+       _H_ backward-up-sexp           _db_ splice-sexp-killing-backward
+     ^^------                         _da_ splice-sexp-killing-around
+       _k_ down-sexp                -----
+       _j_ up-sexp                    _C-s_ select-next-thing-exchange
+     -^^-----                         _C-p_ select-previous-thing
+       _n_ next-sexp                  _C-n_ select-next-thing
+       _p_ previous-sexp            -----
+       _a_ beginning-of-sexp          _C-f_ forward-symbol
+       _z_ end-of-sexp                _C-b_ backward-symbol
+     --^^-                          -----
+       _t_ transpose-sexp             _c_ convolute-sexp
+     -^^--                            _g_ absorb-sexp
+       _x_ delete-char                _q_ emit-sexp
+       _dw_ kill-word               -----
+       _dd_ kill-sexp                 _,b_ extract-before-sexp
+     -^^--                            _,a_ extract-after-sexp
+       _S_ unwrap-sexp              -----
+     -^^--                            _AP_ add-to-previous-sexp
+       _C-h_ forward-slurp-sexp       _AN_ add-to-next-sexp
+       _C-l_ forward-barf-sexp      -----
+       _C-S-h_ backward-slurp-sexp    _ join-sexp
+       _C-S-l_ backward-barf-sexp     _|_ split-sexp
+     "
+          ;; TODO: Use () and [] - + * | <space>
+          ("B" sp-backward-sexp );; similiar to VIM b
+          ("F" sp-forward-sexp );; similar to VIM f
+          ;;
+          ("L" sp-backward-down-sexp )
+          ("H" sp-backward-up-sexp )
+          ;;
+          ("k" sp-down-sexp ) ; root - towards the root
+          ("j" sp-up-sexp )
+          ;;
+          ("n" sp-next-sexp )
+          ("p" sp-previous-sexp )
+          ;; a..z
+          ("a" sp-beginning-of-sexp )
+          ("z" sp-end-of-sexp )
+          ;;
+          ("t" sp-transpose-sexp )
+          ;;
+          ("x" sp-delete-char )
+          ("dw" sp-kill-word )
+          ;;("ds" sp-kill-symbol ) ;; Prefer kill-sexp
+          ("dd" sp-kill-sexp )
+          ;;("yy" sp-copy-sexp ) ;; Don't like it. Pref visual selection
+          ;;
+          ("S" sp-unwrap-sexp ) ;; Strip!
+          ;;("wh" sp-backward-unwrap-sexp ) ;; Too similar to above
+          ;;
+          ("C-h" sp-forward-slurp-sexp )
+          ("C-l" sp-forward-barf-sexp )
+          ("C-S-h" sp-backward-slurp-sexp )
+          ("C-S-l" sp-backward-barf-sexp )
+          ;;
+          ;;("C-[" (bind (sp-wrap-with-pair "[")) ) ;;FIXME
+          ;;("C-(" (bind (sp-wrap-with-pair "(")) )
+          ;;
+          ("s" sp-splice-sexp )
+          ("df" sp-splice-sexp-killing-forward )
+          ("db" sp-splice-sexp-killing-backward )
+          ("da" sp-splice-sexp-killing-around )
+          ;;
+          ("C-s" sp-select-next-thing-exchange )
+          ("C-p" sp-select-previous-thing )
+          ("C-n" sp-select-next-thing )
+          ;;
+          ("C-f" sp-forward-symbol )
+          ("C-b" sp-backward-symbol )
+          ;;
+          ;;("C-t" sp-prefix-tag-object)
+          ;;("H-p" sp-prefix-pair-object)
+          ("c" sp-convolute-sexp )
+          ("g" sp-absorb-sexp )
+          ("q" sp-emit-sexp )
+          ;;
+          (",b" sp-extract-before-sexp )
+          (",a" sp-extract-after-sexp )
+          ;;
+          ("AP" sp-add-to-previous-sexp );; Difference to slurp?
+          ("AN" sp-add-to-next-sexp )
+          ;;
+          ("_" sp-join-sexp ) ;;Good
+          ("|" sp-split-sexp ))))
+   #+END_SRC
+
+   #+RESULTS: emacs-hydra-smartparens
+   : hydra-learn-sp/body
+
+** Origami
+   #+NAME: emacs-hydra-origami
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (key-chord-define-global
+      "of"
+      (defhydra hydra-folding (:color red)
+        "
+       _o_pen node    _n_ext fold       toggle _f_orward
+       _c_lose node   _p_revious fold   toggle _a_ll
+       "
+        ("o" origami-open-node)
+        ("c" origami-close-node)
+        ("n" origami-next-fold)
+        ("p" origami-previous-fold)
+        ("f" origami-forward-toggle-node)
+        ("a" origami-toggle-all-nodes)))
+   #+END_SRC
+
+   #+RESULTS: emacs-hydra-origami
+   : hydra-folding/body
+
+* CMake
+  #+NAME: emacs-cmake
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (require 'cmake-mode)
+    (add-to-list 'load-path "~/.emacs.d/src/cmake-font-lock")
+    (autoload 'cmake-font-lock-activate "cmake-font-lock" nil t)
+    (add-hook 'cmake-mode-hook 'cmake-font-lock-activate)
+    (add-to-list 'load-path "~/.emacs.d/src/cmake-project")
+    (require 'cmake-project)
+    (defun maybe-cmake-project-hook ()
+      (if (file-exists-p "CMakeLists.txt") (cmake-project-mode)))
+    (add-hook 'c-mode-hook 'maybe-cmake-project-hook)
+    (add-hook 'c++-mode-hook 'maybe-cmake-project-hook)
+  #+END_SRC
+
+  #+RESULTS: emacs-cmake
+  | maybe-cmake-project-hook |
+
 * Definitions
 ** Eval elips anywhere and replace with result
    #+NAME: eval-and-replace

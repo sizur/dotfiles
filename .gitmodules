@@ -163,3 +163,18 @@
 [submodule ".emacs.d/src/popwin"]
 	path = .emacs.d/src/popwin
 	url = https://github.com/m2ym/popwin-el.git
+[submodule ".emacs.d/src/hydra"]
+	path = .emacs.d/src/hydra
+	url = https://github.com/abo-abo/hydra.git
+[submodule ".emacs.d/src/linum-relative"]
+	path = .emacs.d/src/linum-relative
+	url = https://github.com/coldnew/linum-relative.git
+[submodule ".emacs.d/src/origami"]
+	path = .emacs.d/src/origami
+	url = https://github.com/gregsexton/origami.el.git
+[submodule ".emacs.d/src/cmake-font-lock"]
+	path = .emacs.d/src/cmake-font-lock
+	url = https://github.com/Lindydancer/cmake-font-lock.git
+[submodule ".emacs.d/src/cmake-project"]
+	path = .emacs.d/src/cmake-project
+	url = https://github.com/alamaison/emacs-cmake-project.git
