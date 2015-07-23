@@ -1,0 +1,44 @@
+#!/usr/bin/perl
+use strict;
+use warnings FATAL => 'all';
+use Getopt::Long;
+
+my $r;
+GetOptions( rename => \$r ) or die "unknown option";
+
+my $URL = quotemeta pop @ARGV;
+my $EXT = join '|', map { /^\./ ? $_ : ".$_" } @ARGV;
+
+my $TEXT =
+`wget -nv -O - $URL | hxclean | hxselect -i 'a[href\$="$EXT"]' -s '<br>' | lynx -stdin -dump -width=1024`;
+
+my %LINKS;
+sub url  { 0 }
+sub ext  { 1 }
+sub name { 2 }
+
+while ( $TEXT =~ /(\d+)\. (.*?)\n/gsm ) {
+    my ( $n, $url ) = ( $1, $2 );
+    $LINKS{$n}[url] = $url;
+    $url =~ /\.([^.]+)$/;
+    $LINKS{$n}[ext] = $1;
+}
+
+while ( $TEXT =~ /\[(\d+)\](.*?)\n/gsm ) {
+    my ( $n, $name ) = ( $1, $2 );
+    $name =~ s/\s+/_/g;
+    $name =~ s/"//g;
+    $LINKS{$n}[name] = lc $name . q{.} . $LINKS{$n}[ext];
+}
+
+open my $parallel, '|-', 'parallel -j 0 /bin/sh -c' or die $!;
+
+print $parallel $_
+  for map {
+        'wget -nv '
+      . ( $r ? '-O ' . quotemeta( $LINKS{$_}[name] ) . ' ' : '' )
+      . quotemeta( $LINKS{$_}[url] )
+      . $/
+  } keys %LINKS;
+
+close $parallel;

@@ -16,7 +16,14 @@ Order is important for some items for compatibility.
      (global-subword-mode t)
      (setq font-lock-maximum-decoration 1)
      (column-number-mode t)
-     (global-linum-mode t)
+     (global-linum-mode 0)
+     (setq linum-delay t
+           linum-eager nil)
+     (add-hook 'prog-mode-hook (lambda () (linum-mode 1)))
+     (global-visual-line-mode)
+     (setq-default fill-column 80
+                   whitespace-line-column 80)
+
      (auto-compression-mode t)
      (delete-selection-mode t)
      (setq show-paren-style 'expression)
@@ -89,7 +96,7 @@ Order is important for some items for compatibility.
                         (set-frame-font f nil t))))
        (case system-type
          ('gnu ())
-         ('gnu/linux (set-font "Source Code Pro-10"))
+         ('gnu/linux (set-font "Inconsolata-10"));;"Source Code Pro-10"))
          ('gnu/kfreebsd ())
          ('darwin ())
          ('ms-dos ())
