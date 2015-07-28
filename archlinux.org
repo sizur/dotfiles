@@ -1,0 +1,142 @@
+* Inallation
+
+** Assumptions
+
+   - VirtualBox
+
+   - No EFI
+     efivar -l should error out
+
+   - 4G RAM
+     determines swap size
+
+   - 160GB HDD
+     /dev/sda is assumed.  check with
+     lsblk
+
+** Partitioning
+
+   gdisk
+
+   1. 1M BIOS Boot for GRUB
+      /dev/sda1
+
+   2. 4G Linux swap
+      /dev/sda2
+
+   4. rest Linux LVM for home
+      /dev/sda4
+
+** Formatting and mounting
+
+*** Swap
+
+    mkswap /dev/sda2
+    swapon /dev/sda2
+
+*** LVM
+    
+    pvcreate /dev/sda3
+    vgcreate vg1 /dev/sda3
+    lvcreate -L 30G vg1 -n root
+    lvcreate -l +100%FREE vg1 -n home
+    mkfs.btrfs -L ROOT /dev/vg1/root
+    mkfs.btrfs -L HOME /dev/vg1/home
+    mount /dev/vg1/root /mnt
+    mkdir /mnt/home
+    mount /dev/vg1/home /mnt/home
+
+** Set Mirrors
+
+   1. ensure connectivity
+      ping -c 3 www.google.com
+      if failed, then https://wiki.archlinux.org/index.php/Network_configuration
+
+   2. get trusted mirrors
+      wget -nv -O - 'https://www.archlinux.org/mirrorlist/?country=US&protocol=https&ip_version=4&use_mirror_status=on' | egrep 'berkeley|kernel' | sed -e 's/^#//' > /etc/pacman.d/mirrorlist.bak && rankmirrors /etc/pacman.d/mirrorlist.bak > /etc/pacman.d/mirrorlist && cat /etc/pacman.d/mirrorlist
+
+** Install and Configure
+
+   pacstrap /mnt base base-devel
+   genfstab -U -p /mnt > /mnt/etc/fstab
+   arch-chroot /mnt
+   echo <hostname> > /etc/hostname
+   ln -sf /usr/share/zoneinfo/America/Los_Angeles /etc/localtime
+   locale-gen
+   echo LANG=en_US.UTF-8 > /etc/locale.conf
+   setfont UniCyr_8x16 # http://alexandre.deverteuil.net/pages/consolefonts/
+   echo FONT=UniCyr_8x16 > /etc/vconsole.conf
+   passwd
+   pacman -S btrfs-progs
+   mkinitcpio -p linux
+
+*** Network
+
+    - find module of your network card in
+      lspci -v | less
+
+    - confirm module was loaded
+      dmesg | grep e1000
+
+    - if not, see https://wiki.archlinux.org/index.php/Network_configuration#Load_the_module
+
+    - change device name to "net1"
+      echo SUBSYSTEM==\"net\", ACTION==\"add\", ATTR{address}==\"`ip addr show \`ls /sys/class/net --color=never | egrep "^wl|^en"\` | grep link/ | awk '{print $2}'`\", NAME=\"net1\" > /etc/udev/rules.d/10-network.rules && cat /etc/udev/rules.d/10-network.rules
+
+*** Add LVM Hook if / is on LVM
+
+    sed -i 's/block /block lvm2 /' /etc/mkinitcpio.conf
+
+*** Bootloader
+
+    pacman -S grub vim
+    grub-install --target=i386-pc --recheck --debug /dev/sda
+    vim /etc/default/grub
+    grub-mkconfig -o /boot/grub/grub.cfg
+
+**** LVM integration if / is on LVM
+
+    sed -i 's/GRUB_PRELOAD_MODULES="/GRUB_PRELOAD_MODULES="lvm /' /etc/default/grub
+    sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="/GRUB_CMDLINE_LINUX_DEFAULT="root=\/dev\/mapper\/vg1-root /' /etc/default/grub
+
+** Reboot
+
+   reboot
+
+* Configure
+
+** Network
+
+   systemctl enable dhcpcd@net1.service
+   systemctl start dhcpcd@net1.service
+
+** User
+
+   pacman -S net-tools pkgfile xf86-video-vesa sudo zsh git openssh autofs tmux wget
+   useradd -m -g users -G wheel,uucp,rfkill,games  -s /usr/bin/zsh <username>
+   passwd sizur
+   visudo # sizur ALL=(ALL) NOPASSWD: ALL
+
+** NFS
+
+   pacman -S nfs-utils arch-inall-scripts
+   systemctl enable rpcbind
+   systemctl start rpcbind
+   mount -o nfsvers=3 server:/volume1/shared /mnt/server
+
+** Xorg
+
+   pacman -S xorg-server xorg-server-utils xorg-apps xorg-xinit xterm xorg-xclock ttf-dejavu ttf-droid ttf-inconsolata terminus-font
+   pacman -S emacs
+   su <username>
+   cp /etc/X11/xinit/xinitrc ~/.xinitrc
+
+** VirtualBox Guest Additions
+
+   pacman -S virtualbox-guest-utils
+   modprobe -a vboxguest vboxsf vboxvideo
+   sh -c 'echo "vboxguest\nvboxsf\nvboxvideo" > /etc/modules-load.d/virtualbox.conf'
+   systemctl start vboxservice.service
+   systemctl enable vboxservice.service
+   gpasswd --add sizur vboxsf
+   ps ax | grep -i vbox # check if loaded
