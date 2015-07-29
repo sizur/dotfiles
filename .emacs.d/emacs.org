@@ -76,36 +76,6 @@ Order is important for some items for compatibility.
 
    #+RESULTS: emacs-transparency
 
-** Font
-   Good fonts are:
-   - Consolas
-   - Source Code Pro (adobe)
-   - Bitstream Vera Sans Mono
-   - DejaVuSansMono
-   - Inconsolata
-   - Proggy
-   - DroidSansMono
-
-   #+NAME: emacs-font
-   #+BEGIN_SRC emacs-lisp :tangle yes
-     ;; (add-to-list 'default-frame-alist '(font . "-*-proggyclean-*-*-*-*-*-*-*-*-*-*-iso8859-*"))
-     (flet ((set-font (f)
-                 (progn (add-to-list 'default-frame-alist (cons 'font f))
-                        (set-face-attribute 'default t :font f)
-                        (set-face-attribute 'default nil :font f)
-                        (set-frame-font f nil t))))
-       (case system-type
-         ('gnu ())
-         ('gnu/linux (set-font "Inconsolata-10"));;"Source Code Pro-10"))
-         ('gnu/kfreebsd ())
-         ('darwin ())
-         ('ms-dos ())
-         ('windows-nt (set-font "Consolas-9"))
-         ('cygwin (set-font "Consolas-9"))))
-   #+END_SRC
-
-   #+RESULTS: emacs-font
-
 ** URL Handling using system
    #+NAME: emacs-url-handling
    #+BEGIN_SRC emacs-lisp :tangle yes
@@ -174,6 +144,38 @@ Order is important for some items for compatibility.
    #+BEGIN_SRC emacs-lisp :tangle yes
    (add-to-list 'load-path "~/.emacs.d/src/names")
    #+END_SRC
+* Font
+  #+NAME: emacs-font
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (setq preferred-fonts
+          '(("Monaco" . 10)
+            ("Consolas" . 9)
+            ("Source Code Pro" . 10)
+            ("Anonymous Pro" . 11)
+            ("Inconsolata" . 11)
+            ("Bitstream Vera Sans Mono" . 10)
+            ("DejaVu Sans Mono" . 10)
+            ("Droid Sans Mono" . 10)
+            ("Terminus" . 10)
+            ))
+
+    (let* ((f (car (-intersection (-map 'car preferred-fonts) (font-family-list))))
+           (f (if f
+                  (concat f "-" (number-to-string (cdr (assoc f preferred-fonts))))
+                nil)))
+      (if f
+          (progn
+            (add-to-list 'default-frame-alist (cons 'font f))
+            (set-face-attribute 'default t :font f)
+            (set-face-attribute 'default nil :font f)
+            (set-frame-font f nil t)
+            f)
+        nil))
+  #+END_SRC
+
+  #+RESULTS: emacs-font
+  : Monaco-10
+
 * Autocompletion/Expansion
 ** Yasnippet
    #+NAME: yasnippet
