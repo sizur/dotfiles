@@ -1,10 +1,86 @@
-#cvt 1080 1920 60
-#xrandr --newmode "1080x1920_60.00"  176.50  1080 1168 1280 1480  1920 1923 1933 1989 -hsync +vsync
-#xrandr --addmode Virtual1 1080x1920
-#xrandr --output Virtual1 --mode 1080x1920
-mkfontdir ~/.fonts
-xset fp+ ~/.fonts
-xset fp rehash
-fc-cache -f -v
-#xcompmgr -c &
-#~/bin/background
+#!/bin/sh
+VBoxClient-all
+pulseaudio --start
+
+userresources=$HOME/.Xresources
+usermodmap=$HOME/.Xmodmap
+sysresources=/etc/X11/xinit/.Xresources
+sysmodmap=/etc/X11/xinit/.Xmodmap
+
+# merge in defaults and keymaps
+
+if [ -f $sysresources ]; then
+
+
+
+
+
+
+
+    xrdb -merge $sysresources
+
+fi
+
+if [ -f $sysmodmap ]; then
+    xmodmap $sysmodmap
+fi
+
+if [ -f "$userresources" ]; then
+
+
+
+
+
+
+
+    xrdb -merge "$userresources"
+
+fi
+
+if [ -f "$usermodmap" ]; then
+    xmodmap "$usermodmap"
+fi
+
+# start some nice programs
+
+if [ -d /etc/X11/xinit/xinitrc.d ] ; then
+ for f in /etc/X11/xinit/xinitrc.d/?*.sh ; do
+  [ -x "$f" ] && . "$f"
+ done
+ unset f
+fi
+
+#twm &
+#xclock -geometry 50x50-1+1 &
+#xterm -geometry 80x50+494+51 &
+#xterm -geometry 80x20+494-0 &
+#exec xterm -geometry 80x66+0+0 -name login
+
+setxkbmap -layout us,ru -variant ,phonetic -option grp:menu_toggle
+xmonad
+#startlxde
+
+# grp:toggle           Right Alt
+# grp:lalt_toggle      Left Alt
+# grp:caps_toggle      Caps Lock
+# grp:shift_caps_toggle Shift+Caps Lock
+# grp:alt_caps_toggle  Alt+Caps Lock
+# grp:shifts_toggle    Both Shift keys together
+# grp:alts_toggle      Both Alt keys together
+# grp:ctrls_toggle     Both Ctrl keys together
+# grp:ctrl_shift_toggle Ctrl+Shift
+# grp:lctrl_lshift_toggle Left Ctrl+Left Shift
+# grp:rctrl_rshift_toggle Right Ctrl+Right Shift
+# grp:ctrl_alt_toggle  Alt+Ctrl
+# grp:alt_shift_toggle Alt+Shift
+# grp:lalt_lshift_toggle Left Alt+Left Shift
+# grp:alt_space_toggle Alt+Space
+# grp:menu_toggle      Menu
+# grp:lwin_toggle      Left Win
+# grp:win_space_toggle Win Key+Space
+# grp:rwin_toggle      Right Win
+# grp:lshift_toggle    Left Shift
+# grp:rshift_toggle    Right Shift
+# grp:lctrl_toggle     Left Ctrl
+# grp:rctrl_toggle     Right Ctrl
+# grp:sclk_toggle      Scroll Lock
