@@ -70,8 +70,8 @@ Order is important for some items for compatibility.
 ** Transparency
    #+NAME: emacs-transparency
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (set-frame-parameter (selected-frame) 'alpha '(95 90))
-     (add-to-list 'default-frame-alist '(alpha 95 90))
+     (set-frame-parameter (selected-frame) 'alpha '(90 85))
+     (add-to-list 'default-frame-alist '(alpha 90 85))
    #+END_SRC
 
    #+RESULTS: emacs-transparency

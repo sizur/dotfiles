@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/bash
 VBoxClient-all
 pulseaudio --start
 
@@ -56,8 +56,19 @@ fi
 #xterm -geometry 80x20+494-0 &
 #exec xterm -geometry 80x66+0+0 -name login
 
+xrandr -s 0
+
+xrdb -load $HOME/.Xdefaults
+
+xset s off
+
+$HOME/bin/wallpaper
+xcompmgr -c &
+xsetroot -cursor_name left_ptr
 setxkbmap -layout us,ru -variant ,phonetic -option grp:menu_toggle
-xmonad
+
+exec xmonad > $HOME/.xmonad/log.txt 2>&1
+
 #startlxde
 
 # grp:toggle           Right Alt

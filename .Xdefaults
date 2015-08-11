@@ -27,8 +27,8 @@ URxvt*buffered: true
 URxvt*hold: false
 URxvt*internalBorder:
 URxvt*print-pipe: cat > $HOME/$(echo urxvt.dump.$(date +'%Y%M%d%H%m%S'))
-URxvt*perl-ext-common:    default,clipboard
-URxvt*perl-ext:           default,url-select
+URxvt*perl-ext-common:    default,clipboard,font-size,url-select
+!URxvt*perl-ext:           default,url-selectt
 
 URxvt.depth:              32
 URxvt*background:         rgba:0000/0000/0000/cccc
@@ -59,6 +59,13 @@ URxvt*font:               xft:Monaco:pixelsize=12:antialias=true:hinting=true
 URxvt*boldFont:           xft:Source Code Pro:bold:pixelsize=12:antialias=true:hinting=true
 URxvt*italicFont:         xft:Monaco:pixelsize=12:italic:antialias=true:hinting=true
 URxvt*boldItalicFont:     xft:Source Code Pro:bold:italic:pixelsize=12:antialias=true:hinting=true
+
+URxvt.iso14755: false
+URxvt.iso14755_52: false
+URxvt.keysym.C-Up:     font-size:increase
+URxvt.keysym.C-Down:   font-size:decrease
+URxvt.keysym.C-S-Up:   font-size:incglobal
+URxvt.keysym.C-S-Down: font-size:decglobal
 
 !URxvt*font:               xft:Bitstream Vera Sans Mono:pixelsize=12:antialias=true:hinting=true
 !URxvt*boldFont:           xft:Bitstream Vera Sans Mono:bold:pixelsize=12:antialias=true:hinting=true
