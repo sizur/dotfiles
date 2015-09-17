@@ -1039,7 +1039,7 @@ Order is important for some items for compatibility.
   #+BEGIN_SRC emacs-lisp :tangle yes
     (add-to-list 'load-path "~/.emacs.d/src/aggressive-indent-mode")
     (require 'aggressive-indent)
-    (global-aggressive-indent-mode 1)
+    (global-aggressive-indent-mode nil)
     (add-to-list 'aggressive-indent-excluded-modes 'html-mode)
   #+END_SRC
 

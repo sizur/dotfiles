@@ -147,7 +147,7 @@ select-word-style bash
 
 
 autoload -U promptinit && promptinit
-prompt adam2
+prompt pws # adam2
 
 # source ~/perl5/perlbrew/etc/bashrc
 
