@@ -1,13 +1,17 @@
 SHELL=/bin/bash
 
-install: tmux zsh fish emacs-packages
+install: tmux zsh emacs-packages
 
-update: submodules
+update: submodules grml
 	cd .emacs.d && wget -O plantuml.jar http://downloads.sourceforge.net/project/plantuml/plantuml.jar
 	cd .emacs.d/src/haskell-mode && make haskell-mode-autoloads.el
 	cd .emacs.d/src/org-mode && make autoloads
 	cd .emacs.d/src/magit && EFLAGS="-L ../git-modes" make lisp docs
 	cd .emacs.d/src/predictive && make
+
+grml:
+	wget -O .zshrc http://git.grml.org/f/grml-etc-core/etc/zsh/zshrc
+	wget -O .zshrc.local  http://git.grml.org/f/grml-etc-core/etc/skel/.zshrc
 
 submodules:
 	git submodule update --init --recursive
