@@ -178,3 +178,6 @@
 [submodule ".emacs.d/src/cmake-project"]
 	path = .emacs.d/src/cmake-project
 	url = https://github.com/alamaison/emacs-cmake-project.git
+[submodule ".emacs.d/src/rust-mode"]
+	path = .emacs.d/src/rust-mode
+	url = https://github.com/rust-lang/rust-mode.git

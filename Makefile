@@ -16,8 +16,8 @@ submodules:
 tmux:
 	cp -f .tmux.conf ~/
 
-zsh: zsh-autosuggestions fonts
-	cp -f .zshrc ~/
+zsh:
+	cp -f .zshrc .zshrc.local ~/
 
 fish:
 	cp -rf .config ~/

@@ -954,6 +954,16 @@ Order is important for some items for compatibility.
      (when (executable-find "racket")
        (require 'quack))
    #+END_SRC
+* Rust
+  #+NAME: emacs-rust
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (add-to-list 'load-path "~/.emacs.d/src/rust-mode")
+    (require 'rust-mode)
+    (add-to-list 'auto-mode-alist '("\\.rs$" . rust-mode))
+  #+END_SRC
+
+  #+RESULTS: emacs-rust
+
 * Magit
   #+NAME: emacs-magit
   #+BEGIN_SRC emacs-lisp :tangle yes
@@ -1039,7 +1049,7 @@ Order is important for some items for compatibility.
   #+BEGIN_SRC emacs-lisp :tangle yes
     (add-to-list 'load-path "~/.emacs.d/src/aggressive-indent-mode")
     (require 'aggressive-indent)
-    (global-aggressive-indent-mode nil)
+    ;(global-aggressive-indent-mode nil)
     (add-to-list 'aggressive-indent-excluded-modes 'html-mode)
   #+END_SRC
 
