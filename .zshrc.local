@@ -1,3 +1,4 @@
+# -*- shell-script -*-
 # Filename:      /etc/skel/.zshrc
 # Purpose:       config file for zsh (z shell)
 # Authors:       (c) grml-team (grml.org)
@@ -59,21 +60,22 @@ fi
 #bindkey -M menuselect 'j' vi-down-line-or-history # bottom
 
 ## set command prediction from history, see 'man 1 zshcontrib'
-#is4 && zrcautoload predict-on && \
-#zle -N predict-on         && \
-#zle -N predict-off        && \
-#bindkey "^X^Z" predict-on && \
-#bindkey "^Z" predict-off
+# is4 && zrcautoload predict-on && \
+# zle -N predict-on         && \
+# zle -N predict-off        && \
+# bindkey "^X^Z" predict-on && \
+# bindkey "^Z" predict-off
+# predict-on
 
 ## press ctrl-q to quote line:
-#mquote () {
-#      zle beginning-of-line
-#      zle forward-word
-#      # RBUFFER="'$RBUFFER'"
-#      RBUFFER=${(q)RBUFFER}
-#      zle end-of-line
-#}
-#zle -N mquote && bindkey '^q' mquote
+# mquote () {
+#       zle beginning-of-line
+#       zle forward-word
+#       # RBUFFER="'$RBUFFER'"
+#       RBUFFER=${(q)RBUFFER}
+#       zle end-of-line
+# }
+# zle -N mquote && bindkey '^Q' mquote
 
 ## define word separators (for stuff like backward-word, forward-word, backward-kill-word,..)
 #WORDCHARS='*?_-.[]~=/&;!#$%^(){}<>' # the default
@@ -82,20 +84,20 @@ fi
 #WORDCHARS='${WORDCHARS:s@/@}'
 
 # just type '...' to get '../..'
-#rationalise-dot() {
-#local MATCH
-#if [[ $LBUFFER =~ '(^|/| |	|'$'\n''|\||;|&)\.\.$' ]]; then
-#  LBUFFER+=/
-#  zle self-insert
-#  zle self-insert
-#else
-#  zle self-insert
-#fi
-#}
-#zle -N rationalise-dot
-#bindkey . rationalise-dot
+rationalise-dot() {
+local MATCH
+if [[ $LBUFFER =~ '(^|/| |	|'$'\n''|\||;|&)\.\.$' ]]; then
+  LBUFFER+=/
+  zle self-insert
+  zle self-insert
+else
+  zle self-insert
+fi
+}
+zle -N rationalise-dot
+bindkey . rationalise-dot
 ## without this, typing a . aborts incremental history search
-#bindkey -M isearch . self-insert
+bindkey -M isearch . self-insert
 
 #bindkey '\eq' push-line-or-edit
 
@@ -111,10 +113,10 @@ fi
 #setopt NO_clobber
 
 ## don't warn me about bg processes when exiting
-#setopt nocheckjobs
+setopt nocheckjobs
 
 ## alert me if something failed
-#setopt printexitvalue
+setopt printexitvalue
 
 ## with spelling correction, assume dvorak kb
 #setopt dvorak
@@ -242,25 +244,25 @@ fi
 #}
 
 ## List all occurrences of programm in current PATH
-#plap() {
-#    emulate -L zsh
-#    if [[ $# = 0 ]] ; then
-#        echo "Usage:    $0 program"
-#        echo "Example:  $0 zsh"
-#        echo "Lists all occurrences of program in the current PATH."
-#    else
-#        ls -l ${^path}/*$1*(*N)
-#    fi
-#}
+plap() {
+   emulate -L zsh
+   if [[ $# = 0 ]] ; then
+       echo "Usage:    $0 program"
+       echo "Example:  $0 zsh"
+       echo "Lists all occurrences of program in the current PATH."
+   else
+       ls -l ${^path}/*$1*(*N)
+   fi
+}
 
 ## Find out which libs define a symbol
-#lcheck() {
-#    if [[ -n "$1" ]] ; then
-#        nm -go /usr/lib/lib*.a 2>/dev/null | grep ":[[:xdigit:]]\{8\} . .*$1"
-#    else
-#        echo "Usage: lcheck <function>" >&2
-#    fi
-#}
+lcheck() {
+   if [[ -n "$1" ]] ; then
+       nm -go /usr/lib/lib*.a 2>/dev/null | grep ":[[:xdigit:]]\{8\} . .*$1"
+   else
+       echo "Usage: lcheck <function>" >&2
+   fi
+}
 
 ## Download a file and display it locally
 #uopen() {
@@ -280,22 +282,22 @@ fi
 #}
 
 ## Memory overview
-#memusage() {
-#    ps aux | awk '{if (NR > 1) print $5;
-#                   if (NR > 2) print "+"}
-#                   END { print "p" }' | dc
-#}
+memusage() {
+   ps aux | awk '{if (NR > 1) print $5;
+                  if (NR > 2) print "+"}
+                  END { print "p" }' | dc
+}
 
 ## print hex value of a number
-#hex() {
-#    emulate -L zsh
-#    if [[ -n "$1" ]]; then
-#        printf "%x\n" $1
-#    else
-#        print 'Usage: hex <number-to-convert>'
-#        return 1
-#    fi
-#}
+hex() {
+   emulate -L zsh
+   if [[ -n "$1" ]]; then
+       printf "%x\n" $1
+   else
+       print 'Usage: hex <number-to-convert>'
+       return 1
+   fi
+}
 
 ## log out? set timeout in seconds...
 ## ...and do not log out in some specific terminals:
@@ -310,7 +312,7 @@ fi
 #alias -s pl='perl -S'
 
 ## ctrl-s will no longer freeze the terminal.
-#stty erase "^?"
+stty erase "^?"
 
 ## you want to automatically use a bigger font on big terminals?
 #if [[ "$TERM" == "xterm" ]] && [[ "$LINES" -ge 50 ]] && [[ "$COLUMNS" -ge 100 ]] && [[ -z "$SSH_CONNECTION" ]] ; then
@@ -318,19 +320,21 @@ fi
 #fi
 
 ## Some quick Perl-hacks aka /useful/ oneliner
-#bew() { perl -le 'print unpack "B*","'$1'"' }
-#web() { perl -le 'print pack "B*","'$1'"' }
-#hew() { perl -le 'print unpack "H*","'$1'"' }
-#weh() { perl -le 'print pack "H*","'$1'"' }
-#pversion()    { perl -M$1 -le "print $1->VERSION" } # i. e."pversion LWP -> 5.79"
-#getlinks ()   { perl -ne 'while ( m/"((www|ftp|http):\/\/.*?)"/gc ) { print $1, "\n"; }' $* }
-#gethrefs ()   { perl -ne 'while ( m/href="([^"]*)"/gc ) { print $1, "\n"; }' $* }
-#getanames ()  { perl -ne 'while ( m/a name="([^"]*)"/gc ) { print $1, "\n"; }' $* }
-#getforms ()   { perl -ne 'while ( m:(\</?(input|form|select|option).*?\>):gic ) { print $1, "\n"; }' $* }
-#getstrings () { perl -ne 'while ( m/"(.*?)"/gc ) { print $1, "\n"; }' $*}
-#getanchors () { perl -ne 'while ( m/«([^«»\n]+)»/gc ) { print $1, "\n"; }' $* }
-#showINC ()    { perl -e 'for (@INC) { printf "%d %s\n", $i++, $_ }' }
-#vimpm ()      { vim `perldoc -l $1 | sed -e 's/pod$/pm/'` }
-#vimhelp ()    { vim -c "help $1" -c on -c "au! VimEnter *" }
+bew() { perl -le 'print unpack "B*","'$1'"' }
+web() { perl -le 'print pack "B*","'$1'"' }
+hew() { perl -le 'print unpack "H*","'$1'"' }
+weh() { perl -le 'print pack "H*","'$1'"' }
+pversion()    { perl -M$1 -le "print $1->VERSION" } # i. e."pversion LWP -> 5.79"
+getlinks ()   { perl -ne 'while ( m/"((www|ftp|http):\/\/.*?)"/gc ) { print $1, "\n"; }' $* }
+gethrefs ()   { perl -ne 'while ( m/href="([^"]*)"/gc ) { print $1, "\n"; }' $* }
+getanames ()  { perl -ne 'while ( m/a name="([^"]*)"/gc ) { print $1, "\n"; }' $* }
+getforms ()   { perl -ne 'while ( m:(\</?(input|form|select|option).*?\>):gic ) { print $1, "\n"; }' $* }
+getstrings () { perl -ne 'while ( m/"(.*?)"/gc ) { print $1, "\n"; }' $*}
+getanchors () { perl -ne 'while ( m/«([^«»\n]+)»/gc ) { print $1, "\n"; }' $* }
+showINC ()    { perl -e 'for (@INC) { printf "%d %s\n", $i++, $_ }' }
+vimpm ()      { vim `perldoc -l $1 | sed -e 's/pod$/pm/'` }
+vimhelp ()    { vim -c "help $1" -c on -c "au! VimEnter *" }
 
 ## END OF FILE #################################################################
+
+export LS_COLORS=`echo $LS_COLORS | sed -r 's/di=[^:]+/di=01;92;44/g'`
