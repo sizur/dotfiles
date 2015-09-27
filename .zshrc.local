@@ -338,3 +338,8 @@ vimhelp ()    { vim -c "help $1" -c on -c "au! VimEnter *" }
 ## END OF FILE #################################################################
 
 export LS_COLORS=`echo $LS_COLORS | sed -r 's/di=[^:]+/di=01;92;44/g'`
+
+if [[ -r ~/.zshrc.user ]]; then
+    source ~/.zshrc.user
+fi
+
