@@ -622,6 +622,16 @@ Order is important for some items for compatibility.
   #+BEGIN_SRC emacs-lisp :tangle yes
     (add-to-list 'load-path "~/.emacs.d/src/golden-ratio")
     (require 'golden-ratio)
+    (setq golden-ratio-exclude-modes '("ediff-mode"
+                                       "eshell-mode"
+                                       "dired-mode"
+                                       "calendar-mode"
+                                       "coq-mode"))
+    (setq golden-ratio-exclude-buffer-names '(" *Org tags*"
+                                              " *Org todo*"
+                                              " *Org adenda*"
+                                              "*phi-search*"
+                                              "*goals*"))
     (golden-ratio-mode 1)
   #+END_SRC
 
@@ -964,6 +974,23 @@ Order is important for some items for compatibility.
 
   #+RESULTS: emacs-rust
 
+* Coq
+  #+NAME: emacs-coq
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (when (executable-find "coqtop")
+      (load-file "~/.emacs.d/src/ProofGeneral/generic/proof-site.el")
+      (eval-after-load 'coq
+        '(setq coq-prog-args
+               `("-emacs-U"
+                 "-R"
+                 ,(expand-file-name
+                   "~/.emacs.d/src/cpdt/src")
+                 "Cpdt"))))
+  #+END_SRC
+
+  #+RESULTS: emacs-coq
+  | -emacs-U | -R | ~/.emacs.d/src/cpdt/src | Cpdt |
+
 * Magit
   #+NAME: emacs-magit
   #+BEGIN_SRC emacs-lisp :tangle yes
@@ -1121,11 +1148,11 @@ Order is important for some items for compatibility.
    #+NAME: emacs-scale-text
    #+BEGIN_SRC emacs-lisp :tangle yes
      (key-chord-define-global
-      "ts"
+      "-="
       (defhydra hydra-zoom ()
         "zoom"
-        ("k" text-scale-increase "in")
-        ("j" text-scale-decrease "out")))
+        ("=" text-scale-increase "in")
+        ("-" text-scale-decrease "out")))
    #+END_SRC
 
    #+RESULTS: emacs-scale-text
@@ -1136,11 +1163,11 @@ Order is important for some items for compatibility.
    #+BEGIN_SRC emacs-lisp :tangle yes
      (require 'move-text)
      (key-chord-define-global
-      "tm"
+      "ws"
       (defhydra hydra-move-text ()
         "Move text"
-        ("k" move-text-up "up")
-        ("j" move-text-down "down")))
+        ("w" move-text-up "up")
+        ("s" move-text-down "down")))
    #+END_SRC
 
    #+RESULTS: emacs-hydra-move-text
@@ -1178,7 +1205,7 @@ Order is important for some items for compatibility.
    #+BEGIN_SRC emacs-lisp :tangle yes
      (when (featurep 'smartparens)
        (key-chord-define-global
-        "sp"
+        "90"
         (defhydra hydra-learn-sp (:hint nil)
           "
        _B_ backward-sexp            -----
@@ -1277,7 +1304,7 @@ Order is important for some items for compatibility.
    #+NAME: emacs-hydra-origami
    #+BEGIN_SRC emacs-lisp :tangle yes
      (key-chord-define-global
-      "of"
+      ",."
       (defhydra hydra-folding (:color red)
         "
        _o_pen node    _n_ext fold       toggle _f_orward
