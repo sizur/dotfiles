@@ -304,7 +304,7 @@ Order is important for some items for compatibility.
      (require 'cedit)
      (global-set-key (kbd "M-]") 'cedit-slurp)
      (global-set-key (kbd "M-}") 'cedit-barf)
-     (global-set-key (kbd "C-:") 'cedit-beginning-of-statement)
+     (global-set-key (kbd "C-;") 'cedit-beginning-of-statement)
      (global-set-key (kbd "C-'") 'cedit-end-of-statement)
      (global-set-key (kbd "C-:") 'cedit-down-block)
      (global-set-key (kbd "C-M-,") 'cedit-up-block-backward)
