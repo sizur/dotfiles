@@ -930,7 +930,7 @@ Order is important for some items for compatibility.
                 ;; (flymake-mode t)
                 ;; (perl-completion-mode t)
                 (turn-on-eldoc-mode)
-                (local-unset-key (kbd "{") 'self-insert-command)
+                (local-unset-key (kbd "{"))
                 ))
   #+END_SRC
 
