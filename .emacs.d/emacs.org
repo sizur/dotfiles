@@ -923,13 +923,14 @@ Order is important for some items for compatibility.
     (require 'perltidy)
     (require 'flymake)
     (require 'perl-completion)
-    (eval-after-load 'perl-mode
-      '(define-key perl-mode-map (kbd "C-c p") 'perltidy-dwim))
-    (add-hook 'perl-mode-hook
+    (eval-after-load 'cperl-mode
+      '(define-key cperl-mode-map (kbd "C-c p") 'perltidy-dwim))
+    (add-hook 'cperl-mode-hook
               (lambda ()
                 ;; (flymake-mode t)
                 ;; (perl-completion-mode t)
                 (turn-on-eldoc-mode)
+                (local-unset-key (kbd "{") 'self-insert-command)
                 ))
   #+END_SRC
 
@@ -1368,16 +1369,16 @@ Order is important for some items for compatibility.
 * Sublimity
   #+NAME: emacs-sublime
   #+BEGIN_SRC emacs-lisp :tangle yes
-    ;(add-to-list 'load-path "~/.emacs.d/src/sublimity")
-    ;(require 'sublimity)
+    ;; (add-to-list 'load-path "~/.emacs.d/src/sublimity")
+    ;; (require 'sublimity)
     ;; (require 'sublimity-scroll)
     ;; (require 'sublimity-map)
     ;; (require 'sublimity-attractive)
-    ;(sublimity-mode 1)
+    ;; (sublimity-mode 1)
   #+END_SRC
 
   #+RESULTS: emacs-sublime
-  : t
+  : sublimity-map
 
 * Phi-grep
   #+NAME: emacs-phi-grep
