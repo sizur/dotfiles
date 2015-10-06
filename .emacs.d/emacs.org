@@ -297,24 +297,11 @@ Order is important for some items for compatibility.
 
    #+RESULTS: emacs-smartparens
    | lambda | nil | (turn-on-eldoc-mode) |
-** Cedit
-   #+NAME: emacs-cedit
-   #+BEGIN_SRC emacs-lisp :tangle yes
-     (add-to-list 'load-path "~/.emacs.d/src/cedit")
-     (require 'cedit)
-     (global-set-key (kbd "M-]") 'cedit-slurp)
-     (global-set-key (kbd "M-}") 'cedit-barf)
-     (global-set-key (kbd "C-;") 'cedit-beginning-of-statement)
-     (global-set-key (kbd "C-'") 'cedit-end-of-statement)
-     (global-set-key (kbd "C-:") 'cedit-down-block)
-     (global-set-key (kbd "C-M-,") 'cedit-up-block-backward)
-     (global-set-key (kbd "C-M-.") 'cedit-up-block-forward)
-   #+END_SRC
 ** Paredit
    #+NAME: emacs-paredit
    #+BEGIN_SRC emacs-lisp :tangle yes
-     ;; (add-to-list 'load-path "~/.emacs.d/src/paredit")
-     ;; (require 'paredit)
+     (add-to-list 'load-path "~/.emacs.d/src/paredit")
+     (require 'paredit)
      ;; (add-hook 'emacs-lisp-mode-hook
      ;;           (lambda ()
      ;;             (paredit-mode t)
@@ -332,6 +319,19 @@ Order is important for some items for compatibility.
 
    #+RESULTS: emacs-paredit
    : paredit-backward-barf-sexp
+** Cedit
+   #+NAME: emacs-cedit
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (add-to-list 'load-path "~/.emacs.d/src/cedit")
+     (require 'cedit)
+     (global-set-key (kbd "M-]") 'cedit-or-paredit-slurp)
+     (global-set-key (kbd "M-}") 'cedit-or-paredit-barf)
+     (global-set-key (kbd "C-;") 'cedit-beginning-of-statement)
+     (global-set-key (kbd "C-'") 'cedit-end-of-statement)
+     (global-set-key (kbd "C-:") 'cedit-down-block)
+     (global-set-key (kbd "C-M-,") 'cedit-up-block-backward)
+     (global-set-key (kbd "C-M-.") 'cedit-up-block-forward)
+   #+END_SRC
 
 ** Paren-Face
    #+NAME: emacs-paren-face
@@ -378,6 +378,9 @@ Order is important for some items for compatibility.
     (add-to-list 'load-path "~/.emacs.d/src/origami")
     (require 'origami)
     (global-origami-mode 1)
+    (global-set-key (kbd "C-M->") 'origami-recursively-toggle-node)
+    (global-set-key (kbd "C-M-<") 'origami-show-only-node)
+    (global-set-key (kbd "C-M-?") 'origami-undo)
   #+END_SRC
 
   #+RESULTS: emacs-origami
@@ -928,8 +931,7 @@ Order is important for some items for compatibility.
     (add-hook 'cperl-mode-hook
               (lambda ()
                 ;; (flymake-mode t)
-                ;; (perl-completion-mode t)
-                (turn-on-eldoc-mode)
+                (perl-completion-mode t)
                 (local-unset-key (kbd "{"))
                 ))
   #+END_SRC
