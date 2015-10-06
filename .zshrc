@@ -2504,16 +2504,14 @@ hash -d www=/var/www
 if check_com -c screen ; then
     if [[ $UID -eq 0 ]] ; then
         if [[ -r /etc/grml/screenrc ]]; then
-            alias screen="${commands[screen]} -c /etc/grml/screenrc"
+            alias screen='screen -c /etc/grml/screenrc'
         fi
-    elif [[ -r $HOME/.screenrc ]] ; then
-        alias screen="${commands[screen]} -c $HOME/.screenrc"
-    else
+    elif [[ ! -r $HOME/.screenrc ]] ; then
         if [[ -r /etc/grml/screenrc_grml ]]; then
-            alias screen="${commands[screen]} -c /etc/grml/screenrc_grml"
+            alias screen='screen -c /etc/grml/screenrc_grml'
         else
             if [[ -r /etc/grml/screenrc ]]; then
-                alias screen="${commands[screen]} -c /etc/grml/screenrc"
+                alias screen='screen -c /etc/grml/screenrc'
             fi
         fi
     fi
@@ -2703,11 +2701,10 @@ __EOF0__
     fi
 fi
 
-# Use hard limits, except for a smaller stack and no core dumps
-unlimit
-is425 && limit stack 8192
-isgrmlcd && limit core 0 # important for a live-cd-system
-limit -s
+if isgrmlcd; then
+    # No core dumps: important for a live-cd-system
+    limit -s core 0
+fi
 
 # grmlstuff
 grmlstuff() {
@@ -3514,17 +3511,6 @@ _simple_extract()
 }
 compdef _simple_extract simple-extract
 alias se=simple-extract
-
-#f5# Set all ulimit parameters to \kbd{unlimited}
-allulimit() {
-    ulimit -c unlimited
-    ulimit -d unlimited
-    ulimit -f unlimited
-    ulimit -l unlimited
-    ulimit -n unlimited
-    ulimit -s unlimited
-    ulimit -t unlimited
-}
 
 #f5# Change the xterm title from within GNU-screen
 xtrename() {

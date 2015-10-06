@@ -290,11 +290,26 @@ Order is important for some items for compatibility.
      (require 'smartparens-haskell)
      (require 'smartparens-html)
      (smartparens-global-mode 1)
+     (add-hook 'emacs-lisp-mode-hook
+               (lambda ()
+                 (turn-on-eldoc-mode)))
    #+END_SRC
 
    #+RESULTS: emacs-smartparens
-   : smartparens-html
-
+   | lambda | nil | (turn-on-eldoc-mode) |
+** Cedit
+   #+NAME: emacs-cedit
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (add-to-list 'load-path "~/.emacs.d/src/cedit")
+     (require 'cedit)
+     (global-set-key (kbd "M-]") 'cedit-slurp)
+     (global-set-key (kbd "M-}") 'cedit-barf)
+     (global-set-key (kbd "C-:") 'cedit-beginning-of-statement)
+     (global-set-key (kbd "C-'") 'cedit-end-of-statement)
+     (global-set-key (kbd "C-:") 'cedit-down-block)
+     (global-set-key (kbd "C-M-,") 'cedit-up-block-backward)
+     (global-set-key (kbd "C-M-.") 'cedit-up-block-forward)
+   #+END_SRC
 ** Paredit
    #+NAME: emacs-paredit
    #+BEGIN_SRC emacs-lisp :tangle yes
@@ -310,10 +325,9 @@ Order is important for some items for compatibility.
      ;;             (local-set-key (kbd "RET") 'electrify-return-if-match)
      ;;             (eldoc-add-command 'electrify-return-if-match)
      ;;             (show-paren-mode t)))
-     ;; (global-set-key (kbd "M-]") 'paredit-forward-slurp-sexp)
-     ;; (global-set-key (kbd "M-}") 'paredit-forward-barf-sexp)
      ;; (global-set-key (kbd "M-[") 'paredit-backward-slurp-sexp)
      ;; (global-set-key (kbd "M-{") 'paredit-backward-barf-sexp)
+
    #+END_SRC
 
    #+RESULTS: emacs-paredit
@@ -336,6 +350,17 @@ Order is important for some items for compatibility.
 
    #+RESULTS: elisp-raindbow-blocks
    : rainbow-blocks
+
+** Highlight-stages
+   #+NAME: emacs-highlight-stages
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (add-to-list 'load-path "~/.emacs.d/src/highlight-stages")
+     (require 'highlight-stages)
+     (highlight-stages-global-mode 1)
+   #+END_SRC
+
+   #+RESULTS: emacs-highlight-stages
+   : t
 
 * Highlight Indentation
   #+NAME: emacs-highlight-indentation
@@ -626,12 +651,12 @@ Order is important for some items for compatibility.
                                        "eshell-mode"
                                        "dired-mode"
                                        "calendar-mode"
-                                       "coq-mode"))
+                                       ))
     (setq golden-ratio-exclude-buffer-names '(" *Org tags*"
                                               " *Org todo*"
                                               " *Org adenda*"
                                               "*phi-search*"
-                                              "*goals*"))
+                                              ))
     (golden-ratio-mode 1)
   #+END_SRC
 
@@ -902,8 +927,9 @@ Order is important for some items for compatibility.
       '(define-key perl-mode-map (kbd "C-c p") 'perltidy-dwim))
     (add-hook 'perl-mode-hook
               (lambda ()
-    ;            (flymake-mode t)
-    ;            (perl-completion-mode t)
+                ;; (flymake-mode t)
+                ;; (perl-completion-mode t)
+                (turn-on-eldoc-mode)
                 ))
   #+END_SRC
 
@@ -1338,6 +1364,30 @@ Order is important for some items for compatibility.
 
   #+RESULTS: emacs-cmake
   | maybe-cmake-project-hook |
+
+* Sublimity
+  #+NAME: emacs-sublime
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    ;(add-to-list 'load-path "~/.emacs.d/src/sublimity")
+    ;(require 'sublimity)
+    ;; (require 'sublimity-scroll)
+    ;; (require 'sublimity-map)
+    ;; (require 'sublimity-attractive)
+    ;(sublimity-mode 1)
+  #+END_SRC
+
+  #+RESULTS: emacs-sublime
+  : t
+
+* Phi-grep
+  #+NAME: emacs-phi-grep
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (add-to-list 'load-path "~/.emacs.d/src/phi-grep")
+    (require 'phi-grep)
+  #+END_SRC
+
+  #+RESULTS: emacs-phi-grep
+  : phi-grep
 
 * Definitions
 ** Eval elips anywhere and replace with result

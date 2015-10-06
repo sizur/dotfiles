@@ -181,3 +181,15 @@
 [submodule ".emacs.d/src/rust-mode"]
 	path = .emacs.d/src/rust-mode
 	url = https://github.com/rust-lang/rust-mode.git
+[submodule ".emacs.d/src/sublimity"]
+	path = .emacs.d/src/sublimity
+	url = https://github.com/zk-phi/sublimity.git
+[submodule ".emacs.d/src/highlight-stages"]
+	path = .emacs.d/src/highlight-stages
+	url = https://github.com/zk-phi/highlight-stages.git
+[submodule ".emacs.d/src/cedit"]
+	path = .emacs.d/src/cedit
+	url = https://github.com/zk-phi/cedit.git
+[submodule ".emacs.d/src/phi-grep"]
+	path = .emacs.d/src/phi-grep
+	url = https://github.com/zk-phi/phi-grep.git
