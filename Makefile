@@ -2,7 +2,7 @@ SHELL=/usr/bin/bash
 
 .PHONY: install update grml submodules tmux oh-my-zsh fonts emacs customizations
 
-install: fonts xdefaults oh-my-zsh-install oh-my-zsh tmux emacs
+install: fonts x11 oh-my-zsh-install oh-my-zsh tmux emacs
 
 update: submodules
 	cd .emacs.d && wget -O plantuml.jar http://downloads.sourceforge.net/project/plantuml/plantuml.jar
@@ -23,7 +23,7 @@ tmux:
 	cd maglev && make install
 
 oh-my-zsh-install:
-	sh -c "$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
+	sh -c "\$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
 
 oh-my-zsh:
 	cp bullet-train-oh-my-zsh-theme/bullet-train.zsh-theme ~/.oh-my-zsh/themes/
@@ -47,8 +47,10 @@ fonts:
 	xset fp rehash
 	fc-cache -f -v
 
-xdefaults:
+x11:
 	cp .Xdefaults ~/
+	cp .xinitrc ~/
+	cp -rf .xmonad ~/
 
 zsh-autosuggestions:
 	cp -rf .zsh-autosuggestions ~/

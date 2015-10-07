@@ -58,6 +58,10 @@ fi
 
 xrandr -s 0
 
+xset fp+ ~/.local/share/fonts
+xset fp rehash
+fc-cache -f -v
+
 xrdb -load $HOME/.Xdefaults
 
 xset s off
