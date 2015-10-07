@@ -193,3 +193,12 @@
 [submodule ".emacs.d/src/phi-grep"]
 	path = .emacs.d/src/phi-grep
 	url = https://github.com/zk-phi/phi-grep.git
+[submodule "fonts"]
+	path = fonts
+	url = https://github.com/powerline/fonts.git
+[submodule "bullet-train-oh-my-zsh-theme"]
+	path = bullet-train-oh-my-zsh-theme
+	url = https://github.com/sizur/bullet-train-oh-my-zsh-theme.git
+[submodule "maglev"]
+	path = maglev
+	url = https://github.com/sizur/maglev.git
