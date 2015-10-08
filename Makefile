@@ -44,9 +44,6 @@ fonts:
 	find fonts \( -name '*.[o,t]tf' -or -name '*.pcf.gz' \) -type f -print0 | xargs -0 -I % cp "%" ~/.local/share/fonts
 	mkfontscale ~/.local/share/fonts
 	mkfontdir ~/.local/share/fonts
-	xset fp+ ~/.local/share/fonts
-	xset fp rehash
-	fc-cache -f -v
 
 x11:
 	cp .Xdefaults ~/
