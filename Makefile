@@ -16,6 +16,7 @@ grml:
 #	wget -O .zshrc.local  http://git.grml.org/f/grml-etc-core/etc/skel/.zshrc
 
 submodules:
+	git pull
 	git submodule update --init --recursive
 	git submodule update --recursive
 
