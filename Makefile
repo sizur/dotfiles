@@ -2,7 +2,7 @@ SHELL=/usr/bin/bash
 
 .PHONY: install update grml submodules tmux oh-my-zsh fonts emacs customizations
 
-install: fonts x11 oh-my-zsh-install oh-my-zsh tmux emacs
+install: fonts x11 tmux emacs oh-my-zsh-install oh-my-zsh
 
 update: submodules
 	cd .emacs.d && wget -O plantuml.jar http://downloads.sourceforge.net/project/plantuml/plantuml.jar
