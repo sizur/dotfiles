@@ -199,3 +199,6 @@
 [submodule "maglev"]
 	path = maglev
 	url = https://github.com/sizur/maglev.git
+[submodule "bullet-train-oh-my-zsh-theme"]
+	path = bullet-train-oh-my-zsh-theme
+	url = https://github.com/sizur/bullet-train-oh-my-zsh-theme.git
