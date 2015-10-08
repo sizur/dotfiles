@@ -23,7 +23,7 @@ tmux:
 	cd maglev && make install
 
 oh-my-zsh-install:
-	sh -c "\$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
+	sh -c "$$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
 
 oh-my-zsh:
 	cp bullet-train-oh-my-zsh-theme/bullet-train.zsh-theme ~/.oh-my-zsh/themes/
