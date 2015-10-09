@@ -1,3 +1,4 @@
+# -*- shell-script -*-
 # oh-my-zsh custom config file
 ZSH_THEME="bullet-train"
 BULLETTRAIN_STATUS_SHOW=true
@@ -13,4 +14,7 @@ BULLETTRAIN_IS_SSH_CLIENT=true
 # export BULLETTRAIN_PROMPT_SEPARATE_LINE=false
 BULLETTRAIN_TIME_12HR=false
 REPORTTIME=2
-BULLETTRAIN_GIT_SHOW=false
+# BULLETTRAIN_GIT_SHOW=false
+
+export EDITOR='emacsclient -c'
+alias e='emacsclient -c'

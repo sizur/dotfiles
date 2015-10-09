@@ -17,14 +17,14 @@ grml:
 
 submodules:
 	git pull
-	git submodule update --init --recursive
-	git submodule update --recursive
+	git submodule update --init --recursive --depth 1
 
 tmux:
 	cd maglev && make install
 
 oh-my-zsh-install:
-	sh -c "$$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
+	sh -c "$$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O - | sed -i 's/^env zsh/# env zsh/')"
+	@echo oh-my-zsh installed
 
 oh-my-zsh:
 	cp bullet-train-oh-my-zsh-theme/bullet-train.zsh-theme ~/.oh-my-zsh/themes/
@@ -49,6 +49,7 @@ x11:
 	cp .Xdefaults ~/
 	cp .xinitrc ~/
 	cp -rf .xmonad ~/
+	cp -rf .dzen ~/
 
 zsh-autosuggestions:
 	cp -rf .zsh-autosuggestions ~/
