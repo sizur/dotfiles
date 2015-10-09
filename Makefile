@@ -17,7 +17,8 @@ grml:
 
 submodules:
 	git pull
-	git submodule update --init --recursive --depth 1
+	git submodule update --init --recursive
+	git submodule update --recursive
 
 tmux:
 	cd maglev && make install
