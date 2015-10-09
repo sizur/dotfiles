@@ -24,7 +24,7 @@ tmux:
 	cd maglev && make install
 
 oh-my-zsh-install:
-	bash -c "$$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O - | sed -e 's/^env zsh\$$/\# env zsh/')"
+	bash -c "$$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O - | sed -e 's/^env zsh$$/\# env zsh/')"
 	@echo oh-my-zsh installed
 
 oh-my-zsh:
