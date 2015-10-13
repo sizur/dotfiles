@@ -27,7 +27,7 @@ URxvt*buffered: true
 URxvt*hold: false
 URxvt*internalBorder:
 URxvt*print-pipe: cat > $HOME/$(echo urxvt.dump.$(date +'%Y%M%d%H%m%S'))
-URxvt*perl-ext-common:    default,clipboard,font-size,matcher,url-select,tabbedex,vtwheel
+URxvt*perl-ext-common:    default,clipboard,font-size,matcher,url-select,tabbedex,vtwheel,selection-to-clipboard
 ! matcher or url-select
 
 !URxvt.matcher.button: 1
