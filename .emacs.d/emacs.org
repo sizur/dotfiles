@@ -914,6 +914,8 @@ Order is important for some items for compatibility.
   #+BEGIN_SRC emacs-lisp :tangle yes
     (add-to-list 'load-path "~/.emacs.d/src/haskell-mode")
     (require 'haskell-mode-autoloads)
+    (add-hook 'haskell-mode-hook 'haskell-indentation-mode)
+    (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
   #+END_SRC
 
   #+RESULTS: haskell
@@ -993,6 +995,17 @@ Order is important for some items for compatibility.
      (when (executable-find "racket")
        (require 'quack))
    #+END_SRC
+* Lua
+  #+NAME: emacs-lua
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (add-to-list 'load-path "~/.emacs.d/src/lua-mode")
+    (require 'lua-mode)
+    (add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
+    (add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
+  #+END_SRC
+
+  #+RESULTS: emacs-lua
+
 * Rust
   #+NAME: emacs-rust
   #+BEGIN_SRC emacs-lisp :tangle yes

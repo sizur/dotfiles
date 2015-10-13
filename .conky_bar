@@ -1,0 +1,16 @@
+-- -*- lua -*-
+conky.config = {
+   out_to_console  = true,
+   out_to_x        = false,
+   use_xft         = true,
+   font            = "Inconsolata:size=11",
+   update_interval = 1 -- Update interval in seconds
+}
+
+-- ~home is substituted by 'make x11'
+conky.text = [[
+^i(~home/.dzen/cpu.xbm) ^fg(\#FFFFFF)${cpu}% \
+^i(~home/.dzen/mem.xbm) ^fg(\#FFFFFF)${memperc}% \
+^fg(\#ebac54) ^i(~home/.dzen/volume100.xbm) ^fg(\#00ffff)${exec amixer get Master | egrep -o "[0-9]+%" | head -1 | egrep -o "[0-9]*"}% \
+^fg(\#ebac54) ^i(~home/.dzen/clock.xbm) ^fg(\#FFFFFF) ${time %Y-%m-%d} ^fg(\#ebac54) ${time %R}
+]]

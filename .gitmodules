@@ -199,3 +199,9 @@
 [submodule "bullet-train-oh-my-zsh-theme"]
 	path = bullet-train-oh-my-zsh-theme
 	url = https://github.com/sizur/bullet-train-oh-my-zsh-theme.git
+[submodule ".emacs.d/src/lua-mode"]
+	path = .emacs.d/src/lua-mode
+	url = https://github.com/immerrr/lua-mode.git
+[submodule ".urxvt/font-size"]
+	path = .urxvt/font-size
+	url = https://github.com/majutsushi/urxvt-font-size.git

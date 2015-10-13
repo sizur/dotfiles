@@ -12,6 +12,7 @@ import Graphics.X11.ExtraTypes.XF86
 import Graphics.X11.Xlib
  
 import System.IO
+import System.Environment as Env
  
 import XMonad
  
@@ -49,17 +50,14 @@ import qualified Data.Map as M
 --{{{ Helper Functions
 stripIM s = if ("IM " `isPrefixOf` s) then drop (length "IM ") s else s
  
-wrapIcon icon = "^p(5)^i(" ++ icons ++ icon ++ ")^p(5)"
+wrapIcon home icon = "^p(5)^i(" ++ home ++ "/.dzen/" ++ icon ++ ")^p(5)"
 --}}}
- 
---{{{ Path variables
-icons = "/home/egrigorjev/.dzen/"
---}}}
- 
+
 main = do
    checkTopicConfig myTopics myTopicConfig
    myStatusBarPipe <- spawnPipe myStatusBar
    conkyBar <- spawnPipe myConkyBar
+   home <- Env.getEnv "HOME"
    xmonad $ myUrgencyHook $ defaultConfig
       { terminal = "urxvt"
       , normalBorderColor  = myInactiveBorderColor
@@ -67,7 +65,7 @@ main = do
       , borderWidth = myBorderWidth
       , manageHook = manageDocks <+> myManageHook <+> manageHook defaultConfig
       , layoutHook = smartBorders $ avoidStruts $ myLayoutHook
-      , logHook = dynamicLogWithPP $ myDzenPP myStatusBarPipe
+      , logHook = dynamicLogWithPP $ myDzenPP myStatusBarPipe home
       , modMask = mod4Mask
       , keys = myKeys
       , XMonad.Core.workspaces = myTopics
@@ -77,7 +75,7 @@ main = do
 --{{{ Theme 
  
 --Font
-myFont = "Monaco-11"
+myFont = "Inconsolata-11"
  
 -- Colors
  
@@ -215,9 +213,9 @@ newKeys conf@(XConfig {XMonad.modMask = modm}) = [
   ((modm, xK_p), spawn "dmenu_run -nb '#3F3F3F' -nf '#DCDCCC' -sb '#7F9F7F' -sf '#DCDCCC'"),  --Uses a colourscheme with dmenu
   ((0, xK_Print), spawn "scrot"),
   ((modm, xK_z), goToSelected myGSConfig),
-  ((0, xF86XK_AudioMute), spawn "amixer -q set PCM toggle"),
-  ((0, xF86XK_AudioRaiseVolume), spawn "amixer -q set PCM 2+"),
-  ((0, xF86XK_AudioLowerVolume), spawn "amixer -q set PCM 2-"),
+  ((0, xF86XK_AudioMute), spawn "amixer -q set Master toggle"),
+  ((0, xF86XK_AudioRaiseVolume), spawn "amixer -q set Master 2+"),
+  ((0, xF86XK_AudioLowerVolume), spawn "amixer -q set Master 2-"),
   ((modm, xK_y), sendMessage ToggleStruts),
   ((modm, xK_u), sendMessage MirrorShrink),
   ((modm, xK_i), sendMessage MirrorExpand)
@@ -225,7 +223,7 @@ newKeys conf@(XConfig {XMonad.modMask = modm}) = [
 --}}}
  
 ---{{{ Dzen Config
-myDzenPP h = defaultPP {
+myDzenPP h home = defaultPP {
   ppOutput = hPutStrLn h,
   ppSep = (wrapFg myHighlightedBgColor "|"),
   ppWsSep = "",
@@ -237,9 +235,9 @@ myDzenPP h = defaultPP {
   ppTitle = (\x -> "  " ++ wrapFg myTitleFgColor x),
   ppLayout  = dzenColor myFgColor"" .
                 (\x -> case x of
-                    "ResizableTall" -> wrapIcon "layout_tall.xbm"
-                    "Mirror ResizableTall" -> wrapIcon "layout_mirror_tall.xbm"
-                    "Full" -> wrapIcon "layout_full.xbm"
+                    "ResizableTall" -> wrapIcon home "layout_tall.xbm"
+                    "Mirror ResizableTall" -> wrapIcon home "layout_mirror_tall.xbm"
+                    "Full" -> wrapIcon home "layout_full.xbm"
                 ) . stripIM
   }
   where

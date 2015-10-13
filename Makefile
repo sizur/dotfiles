@@ -51,12 +51,18 @@ x11:
 	cp .xinitrc ~/
 	cp -rf .xmonad ~/
 	cp -rf .dzen ~/
+	cp .conky_bar ~/
+	sed -i "s|~home|$$HOME|g" ~/.conky_bar
+
+urxvt:
+	mkdir -p ~/.urxvt/ext
+	cp .urxvt/font-size/font-size ~/.urxvt/ext/
 
 zsh-autosuggestions:
 	cp -rf .zsh-autosuggestions ~/
 
 emacs:
-	rsync -vurl .emacs.d/ ~/.emacs.d/
+	rsync -vurl --exclude=.git/ .emacs.d/ ~/.emacs.d/
 	rm ~/.emacs.d/emacs.el ~/.emacs.d/.#emacs.org || true
 
 customizations:
