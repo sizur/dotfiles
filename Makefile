@@ -53,6 +53,7 @@ x11:
 	cp -rf .dzen ~/
 	cp .conky_bar ~/
 	sed -i "s|~home|$$HOME|g" ~/.conky_bar
+	mkdir -p ~/Downloads
 
 urxvt: x11
 	mkdir -p ~/.urxvt/ext

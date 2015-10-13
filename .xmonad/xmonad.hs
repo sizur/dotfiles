@@ -38,6 +38,7 @@ import XMonad.Layout.StackTile
 import XMonad.Prompt
 import XMonad.Prompt.Man
 import XMonad.Prompt.Shell
+import XMonad.Prompt.Workspace
  
 import XMonad.StackSet as W
  
@@ -69,7 +70,8 @@ main = do
       , modMask = mod4Mask
       , keys = myKeys
       , XMonad.Core.workspaces = myTopics
-      , startupHook = setWMName "LG3D"
+      , startupHook = do setWMName "LG3D"
+                         goto "3:sh"
      }   
  
 --{{{ Theme 
@@ -127,48 +129,48 @@ myLayoutHook = avoidStruts $ onWorkspace " 4 im " imLayout $ standardLayouts
 -- Workspaces
 myWorkspaces =
    [
-      " 1:im ",
-      " 2:ed ",
-      " 3:sh ",
-      " 4:web ",
-      " 5:log ",
-      " 6:mus ",
-      " 7:misc "
+      "1:im",
+      "2:ed",
+      "3:sh",
+      "4:web",
+      "5:log",
+      "6:mus",
+      "7:misc"
    ]
 
 myTopics :: [Topic]
 myTopics =
   [
-      " 1:im ",
-      " 2:ed ",
-      " 3:sh ",
-      " 4:web ",
-      " 5:log ",
-      " 6:mus ",
-      " 7:misc "
+      "1:im",
+      "2:ed",
+      "3:sh",
+      "4:web",
+      "5:log",
+      "6:mus",
+      "7:misc"
   ]
 
 myTopicConfig :: TopicConfig
 myTopicConfig = defaultTopicConfig
   { topicDirs = M.fromList $
-      [ (" 1:im ", "~")
-      , (" 2:ed ", "git")
-      , (" 3:sh ", "~")
-      , (" 4:web ", "Downloads")
-      , (" 5:log ", "/var/log")
-      , (" 6:mus ", "music")
-      , (" 7:misc ", "~")
+      [ ("1:im", "~")
+      , ("2:ed", "git")
+      , ("3:sh", "~")
+      , ("4:web", "Downloads")
+      , ("5:log", "/var/log")
+      , ("6:mus", "music")
+      , ("7:misc", "~")
       ]
-  , defaultTopicAction = const $ spawn "urxvt -e weechat"
-  , defaultTopic = "1:im"
+  , defaultTopicAction = const $ spawnShell
+  , defaultTopic = "3:sh"
   , topicActions = M.fromList $
-      [ (" 1:im ",       spawn "urxvt -e weechat")
-      , (" 2:ed ",       spawn "emacs")
-      , (" 3:sh ",       spawnShell)
-      , (" 4:web ",      spawnShell)
-      , (" 5:log ",      spawnShell)
-      , (" 6:mus ",      spawnShell)
-      , (" 7:misc ",     spawnShell)
+      [ ("1:im",       spawn "urxvt -e weechat")
+      , ("2:ed",       spawn "emacs")
+      , ("3:sh",       spawnShell)
+      , ("4:web",      spawn "firefox")
+      , ("5:log",      spawnShell)
+      , ("6:mus",      spawnShell)
+      , ("7:misc",     spawnShell)
       ]
   }
 
@@ -176,11 +178,22 @@ spawnShell :: X ()
 spawnShell = currentTopicDir myTopicConfig >>= spawnShellIn
 
 spawnShellIn :: Dir -> X ()
-spawnShellIn dir = spawn $ "urxvt '(cd ''" ++ dir ++ "'' )'"
+spawnShellIn dir = spawn $ "urxvt -cd " ++ dir
 
 goto :: Topic -> X ()
 goto = switchTopic myTopicConfig
- 
+
+promptedGoto :: X ()
+promptedGoto = workspacePrompt myXPConfig goto
+
+promptedShift :: X ()
+promptedShift = workspacePrompt myXPConfig $ windows . W.shift
+
+myXPConfig :: XPConfig
+myXPConfig = defaultXPConfig
+-- myXPConfig = defaultXPConfig {font="-*-lucida-medium-r-*-*-14-*-*-*-*-*-*-*"
+--                              ,height=22}
+             
 -- Urgency hint configuration
 myUrgencyHook = withUrgencyHook dzenUrgencyHook
     {
@@ -219,14 +232,27 @@ newKeys conf@(XConfig {XMonad.modMask = modm}) = [
   ((modm, xK_y), sendMessage ToggleStruts),
   ((modm, xK_u), sendMessage MirrorShrink),
   ((modm, xK_i), sendMessage MirrorExpand)
-   ]
+  , ((modm              , xK_a     ), currentTopicAction myTopicConfig)
+  , ((modm              , xK_g     ), promptedGoto)
+  , ((modm .|. shiftMask, xK_g     ), promptedShift)
+  ]
+  ++
+  [ ((modm, k), goto i)
+  | (i, k) <- zip [ "1:im"
+                  , "2:ed"
+                  , "3:sh"
+                  , "4:web"
+                  , "5:log"
+                  , "6:mus"
+                  , "7:misc" ] workspaceKeys]
+ where workspaceKeys = [xK_1 .. xK_7]
 --}}}
  
 ---{{{ Dzen Config
 myDzenPP h home = defaultPP {
   ppOutput = hPutStrLn h,
   ppSep = (wrapFg myHighlightedBgColor "|"),
-  ppWsSep = "",
+  ppWsSep = " ",
   ppCurrent = wrapFgBg myCurrentWsFgColor myCurrentWsBgColor,
   ppVisible = wrapFgBg myVisibleWsFgColor myVisibleWsBgColor,
   ppHidden = wrapFg myHiddenWsFgColor,
