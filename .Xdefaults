@@ -27,12 +27,12 @@ URxvt*buffered: true
 URxvt*hold: false
 URxvt*internalBorder:
 URxvt*print-pipe: cat > $HOME/$(echo urxvt.dump.$(date +'%Y%M%d%H%m%S'))
-URxvt*perl-ext-common:    default,clipboard,font-size,url-select
-!URxvt*perl-ext:           default,url-selectt
+URxvt*perl-ext-common:    default,clipboard,font-size,matcher,matcher,tabbedex ! url-select
+
+URxvt.tabbed.autohide: true
 
 URxvt.depth:              32
 URxvt*background:         rgba:0000/0000/0000/cccc
-URxvt.perl-ext-common:    default,tabbed
 URxvt.clipboard.autocopy: true
 URxvt.scrollstyle:        plain
 URxvt.secondaryScreen:    true
@@ -64,8 +64,15 @@ URxvt.iso14755: false
 URxvt.iso14755_52: false
 URxvt.keysym.C-Up:     font-size:increase
 URxvt.keysym.C-Down:   font-size:decrease
-URxvt.keysym.C-S-Up:   font-size:incglobal
-URxvt.keysym.C-S-Down: font-size:decglobal
+URxvt.keysym.C-M-Up:   font-size:incglobal
+URxvt.keysym.C-M-Down: font-size:decglobal
+
+URxvt.keysym.S-Down:    tabbedex:new_tab
+URxvt.keysym.S-Right:   tabbedex:next_tab
+URxvt.keysym.S-Left:    tabbedex:prev_tab
+URxvt.keysym.C-S-Left:  tabbedex:move_tab_left
+URxvt.keysym.C-S-Right: tabbedex:move_tab_right
+URxvt.keysym.S-Up:      tabbedex:rename_tab
 
 !URxvt*font:               xft:Bitstream Vera Sans Mono:pixelsize=12:antialias=true:hinting=true
 !URxvt*boldFont:           xft:Bitstream Vera Sans Mono:bold:pixelsize=12:antialias=true:hinting=true

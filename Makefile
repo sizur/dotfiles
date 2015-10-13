@@ -54,9 +54,11 @@ x11:
 	cp .conky_bar ~/
 	sed -i "s|~home|$$HOME|g" ~/.conky_bar
 
-urxvt:
+urxvt: x11
 	mkdir -p ~/.urxvt/ext
 	cp .urxvt/font-size/font-size ~/.urxvt/ext/
+	cp .urxvt/tabbedex/tabbedex ~/.urxvt/ext/
+	xrdb ~/.Xdefaults
 
 zsh-autosuggestions:
 	cp -rf .zsh-autosuggestions ~/

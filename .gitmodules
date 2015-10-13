@@ -205,3 +205,6 @@
 [submodule ".urxvt/font-size"]
 	path = .urxvt/font-size
 	url = https://github.com/majutsushi/urxvt-font-size.git
+[submodule ".urxvt/tabbedex"]
+	path = .urxvt/tabbedex
+	url = https://github.com/sizur/urxvt-tabbedex.git
