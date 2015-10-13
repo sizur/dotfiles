@@ -11,6 +11,7 @@ conky.config = {
 }
 
 conky.text = [[
+  \
 ^i(~home/.dzen/cpu.xbm) ^fg(\#FFFFFF)${lua_parse format %-3.3s ${cpu}%} \
 ^i(~home/.dzen/mem.xbm) ^fg(\#FFFFFF)${lua_parse format %-3.3s ${memperc}%} \
 ^i(~home/.dzen/net_down_01.xbm) ${lua_parse format %-6.6s ${downspeed net1}} \
