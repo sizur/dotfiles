@@ -10,7 +10,8 @@ import Data.List
  
 import Graphics.X11.ExtraTypes.XF86
 import Graphics.X11.Xlib
- 
+import Graphics.X11.Xlib.Types
+
 import System.IO
 import System.Environment as Env
  
@@ -57,7 +58,6 @@ wrapIcon home icon = "^p(5)^i(" ++ home ++ "/.dzen/" ++ icon ++ ")^p(5)"
 main = do
    checkTopicConfig myTopics myTopicConfig
    myStatusBarPipe <- spawnPipe myStatusBar
-   conkyBar <- spawnPipe myConkyBar
    home <- Env.getEnv "HOME"
    xmonad $ myUrgencyHook $ defaultConfig
       { terminal = "urxvt"
@@ -68,9 +68,11 @@ main = do
       , layoutHook = smartBorders $ avoidStruts $ myLayoutHook
       , logHook = dynamicLogWithPP $ myDzenPP myStatusBarPipe home
       , modMask = mod4Mask
-      , keys = myKeys
+      , keys = myKeys home
       , XMonad.Core.workspaces = myTopics
       , startupHook = do setWMName "LG3D"
+                         screens  <- withDisplay getCleanedScreenInfo
+                         conkyBar <- spawnPipe $ myConkyBar $ rect_width $ head screens
                          goto "3:sh"
      }   
  
@@ -116,10 +118,10 @@ myDzenGenOpts = "-fg '" ++ myFgColor ++ "' -bg '" ++ myBgColor ++ "' -h '15'" ++
 myStatusBar = "dzen2 -w 800 -ta l " ++ myDzenGenOpts
  
 -- Conky Bar
-myConkyBar = "conky -c ~/.conky_bar | dzen2 -x 800 -w 400 -ta l " ++ myDzenGenOpts
+myConkyBar screen_width = "conky -c ~/.conky_bar | dzen2 -x 800 -w "++ show (screen_width - 800) ++" -ta l " ++ myDzenGenOpts
 
 -- Layouts
-myLayoutHook = avoidStruts $ onWorkspace " 4 im " imLayout $ standardLayouts
+myLayoutHook = avoidStruts $ onWorkspace "3:sh" imLayout $ standardLayouts
                where standardLayouts = tiled ||| Mirror tiled ||| Full
                      imLayout = withIM (2/10) (Role "buddy_list") (standardLayouts)
                      tiled = ResizableTall nmaster delta ratio []
@@ -218,11 +220,11 @@ myManageHook = composeAll
 --}}}
  
 -- Union default and new key bindings
-myKeys x  = M.union (M.fromList (newKeys x)) (keys defaultConfig x)
+myKeys home x  = M.union (M.fromList (newKeys home x)) (keys defaultConfig x)
  
 --{{{ Keybindings 
 --    Add new and/or redefine key bindings
-newKeys conf@(XConfig {XMonad.modMask = modm}) = [
+newKeys home conf@(XConfig {XMonad.modMask = modm}) = [
   ((modm, xK_p), spawn "dmenu_run -nb '#3F3F3F' -nf '#DCDCCC' -sb '#7F9F7F' -sf '#DCDCCC'"),  --Uses a colourscheme with dmenu
   ((0, xK_Print), spawn "scrot"),
   ((modm, xK_z), goToSelected myGSConfig),
@@ -235,6 +237,7 @@ newKeys conf@(XConfig {XMonad.modMask = modm}) = [
   , ((modm              , xK_a     ), currentTopicAction myTopicConfig)
   , ((modm              , xK_g     ), promptedGoto)
   , ((modm .|. shiftMask, xK_g     ), promptedShift)
+  , ((modm,               xK_q     ), spawn "killall conky dzen2 && xmonad --recompile && xmonad --restart")  
   ]
   ++
   [ ((modm, k), goto i)

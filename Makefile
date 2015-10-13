@@ -55,6 +55,8 @@ x11:
 	sed -i "s|~home|$$HOME|g" ~/.conky_bar
 	mkdir -p ~/Downloads
 	mkdir -p ~/music
+	mkdir -p ~/.config/conky/scripts
+	cp .config/conky/scripts/conky_lua_scripts.lua ~/.config/conky/scripts/
 
 urxvt: x11
 	mkdir -p ~/.urxvt/ext

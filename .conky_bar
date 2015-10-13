@@ -1,16 +1,20 @@
 -- -*- lua -*-
+-- ~home is substituted by 'make x11'
+
 conky.config = {
+   lua_load        = "~home/.config/conky/scripts/conky_lua_scripts.lua",
    out_to_console  = true,
    out_to_x        = false,
-   use_xft         = true,
-   font            = "Inconsolata:size=11",
+--   use_xft         = true,
+--   font            = "Inconsolata:size=11",
    update_interval = 1 -- Update interval in seconds
 }
 
--- ~home is substituted by 'make x11'
 conky.text = [[
-^i(~home/.dzen/cpu.xbm) ^fg(\#FFFFFF)${cpu}% \
-^i(~home/.dzen/mem.xbm) ^fg(\#FFFFFF)${memperc}% \
+^i(~home/.dzen/cpu.xbm) ^fg(\#FFFFFF)${lua_parse format %-3.3s ${cpu}%} \
+^i(~home/.dzen/mem.xbm) ^fg(\#FFFFFF)${lua_parse format %-3.3s ${memperc}%} \
+^i(~home/.dzen/net_down_01.xbm) ${lua_parse format %-6.6s ${downspeed net1}} \
+^i(~home/.dzen/net_up_01.xbm) ${lua_parse format %-6.6s ${upspeed net1}} \
 ^fg(\#ebac54) ^i(~home/.dzen/volume100.xbm) ^fg(\#00ffff)${exec amixer -c 0 get PCM | egrep -o "[0-9]+%" | head -1 | egrep -o "[0-9]*"}% \
 ^fg(\#ebac54) ^i(~home/.dzen/clock.xbm) ^fg(\#FFFFFF) ${time %Y-%m-%d} ^fg(\#ebac54) ${time %R}
 ]]
