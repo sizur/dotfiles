@@ -54,6 +54,7 @@ x11:
 	cp .conky_bar ~/
 	sed -i "s|~home|$$HOME|g" ~/.conky_bar
 	mkdir -p ~/Downloads
+	mkdir -p ~/music
 
 urxvt: x11
 	mkdir -p ~/.urxvt/ext
