@@ -58,6 +58,7 @@ urxvt: x11
 	mkdir -p ~/.urxvt/ext
 	cp .urxvt/font-size/font-size ~/.urxvt/ext/
 	cp .urxvt/tabbedex/tabbedex ~/.urxvt/ext/
+	cp .urxvt/vtwheel ~/.urxvt/ext/
 	xrdb ~/.Xdefaults
 
 zsh-autosuggestions:

@@ -27,7 +27,8 @@ URxvt*buffered: true
 URxvt*hold: false
 URxvt*internalBorder:
 URxvt*print-pipe: cat > $HOME/$(echo urxvt.dump.$(date +'%Y%M%d%H%m%S'))
-URxvt*perl-ext-common:    default,clipboard,font-size,matcher,matcher,tabbedex ! url-select
+URxvt*perl-ext-common:    default,clipboard,font-size,matcher,matcher,tabbedex,vtwheel
+! url-select
 
 URxvt.tabbed.autohide: true
 
@@ -67,6 +68,7 @@ URxvt.keysym.C-Down:   font-size:decrease
 URxvt.keysym.C-M-Up:   font-size:incglobal
 URxvt.keysym.C-M-Down: font-size:decglobal
 
+URxvt.tabbed.no-tabbedex-keys: true
 URxvt.keysym.S-Down:    tabbedex:new_tab
 URxvt.keysym.S-Right:   tabbedex:next_tab
 URxvt.keysym.S-Left:    tabbedex:prev_tab
