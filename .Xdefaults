@@ -27,10 +27,13 @@ URxvt*buffered: true
 URxvt*hold: false
 URxvt*internalBorder:
 URxvt*print-pipe: cat > $HOME/$(echo urxvt.dump.$(date +'%Y%M%d%H%m%S'))
-URxvt*perl-ext-common:    default,clipboard,font-size,matcher,matcher,tabbedex,vtwheel
-! url-select
+URxvt*perl-ext-common:    default,clipboard,font-size,matcher,url-select,tabbedex,vtwheel
+! matcher or url-select
 
-URxvt.matcher.button: 1
+!URxvt.matcher.button: 1
+URxvt.keysym.M-u: url-select:select_next
+URxvt.url-select.launcher: /usr/bin/xdg-open
+URxvt.url-select.underline: true
 
 URxvt.tabbed.autohide: true
 
@@ -70,7 +73,6 @@ URxvt.keysym.C-Down:   font-size:decrease
 URxvt.keysym.C-M-Up:   font-size:incglobal
 URxvt.keysym.C-M-Down: font-size:decglobal
 
-URxvt.tabbed.no-tabbedex-keys: true
 URxvt.keysym.S-Down:    tabbedex:new_tab
 URxvt.keysym.S-Right:   tabbedex:next_tab
 URxvt.keysym.S-Left:    tabbedex:prev_tab
@@ -80,10 +82,6 @@ URxvt.keysym.S-Up:      tabbedex:rename_tab
 
 !URxvt*font:               xft:Bitstream Vera Sans Mono:pixelsize=12:antialias=true:hinting=true
 !URxvt*boldFont:           xft:Bitstream Vera Sans Mono:bold:pixelsize=12:antialias=true:hinting=true
-
-URxvt.keysym.M-u:         perl:url-select:select_next
-URxvt.url-select.launcher:  /usr/bin/xdg-open
-URxvt.url-select.underline: true
 
 !Xft.dpi:        96
 !Xft.antialias:  true
