@@ -115,7 +115,7 @@ myUrgencyHintBgColor = "blue"
 myDzenGenOpts = "-fg '" ++ myFgColor ++ "' -bg '" ++ myBgColor ++ "' -h '15'" ++ " -e 'onstart=lower' -fn '" ++ myFont ++ "'"
  
 -- Status Bar
-myStatusBar = "dzen2 -w 800 -ta l " ++ myDzenGenOpts
+myStatusBar = "dzen2 -w 630 -ta l " ++ myDzenGenOpts
  
 -- Conky Bar
 myConkyBarWidth = 450
@@ -129,17 +129,6 @@ myLayoutHook = avoidStruts $ onWorkspace "3:sh" imLayout $ standardLayouts
                      nmaster = 1 
                      delta = 0.03
                      ratio = 0.5
--- Workspaces
-myWorkspaces =
-   [
-      "1:im",
-      "2:ed",
-      "3:sh",
-      "4:web",
-      "5:log",
-      "6:mus",
-      "7:misc"
-   ]
 
 myTopics :: [Topic]
 myTopics =
@@ -242,13 +231,7 @@ newKeys home conf@(XConfig {XMonad.modMask = modm}) = [
   ]
   ++
   [ ((modm, k), goto i)
-  | (i, k) <- zip [ "1:im"
-                  , "2:ed"
-                  , "3:sh"
-                  , "4:web"
-                  , "5:log"
-                  , "6:mus"
-                  , "7:misc" ] workspaceKeys]
+  | (i, k) <- zip myTopics workspaceKeys]
  where workspaceKeys = [xK_1 .. xK_7]
 --}}}
  

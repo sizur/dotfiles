@@ -2,7 +2,7 @@ SHELL=/usr/bin/bash
 
 .PHONY: install update grml submodules tmux oh-my-zsh fonts emacs customizations
 
-install: fonts x11 tmux emacs oh-my-zsh-install oh-my-zsh
+install: fonts xmonad tmux emacs oh-my-zsh-install oh-my-zsh
 
 update: submodules
 	cd .emacs.d && wget -O plantuml.jar http://downloads.sourceforge.net/project/plantuml/plantuml.jar
@@ -46,7 +46,7 @@ fonts:
 	mkfontscale ~/.local/share/fonts
 	mkfontdir ~/.local/share/fonts
 
-x11:
+xmonad:
 	cp .Xdefaults ~/
 	cp .xinitrc ~/
 	cp -rf .xmonad ~/
@@ -58,7 +58,7 @@ x11:
 	mkdir -p ~/.config/conky/scripts
 	cp .config/conky/scripts/conky_lua_scripts.lua ~/.config/conky/scripts/
 
-urxvt: x11
+urxvt: xmonad
 	mkdir -p ~/.urxvt/ext
 	cp .urxvt/font-size/font-size ~/.urxvt/ext/
 	cp .urxvt/tabbedex/tabbedex ~/.urxvt/ext/
