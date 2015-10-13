@@ -213,9 +213,9 @@ newKeys conf@(XConfig {XMonad.modMask = modm}) = [
   ((modm, xK_p), spawn "dmenu_run -nb '#3F3F3F' -nf '#DCDCCC' -sb '#7F9F7F' -sf '#DCDCCC'"),  --Uses a colourscheme with dmenu
   ((0, xK_Print), spawn "scrot"),
   ((modm, xK_z), goToSelected myGSConfig),
-  ((0, xF86XK_AudioMute), spawn "amixer -q set Master toggle"),
-  ((0, xF86XK_AudioRaiseVolume), spawn "amixer -q set Master 2+"),
-  ((0, xF86XK_AudioLowerVolume), spawn "amixer -q set Master 2-"),
+  ((0, xF86XK_AudioMute), spawn "amixer -c 0 -q set PCM toggle"),
+  ((0, xF86XK_AudioRaiseVolume), spawn "amixer -c 0 -q set PCM 2+"),
+  ((0, xF86XK_AudioLowerVolume), spawn "amixer -c 0 -q set PCM 2-"),
   ((modm, xK_y), sendMessage ToggleStruts),
   ((modm, xK_u), sendMessage MirrorShrink),
   ((modm, xK_i), sendMessage MirrorExpand)

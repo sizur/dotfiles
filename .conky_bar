@@ -11,6 +11,6 @@ conky.config = {
 conky.text = [[
 ^i(~home/.dzen/cpu.xbm) ^fg(\#FFFFFF)${cpu}% \
 ^i(~home/.dzen/mem.xbm) ^fg(\#FFFFFF)${memperc}% \
-^fg(\#ebac54) ^i(~home/.dzen/volume100.xbm) ^fg(\#00ffff)${exec amixer get Master | egrep -o "[0-9]+%" | head -1 | egrep -o "[0-9]*"}% \
+^fg(\#ebac54) ^i(~home/.dzen/volume100.xbm) ^fg(\#00ffff)${exec amixer -c 0 get PCM | egrep -o "[0-9]+%" | head -1 | egrep -o "[0-9]*"}% \
 ^fg(\#ebac54) ^i(~home/.dzen/clock.xbm) ^fg(\#FFFFFF) ${time %Y-%m-%d} ^fg(\#ebac54) ${time %R}
 ]]
