@@ -2,10 +2,12 @@ SHELL=/usr/bin/bash
 
 .PHONY: install update grml submodules tmux oh-my-zsh fonts emacs customizations
 
-install: fonts xmonad tmux emacs oh-my-zsh-install oh-my-zsh
+install: fonts xmonad tmux emacs oh-my-zsh-install oh-my-zsh plantuml
+
+plantuml:
+	cd .emacs.d && wget -O plantuml.jar http://downloads.sourceforge.net/project/plantuml/plantuml.jar
 
 update: submodules
-	cd .emacs.d && wget -O plantuml.jar http://downloads.sourceforge.net/project/plantuml/plantuml.jar
 	cd .emacs.d/src/haskell-mode && make haskell-mode-autoloads.el
 	cd .emacs.d/src/org-mode && make autoloads
 	cd .emacs.d/src/magit && EFLAGS="-L ../git-modes" make lisp docs
@@ -21,7 +23,8 @@ submodules:
 	git submodule update --recursive
 
 tmux:
-	cd maglev && make install
+#	cd maglev && make install
+	cp .tmux.conf ~/
 
 oh-my-zsh-install:
 	bash -c "$$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O - | sed -e 's/^env zsh$$/\# env zsh/')"
