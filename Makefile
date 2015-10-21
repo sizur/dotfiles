@@ -75,5 +75,8 @@ emacs:
 	rsync -vurl --exclude=.git/ .emacs.d/ ~/.emacs.d/
 	rm ~/.emacs.d/emacs.el ~/.emacs.d/.#emacs.org || true
 
+rtags:
+	cd .emacs.d/src/rtags && rm -rf bld && mkdir bld && cd bld && cmake -DCMAKE_BUILD_TYPE=Release .. && make
+
 customizations:
 	cp ~/.emacs.d/customizations.el .emacs.d/

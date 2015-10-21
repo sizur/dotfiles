@@ -2,6 +2,10 @@ Eugene Grigoriev's Dotemacs.
 
 Order is important for some items for compatibility.
 
+Manual Steps:
+
+ M-x package-install RET flycheck
+
 * Basics
 ** The Very Basics
    #+NAME: emacs-very-basic
@@ -144,6 +148,17 @@ Order is important for some items for compatibility.
    #+BEGIN_SRC emacs-lisp :tangle yes
    (add-to-list 'load-path "~/.emacs.d/src/names")
    #+END_SRC
+* MELPA
+  #+NAME: emacs-melpa
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (require 'package)
+    (add-to-list 'package-archives
+                 '("melpa" . "http://melpa.org/packages/") t)
+    (package-initialize)
+  #+END_SRC
+
+  #+RESULTS: emacs-melpa
+  : t
 * Font
   #+NAME: emacs-font
   #+BEGIN_SRC emacs-lisp :tangle yes
@@ -844,16 +859,6 @@ Order is important for some items for compatibility.
     ;(global-set-key (kbd "M-<right>") 'smart-forward)
   #+END_SRC
   
-* Change Inner
-  Requires expand-region
-  #+NAME: emacs-change-inner
-  #+BEGIN_SRC emacs-lisp :tangle yes
-    (add-to-list 'load-path "~/.emacs.d/src/change-inner.el")
-    (require 'change-inner)
-    (global-set-key (kbd "M-i") 'change-inner)
-    (global-set-key (kbd "M-o") 'change-outer)
-  #+END_SRC
-  
 * Wrap Selection
   #+NAME: emacs-wrap-region
   #+BEGIN_SRC emacs-lisp :tangle yes
@@ -908,7 +913,55 @@ Order is important for some items for compatibility.
 
    #+RESULTS: xpath2xml
    | zencoding-mode |
-   
+* Flycheck
+  #+NAME: emacs-flycheck
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (when (package-installed-p 'flycheck)
+      (require 'flycheck))
+  #+END_SRC
+* C++
+  #+NAME: emacs-cpp
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (add-to-list 'load-path "~/.emacs.d/src/cmake-ide")
+    ;; (require 'rtags)
+    (require 'cmake-ide)
+    (cmake-ide-setup)
+
+    (when (executable-find "clang")
+      ;; company-clang is used automatically
+      (when (executable-find "clang-format")
+        (require 'clang-format)
+        (add-hook 'c-mode-common-hook
+                  (lambda ()
+                    (when (derived-mode-p 'c-mode 'c++-mode 'java-mode 'javascript-mode)
+                      (when (featurep 'flycheck)
+                        (setq flycheck-gcc-language-standard "c++14")
+                        (setq flycheck-clang-language-standard "c++14")
+                        (flycheck-mode 1))
+                      (define-key c++-mode-map [C-M-tab] 'clang-format-region)
+                      (define-key c++-mode-map [C-M-S-tab] 'clang-format-buffer)
+                      (define-key c++-mode-map [C-M-iso-lefttab] 'clang-format-buffer))))))
+
+    ;; ;; not working correctly for now
+    ;; (when (executable-find "ctags")
+    ;;   (add-to-list 'load-path "~/.emacs.d/src/ggtags")
+    ;;   (require 'ggtags)
+    ;;   (add-hook 'c-mode-common-hook
+    ;;             (lambda ()
+    ;;               (when (derived-mode-p 'c-mode 'c++-mode 'java-mode 'cperl-mode)
+    ;;                 (ggtags-mode 1))))
+    ;;   (define-key ggtags-mode-map (kbd "C-c g s") 'ggtags-find-other-symbol)
+    ;;   (define-key ggtags-mode-map (kbd "C-c g h") 'ggtags-view-tag-history)
+    ;;   (define-key ggtags-mode-map (kbd "C-c g r") 'ggtags-find-reference)
+    ;;   (define-key ggtags-mode-map (kbd "C-c g f") 'ggtags-find-file)
+    ;;   (define-key ggtags-mode-map (kbd "C-c g c") 'ggtags-create-tags)
+    ;;   (define-key ggtags-mode-map (kbd "C-c g u") 'ggtags-update-tags)
+    ;;   (define-key ggtags-mode-map (kbd "M-,") 'pop-tag-mark))
+  #+END_SRC
+
+  #+RESULTS: emacs-cpp
+  : pop-tag-mark
+
 * Haskell
   #+NAME: haskell
   #+BEGIN_SRC emacs-lisp :tangle yes
@@ -926,13 +979,13 @@ Order is important for some items for compatibility.
   #+BEGIN_SRC emacs-lisp :tangle yes
     (defalias 'perl-mode 'cperl-mode)
     (require 'perltidy)
-    (require 'flymake)
     (require 'perl-completion)
     (eval-after-load 'cperl-mode
       '(define-key cperl-mode-map (kbd "C-c p") 'perltidy-dwim))
     (add-hook 'cperl-mode-hook
               (lambda ()
-                ;; (flymake-mode t)
+                (when (featurep 'flycheck)
+                  (flycheck-mode 1))
                 (perl-completion-mode t)
                 (local-unset-key (kbd "{"))
                 ))
@@ -1051,15 +1104,6 @@ Order is important for some items for compatibility.
     (add-to-list 'load-path "~/.emacs.d/src/string-edit.el")
     (require 'string-edit)
     ;string-edit-at-point
-  #+END_SRC
-  
-* Flycheck
-  not working atm.
-  #+NAME: emacs-flycheck
-  #+BEGIN_SRC emacs-lisp :tangle yes
-    ;(add-to-list 'load-path "~/.emacs.d/src/flycheck")
-    ;(require 'flycheck)
-    ;(add-hook 'after-init-hook #'global-flycheck-mode)
   #+END_SRC
   
 * Ledger

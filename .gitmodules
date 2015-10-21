@@ -208,3 +208,12 @@
 [submodule ".urxvt/tabbedex"]
 	path = .urxvt/tabbedex
 	url = https://github.com/sizur/urxvt-tabbedex.git
+[submodule ".emacs.d/src/ggtags"]
+	path = .emacs.d/src/ggtags
+	url = https://github.com/leoliu/ggtags.git
+[submodule ".emacs.d/src/rtags"]
+	path = .emacs.d/src/rtags
+	url = https://github.com/Andersbakken/rtags.git
+[submodule ".emacs.d/src/cmake-ide"]
+	path = .emacs.d/src/cmake-ide
+	url = https://github.com/atilaneves/cmake-ide.git
