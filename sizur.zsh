@@ -18,3 +18,7 @@ BULLETTRAIN_GIT_SHOW=false
 
 export EDITOR='emacsclient -c'
 alias e='emacsclient -c'
+
+path[1,0]=~/bin
+path[1,0]=~/.emacs.d/local/bin
+

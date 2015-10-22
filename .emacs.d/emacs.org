@@ -917,50 +917,70 @@ Manual Steps:
   #+NAME: emacs-flycheck
   #+BEGIN_SRC emacs-lisp :tangle yes
     (when (package-installed-p 'flycheck)
+      (setq flycheck-gcc-language-standard "c++1z")
+      (setq flycheck-clang-language-standard "c++1z")
+      (setq flycheck-perl-include-path
+            '("." ".." "../lib" "../CPAN" "../.." "../../lib" "../../CPAN"
+              "../../.." "../../../lib" "../../../CPAN"
+              "../../../.." "../../../../lib" "../../../../CPAN"
+              ))
       (require 'flycheck))
   #+END_SRC
+
 * C++
-  #+NAME: emacs-cpp
-  #+BEGIN_SRC emacs-lisp :tangle yes
-    (add-to-list 'load-path "~/.emacs.d/src/cmake-ide")
-    ;; (require 'rtags)
-    (require 'cmake-ide)
-    (cmake-ide-setup)
+  RTags should come before CMake-IDE
+** RTags
+   #+NAME: emacs-rtags
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (add-to-list 'load-path "~/.emacs.d/local/share/emacs/site-lisp/rtags")
+     (setq rtags-path "~/.emacs.d/local/bin")
+     (require 'rtags)
+   #+END_SRC
 
-    (when (executable-find "clang")
-      ;; company-clang is used automatically
-      (when (executable-find "clang-format")
-        (require 'clang-format)
-        (add-hook 'c-mode-common-hook
-                  (lambda ()
-                    (when (derived-mode-p 'c-mode 'c++-mode 'java-mode 'javascript-mode)
-                      (when (featurep 'flycheck)
-                        (setq flycheck-gcc-language-standard "c++14")
-                        (setq flycheck-clang-language-standard "c++14")
-                        (flycheck-mode 1))
-                      (define-key c++-mode-map [C-M-tab] 'clang-format-region)
-                      (define-key c++-mode-map [C-M-S-tab] 'clang-format-buffer)
-                      (define-key c++-mode-map [C-M-iso-lefttab] 'clang-format-buffer))))))
+   #+RESULTS: emacs-rtags
+   : rtags
+** CMake-IDE
+   #+NAME: emacs-cpp
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (when (executable-find "clang")
+       ;; company-clang is used automatically
+       (when (executable-find "clang-format")
+         (require 'clang-format)
+         (add-hook 'c-mode-common-hook
+                   (lambda ()
+                     (when (derived-mode-p 'c-mode 'c++-mode 'java-mode 'javascript-mode)
+                       (when (featurep 'flycheck)
+                         ;; (setq flycheck-gcc-language-standard "c++14")
+                         ;; (setq flycheck-clang-language-standard "c++14")
+                         (flycheck-mode 1))
+                       (define-key c++-mode-map [C-M-tab] 'clang-format-region)
+                       (define-key c++-mode-map [C-M-S-tab] 'clang-format-buffer)
+                       (define-key c++-mode-map [C-M-iso-lefttab] 'clang-format-buffer))))))
 
-    ;; ;; not working correctly for now
-    ;; (when (executable-find "ctags")
-    ;;   (add-to-list 'load-path "~/.emacs.d/src/ggtags")
-    ;;   (require 'ggtags)
-    ;;   (add-hook 'c-mode-common-hook
-    ;;             (lambda ()
-    ;;               (when (derived-mode-p 'c-mode 'c++-mode 'java-mode 'cperl-mode)
-    ;;                 (ggtags-mode 1))))
-    ;;   (define-key ggtags-mode-map (kbd "C-c g s") 'ggtags-find-other-symbol)
-    ;;   (define-key ggtags-mode-map (kbd "C-c g h") 'ggtags-view-tag-history)
-    ;;   (define-key ggtags-mode-map (kbd "C-c g r") 'ggtags-find-reference)
-    ;;   (define-key ggtags-mode-map (kbd "C-c g f") 'ggtags-find-file)
-    ;;   (define-key ggtags-mode-map (kbd "C-c g c") 'ggtags-create-tags)
-    ;;   (define-key ggtags-mode-map (kbd "C-c g u") 'ggtags-update-tags)
-    ;;   (define-key ggtags-mode-map (kbd "M-,") 'pop-tag-mark))
-  #+END_SRC
+     (add-to-list 'load-path "~/.emacs.d/src/cmake-ide")
+     ;; (require 'rtags)
+     (require 'cmake-ide)
+     (cmake-ide-setup)
 
-  #+RESULTS: emacs-cpp
-  : pop-tag-mark
+     ;; ;; not working correctly for now
+     ;; (when (executable-find "ctags")
+     ;;   (add-to-list 'load-path "~/.emacs.d/src/ggtags")
+     ;;   (require 'ggtags)
+     ;;   (add-hook 'c-mode-common-hook
+     ;;             (lambda ()
+     ;;               (when (derived-mode-p 'c-mode 'c++-mode 'java-mode 'cperl-mode)
+     ;;                 (ggtags-mode 1))))
+     ;;   (define-key ggtags-mode-map (kbd "C-c g s") 'ggtags-find-other-symbol)
+     ;;   (define-key ggtags-mode-map (kbd "C-c g h") 'ggtags-view-tag-history)
+     ;;   (define-key ggtags-mode-map (kbd "C-c g r") 'ggtags-find-reference)
+     ;;   (define-key ggtags-mode-map (kbd "C-c g f") 'ggtags-find-file)
+     ;;   (define-key ggtags-mode-map (kbd "C-c g c") 'ggtags-create-tags)
+     ;;   (define-key ggtags-mode-map (kbd "C-c g u") 'ggtags-update-tags)
+     ;;   (define-key ggtags-mode-map (kbd "M-,") 'pop-tag-mark))
+   #+END_SRC
+
+   #+RESULTS: emacs-cpp
+   : pop-tag-mark
 
 * Haskell
   #+NAME: haskell
@@ -1641,3 +1661,4 @@ Manual Steps:
 
   #+RESULTS: emacs-at-start
 
+s

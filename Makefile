@@ -1,4 +1,5 @@
 SHELL=/usr/bin/bash
+CWD=$(shell pwd)
 
 .PHONY: install update grml submodules tmux oh-my-zsh fonts emacs customizations
 
@@ -76,7 +77,8 @@ emacs:
 	rm ~/.emacs.d/emacs.el ~/.emacs.d/.#emacs.org || true
 
 rtags:
-	cd .emacs.d/src/rtags && rm -rf bld && mkdir bld && cd bld && cmake -DCMAKE_BUILD_TYPE=Release .. && make
+#	cd .emacs.d/src/rtags && rm -rf bld && mkdir bld && cd bld && cmake -DCMAKE_BUILD_TYPE=Release .. && make
+	cd .emacs.d/src/rtags && cmake -DCMAKE_INSTALL_PREFIX=$CWD/.emacs.d/local && make install
 
 customizations:
 	cp ~/.emacs.d/customizations.el .emacs.d/
