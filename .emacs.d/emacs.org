@@ -2,10 +2,6 @@ Eugene Grigoriev's Dotemacs.
 
 Order is important for some items for compatibility.
 
-Manual Steps:
-
- M-x package-install RET flycheck
-
 * Basics
 ** The Very Basics
    #+NAME: emacs-very-basic
@@ -916,6 +912,8 @@ Manual Steps:
 * Flycheck
   #+NAME: emacs-flycheck
   #+BEGIN_SRC emacs-lisp :tangle yes
+    (when (not (package-installed-p 'flycheck))
+      (package-install 'flycheck))
     (when (package-installed-p 'flycheck)
       (setq flycheck-gcc-language-standard "c++1z")
       (setq flycheck-clang-language-standard "c++1z")
