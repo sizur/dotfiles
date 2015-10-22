@@ -918,11 +918,12 @@ Order is important for some items for compatibility.
       (setq flycheck-gcc-language-standard "c++1z")
       (setq flycheck-clang-language-standard "c++1z")
       (setq flycheck-perl-include-path
-            '("." "lib" "CPAN"
-              ".." "../lib" "../CPAN"
-              "../.." "../../lib" "../../CPAN"
-              "../../.." "../../../lib" "../../../CPAN"
+            '(
               "../../../.." "../../../../lib" "../../../../CPAN"
+              "../../.." "../../../lib" "../../../CPAN"
+              "../.." "../../lib" "../../CPAN"
+              ".." "../lib" "../CPAN"
+              "." "lib" "CPAN"
               ))
       (require 'flycheck))
   #+END_SRC
