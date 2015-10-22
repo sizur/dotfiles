@@ -920,7 +920,9 @@ Manual Steps:
       (setq flycheck-gcc-language-standard "c++1z")
       (setq flycheck-clang-language-standard "c++1z")
       (setq flycheck-perl-include-path
-            '("." ".." "../lib" "../CPAN" "../.." "../../lib" "../../CPAN"
+            '("." "lib" "CPAN"
+              ".." "../lib" "../CPAN"
+              "../.." "../../lib" "../../CPAN"
               "../../.." "../../../lib" "../../../CPAN"
               "../../../.." "../../../../lib" "../../../../CPAN"
               ))
