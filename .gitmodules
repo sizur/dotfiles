@@ -1,45 +1,59 @@
 [submodule ".emacs.d/src/org-mode"]
 	path = .emacs.d/src/org-mode
 	url = git://orgmode.org/org-mode.git
+	branch = master
 [submodule ".emacs.d/src/org-impress-js"]
 	path = .emacs.d/src/org-impress-js
 	url = https://github.com/kinjo/org-impress-js.el.git
+	branch = master
 [submodule ".emacs.d/src/yasnippet"]
 	path = .emacs.d/src/yasnippet
 	url = https://github.com/capitaomorte/yasnippet
+	branch = master
 [submodule ".emacs.d/src/haskell-mode"]
 	path = .emacs.d/src/haskell-mode
 	url = https://github.com/haskell/haskell-mode.git
+	branch = master
 [submodule ".zsh-autosuggestions"]
 	path = .zsh-autosuggestions
 	url = git://github.com/tarruda/zsh-autosuggestions
+	branch = master
 [submodule ".emacs.d/src/multiple-cursors.el"]
 	path = .emacs.d/src/multiple-cursors.el
 	url = https://github.com/emacsmirror/multiple-cursors.git
+	branch = master
 [submodule ".emacs.d/src/phi-search"]
 	path = .emacs.d/src/phi-search
 	url = https://github.com/zk-phi/phi-search.git
+	branch = master
 [submodule ".emacs.d/src/expand-region.el"]
 	path = .emacs.d/src/expand-region.el
 	url = https://github.com/magnars/expand-region.el.git
+	branch = master
 [submodule ".emacs.d/src/cucumber.el"]
 	path = .emacs.d/src/cucumber.el
 	url = https://github.com/michaelklishin/cucumber.el.git
+	branch = master
 [submodule ".emacs.d/src/yaml-mode"]
 	path = .emacs.d/src/yaml-mode
 	url = https://github.com/yoshiki/yaml-mode.git
+	branch = master
 [submodule ".emacs.d/src/magit"]
 	path = .emacs.d/src/magit
 	url = https://github.com/magit/magit.git
+	branch = master
 [submodule ".emacs.d/src/git-modes"]
 	path = .emacs.d/src/git-modes
 	url = https://github.com/magit/git-modes.git
+	branch = master
 [submodule ".emacs.d/src/highlight-parentheses"]
 	path = .emacs.d/src/highlight-parentheses
 	url = https://github.com/nschum/highlight-parentheses.el.git
+	branch = master
 [submodule ".emacs.d/src/emacs-fish"]
 	path = .emacs.d/src/emacs-fish
 	url = https://github.com/wwwjfy/emacs-fish.git
+	branch = master
 [submodule ".emacs/emacs"]
 	path = .emacs/emacs
 	url = git://git.savannah.gnu.org/emacs.git
@@ -49,15 +63,19 @@
 [submodule ".emacs.d/src/tuareg"]
 	path = .emacs.d/src/tuareg
 	url = https://github.com/ocaml/tuareg.git
+	branch = master
 [submodule ".emacs.d/src/emmet-mode"]
 	path = .emacs.d/src/emmet-mode
 	url = https://github.com/smihica/emmet-mode.git
+	branch = master
 [submodule ".emacs.d/src/company-mode"]
 	path = .emacs.d/src/company-mode
 	url = https://github.com/company-mode/company-mode.git
+	branch = master
 [submodule ".emacs.d/src/icicles"]
 	path = .emacs.d/src/icicles
 	url = https://github.com/emacsmirror/icicles.git
+	branch = master
 [submodule ".emacs.d/src/helm"]
 	path = .emacs.d/src/helm
 	url = https://github.com/emacs-helm/helm.git
@@ -67,153 +85,211 @@
 [submodule ".emacs.d/src/paredit"]
 	path = .emacs.d/src/paredit
 	url = http://mumble.net/~campbell/git/paredit.git
+	branch = master
 [submodule ".emacs.d/src/remember-el"]
 	path = .emacs.d/src/remember-el
 	url = git://repo.or.cz/remember-el.git
+	branch = master
 [submodule ".emacs.d/src/flycheck"]
 	path = .emacs.d/src/flycheck
 	url = https://github.com/magnars/flycheck.git
+	branch = master
 [submodule ".emacs.d/src/smart-forward"]
 	path = .emacs.d/src/smart-forward
 	url = https://github.com/magnars/smart-forward.el.git
+	branch = master
 [submodule ".emacs.d/src/wrap-region"]
 	path = .emacs.d/src/wrap-region
 	url = https://github.com/magnars/wrap-region.git
+	branch = master
 [submodule ".emacs.d/src/change-inner.el"]
 	path = .emacs.d/src/change-inner.el
 	url = https://github.com/magnars/change-inner.el.git
+	branch = master
 [submodule ".emacs.d/src/dash.el"]
 	path = .emacs.d/src/dash.el
 	url = https://github.com/magnars/dash.el.git
+	branch = master
 [submodule ".emacs.d/src/string-edit.el"]
 	path = .emacs.d/src/string-edit.el
 	url = https://github.com/magnars/string-edit.el.git
+	branch = master
 [submodule ".emacs.d/src/s.el"]
 	path = .emacs.d/src/s.el
 	url = https://github.com/magnars/s.el.git
+	branch = master
 [submodule ".emacs.d/src/ht.el"]
 	path = .emacs.d/src/ht.el
 	url = https://github.com/Wilfred/ht.el.git
+	branch = master
 [submodule ".emacs.d/src/loop.el"]
 	path = .emacs.d/src/loop.el
 	url = https://github.com/Wilfred/loop.el.git
+	branch = master
 [submodule ".emacs.d/src/tco.el"]
 	path = .emacs.d/src/tco.el
 	url = https://github.com/Wilfred/tco.el.git
+	branch = master
 [submodule ".emacs.d/src/paren-face"]
 	path = .emacs.d/src/paren-face
 	url = https://github.com/tarsius/paren-face.git
+	branch = master
 [submodule ".emacs.d/src/geiser"]
 	path = .emacs.d/src/geiser
 	url = git://git.sv.gnu.org/geiser.git
+	branch = master
 [submodule "ledger"]
 	path = ledger
 	url = https://github.com/ledger/ledger.git
+	branch = master
 [submodule "ofxclient"]
 	path = ofxclient
 	url = git://github.com/captin411/ofxclient.git
+	branch = master
 [submodule ".emacs.d/diagram-tools"]
 	path = .emacs.d/diagram-tools
 	url = https://github.com/vidarh/diagram-tools.git
 [submodule ".emacs.d/src/diagram-tools"]
 	path = .emacs.d/src/diagram-tools
 	url = https://github.com/vidarh/diagram-tools.git
+	branch = master
 [submodule ".emacs.d/src/o-blog"]
 	path = .emacs.d/src/o-blog
 	url = https://github.com/renard/o-blog.git
+	branch = master
 [submodule ".emacs.d/src/monokai-emacs"]
 	path = .emacs.d/src/monokai-emacs
 	url = https://github.com/oneKelvinSmith/monokai-emacs.git
+	branch = master
 [submodule ".emacs.d/src/undo-tree"]
 	path = .emacs.d/src/undo-tree
 	url = http://www.dr-qubit.org/git/undo-tree.git
+	branch = master
 [submodule ".emacs.d/src/names"]
 	path = .emacs.d/src/names
 	url = https://github.com/Bruce-Connor/names.git
+	branch = master
 [submodule ".emacs.d/src/aggressive-indent-mode"]
 	path = .emacs.d/src/aggressive-indent-mode
 	url = https://github.com/Bruce-Connor/aggressive-indent-mode.git
+	branch = master
 [submodule ".emacs.d/src/region-bindings-mode"]
 	path = .emacs.d/src/region-bindings-mode
 	url = https://github.com/fgallina/region-bindings-mode.git
+	branch = master
 [submodule ".emacs.d/src/smart-mode-line"]
 	path = .emacs.d/src/smart-mode-line
 	url = https://github.com/Malabarba/smart-mode-line.git
+	branch = master
 [submodule ".emacs.d/src/rich-minority"]
 	path = .emacs.d/src/rich-minority
 	url = https://github.com/Malabarba/rich-minority.git
+	branch = master
 [submodule ".emacs.d/src/smartparens"]
 	path = .emacs.d/src/smartparens
 	url = https://github.com/Fuco1/smartparens.git
+	branch = master
 [submodule ".emacs.d/src/rainbow-blocks"]
 	path = .emacs.d/src/rainbow-blocks
 	url = https://github.com/istib/rainbow-blocks.git
+	branch = master
 [submodule ".emacs.d/src/highlight-indentation"]
 	path = .emacs.d/src/highlight-indentation
 	url = https://github.com/antonj/Highlight-Indentation-for-Emacs.git
+	branch = master
 [submodule ".emacs.d/src/golden-ratio"]
 	path = .emacs.d/src/golden-ratio
 	url = https://github.com/roman/golden-ratio.el.git
+	branch = master
 [submodule ".emacs.d/src/guide-key"]
 	path = .emacs.d/src/guide-key
 	url = https://github.com/kai2nenobu/guide-key.git
+	branch = master
 [submodule ".emacs.d/src/popwin"]
 	path = .emacs.d/src/popwin
 	url = https://github.com/m2ym/popwin-el.git
+	branch = master
 [submodule ".emacs.d/src/hydra"]
 	path = .emacs.d/src/hydra
 	url = https://github.com/abo-abo/hydra.git
+	branch = master
 [submodule ".emacs.d/src/linum-relative"]
 	path = .emacs.d/src/linum-relative
 	url = https://github.com/coldnew/linum-relative.git
+	branch = master
 [submodule ".emacs.d/src/origami"]
 	path = .emacs.d/src/origami
 	url = https://github.com/gregsexton/origami.el.git
+	branch = master
 [submodule ".emacs.d/src/cmake-font-lock"]
 	path = .emacs.d/src/cmake-font-lock
 	url = https://github.com/Lindydancer/cmake-font-lock.git
+	branch = master
 [submodule ".emacs.d/src/cmake-project"]
 	path = .emacs.d/src/cmake-project
 	url = https://github.com/alamaison/emacs-cmake-project.git
+	branch = master
 [submodule ".emacs.d/src/rust-mode"]
 	path = .emacs.d/src/rust-mode
 	url = https://github.com/rust-lang/rust-mode.git
+	branch = master
 [submodule ".emacs.d/src/sublimity"]
 	path = .emacs.d/src/sublimity
 	url = https://github.com/zk-phi/sublimity.git
+	branch = master
 [submodule ".emacs.d/src/highlight-stages"]
 	path = .emacs.d/src/highlight-stages
 	url = https://github.com/zk-phi/highlight-stages.git
+	branch = master
 [submodule ".emacs.d/src/cedit"]
 	path = .emacs.d/src/cedit
 	url = https://github.com/zk-phi/cedit.git
+	branch = master
 [submodule ".emacs.d/src/phi-grep"]
 	path = .emacs.d/src/phi-grep
 	url = https://github.com/zk-phi/phi-grep.git
+	branch = master
 [submodule "fonts"]
 	path = fonts
 	url = https://github.com/powerline/fonts.git
+	branch = master
 [submodule "maglev"]
 	path = maglev
 	url = https://github.com/sizur/maglev.git
+	branch = master
 [submodule "bullet-train-oh-my-zsh-theme"]
 	path = bullet-train-oh-my-zsh-theme
 	url = https://github.com/sizur/bullet-train-oh-my-zsh-theme.git
+	branch = master
 [submodule ".emacs.d/src/lua-mode"]
 	path = .emacs.d/src/lua-mode
 	url = https://github.com/immerrr/lua-mode.git
+	branch = master
 [submodule ".urxvt/font-size"]
 	path = .urxvt/font-size
 	url = https://github.com/majutsushi/urxvt-font-size.git
+	branch = master
 [submodule ".urxvt/tabbedex"]
 	path = .urxvt/tabbedex
 	url = https://github.com/sizur/urxvt-tabbedex.git
+	branch = master
 [submodule ".emacs.d/src/ggtags"]
 	path = .emacs.d/src/ggtags
 	url = https://github.com/leoliu/ggtags.git
+	branch = master
 [submodule ".emacs.d/src/rtags"]
 	path = .emacs.d/src/rtags
 	url = https://github.com/Andersbakken/rtags.git
+	branch = master
 [submodule ".emacs.d/src/cmake-ide"]
 	path = .emacs.d/src/cmake-ide
 	url = https://github.com/atilaneves/cmake-ide.git
+	branch = master
+[submodule ".emacs.d/src/org-reveal"]
+	path = .emacs.d/src/org-reveal
+	url = https://github.com/yjwen/org-reveal.git
+	branch = master
+[submodule ".emacs.d/src/reveal.js"]
+	path = .emacs.d/src/reveal.js
+	url = https://github.com/hakimel/reveal.js.git
+	branch = master

@@ -467,6 +467,19 @@ Order is important for some items for compatibility.
    #+RESULTS: orgmode-babel
    : inline-css
 
+** Org-Reveal-js
+   #+NAME: emacs-org-reveal-js
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (add-to-list 'load-path "~/.emacs.d/src/org-reveal")
+     (require 'ox-reveal)
+     (setq org-reveal-root
+           (concat "file://"
+                   (expand-file-name "~/.emacs.d/src/reveal.js")))
+   #+END_SRC
+
+   #+RESULTS: emacs-org-reveal-js
+   : file:///home/sizur/.emacs.d/src/reveal.js
+
 ** Org-Impress-js
    #+NAME: org-impress.js
    #+BEGIN_SRC emacs-lisp :tangle yes

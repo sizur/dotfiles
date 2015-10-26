@@ -7,7 +7,7 @@ install: fonts xmonad tmux emacs oh-my-zsh-install oh-my-zsh plantuml
 plantuml:
 	cd .emacs.d && wget -O plantuml.jar http://downloads.sourceforge.net/project/plantuml/plantuml.jar
 
-update: submodules
+update:
 	cd .emacs.d/src/haskell-mode && make haskell-mode-autoloads.el
 	cd .emacs.d/src/org-mode && make autoloads
 	cd .emacs.d/src/magit && EFLAGS="-L ../git-modes" make lisp docs
@@ -17,10 +17,14 @@ grml:
 	wget -O .zshrc http://git.grml.org/f/grml-etc-core/etc/zsh/zshrc
 #	wget -O .zshrc.local  http://git.grml.org/f/grml-etc-core/etc/skel/.zshrc
 
-submodules:
+submodules-update:
 	git pull
+#	git submodule update --init --recursive
+	git submodule foreach -q --recursive 'git checkout $(git config -f $toplevel/.gitmodules submodule.$name.branch || echo master)'
+	git submodule update --recursive --remote
+
+submodules-init:
 	git submodule update --init --recursive
-	git submodule update --recursive
 
 tmux:
 #	cd maglev && make install
