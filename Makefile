@@ -1,4 +1,4 @@
-SHELL=/usr/bin/bash
+SHELL:=$(shell which bash)
 
 .PHONY: install update grml submodules tmux oh-my-zsh fonts emacs customizations
 
@@ -31,7 +31,7 @@ tmux:
 	cp .tmux.conf ~/
 
 oh-my-zsh-install:
-	bash -c "$$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O - | sed -e 's/^env zsh$$/\# env zsh/')"
+	$(SHELL) -c "$$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O - | sed -e 's/^env zsh$$/\# env zsh/')"
 	@echo oh-my-zsh installed
 
 oh-my-zsh:
