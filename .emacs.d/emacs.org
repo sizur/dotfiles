@@ -189,7 +189,7 @@ Order is important for some items for compatibility.
   #+NAME: emacs-font
   #+BEGIN_SRC emacs-lisp :tangle yes
     (setq preferred-fonts
-          '(("Monaco" . 10)
+          '(("Monaco" . 13)
             ("Consolas" . 9)
             ("Source Code Pro" . 10)
             ("Anonymous Pro" . 11)
