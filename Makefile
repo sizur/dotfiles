@@ -51,7 +51,7 @@ xmonad:
 	mkdir -p ~/.config/conky/scripts
 	cp .config/conky/scripts/conky_lua_scripts.lua ~/.config/conky/scripts/
 
-urxvt: xmonad
+urxvt:
 	cp .Xdefaults ~/
 	mkdir -p ~/.urxvt/ext
 	cp .urxvt/font-size/font-size ~/.urxvt/ext/
