@@ -22,3 +22,5 @@ alias e='emacsclient -c'
 path[1,0]=~/bin
 path[1,0]=~/.emacs.d/local/bin
 
+# OPAM configuration
+. /home/sizur/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
