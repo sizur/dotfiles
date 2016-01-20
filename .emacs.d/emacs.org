@@ -100,7 +100,7 @@ Order is important for some items for compatibility.
                   (sizur/emacs.d "elisp"))
 
      (defun sizur/emacs.d/elisp (el)
-       (expand-file-name el sizur/emacs.d))
+       (expand-file-name el (sizur/emacs.d "elisp")))
    #+END_SRC
    
 ** Customizations File
