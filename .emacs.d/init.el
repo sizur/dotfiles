@@ -1,30 +1,49 @@
-;;; init.el --- Where all the magic begins
-;;
-;; This file loads Org-mode and then loads the rest of our Emacs initialization from Emacs lisp
-;; embedded in literate Org-mode files.
+(when (>= emacs-major-version 24)
 
-;; Load up Org Mode and (now included) Org Babel for elisp embedded in Org Mode files
-(setq dotfiles-dir (file-name-directory (or (buffer-file-name) load-file-name)))
+  (require 'package)
 
-(let* ((org-dir (expand-file-name
-                 "lisp" (expand-file-name
-                         "org-mode" (expand-file-name
-                                     "src" dotfiles-dir))))
-       (org-contrib-dir (expand-file-name
-                         "lisp" (expand-file-name
-                                 "contrib" (expand-file-name
-                                            ".." org-dir)))))
-  (setq load-path (append (list org-dir org-contrib-dir)
-                          (or load-path nil)))
-  ;; load up Org-mode and Org-babel
-;  (require 'org-install) ; not needed anymore(require 'package)
-;  (require 'package)
-;  (package-initialize)
-  (require 'org)
-  (require 'ob)
-  (require 'ob-tangle))
+  (setq package-archives
+        '(("org"          . "http://orgmode.org/elpa/")
+          ("gnu"          . "https://elpa.gnu.org/packages/")
+          ("melpa"        . "https://melpa.org/packages/")
+          ("melpa-stable" . "https://stable.melpa.org/packages/")
+          ))
 
-;; load up all literate org-mode files in this directory
-(mapc #'org-babel-load-file (directory-files dotfiles-dir t "\\.org$"))
+  (package-initialize)
 
-;;; init.el ends here
+  ;; update package list
+  ;; (package-refresh-contents)
+
+  ;; ensure use-package is installed
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package))
+
+  (require 'use-package)
+  
+  ;; always try to use package.el
+  (setq use-package-always-ensure t)
+  
+  ;; ensure use-package is updated from stable
+  (use-package use-package
+    ;; :pin melpa-stable
+    )
+
+    ;; emacs.d directory
+  (defconst sizur/emacs.d
+    (expand-file-name ".emacs.d" (getenv "HOME")))
+
+  ;; emacs.d subdirectory function
+  (defun sizur/emacs.d (d)
+    (expand-file-name d sizur/emacs.d))
+
+  ;; update org-mode and use babel
+  (use-package org
+    :ensure org-plus-contrib
+    :pin org
+    :config
+    (require 'ob)
+    (require 'ob-tangle)
+    
+    ;; tangle and evaluate literate configuration
+    (org-babel-load-file (sizur/emacs.d "emacs.org"))))
