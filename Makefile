@@ -41,7 +41,6 @@ fonts:
 	mkfontdir ~/.local/share/fonts
 
 xmonad:
-	cp .Xdefaults ~/
 	cp .xinitrc ~/
 	cp -rf .xmonad ~/
 	cp -rf .dzen ~/
@@ -53,6 +52,7 @@ xmonad:
 	cp .config/conky/scripts/conky_lua_scripts.lua ~/.config/conky/scripts/
 
 urxvt: xmonad
+	cp .Xdefaults ~/
 	mkdir -p ~/.urxvt/ext
 	cp .urxvt/font-size/font-size ~/.urxvt/ext/
 	cp .urxvt/tabbedex/tabbedex ~/.urxvt/ext/
