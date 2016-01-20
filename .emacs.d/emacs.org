@@ -55,6 +55,7 @@ Order is important for some items for compatibility.
 ** Disable GUI fluff
    #+NAME: emacs-no-fluff
    #+BEGIN_SRC emacs-lisp :tangle yes
+     (setq initial-scratch-message "")
      (setq inhibit-splash-screen t)
      (add-hook 'window-setup-hook
                (progn
@@ -85,76 +86,105 @@ Order is important for some items for compatibility.
    #+RESULTS: emacs-url-handling
    : browse-url-xdg-open
 
-** Default path
+** Default paths
    #+NAME: default-path
    #+BEGIN_SRC emacs-lisp :tangle yes
-    (add-to-list 'load-path
-                 "~/.emacs.d/src")
+     (let* ((subdirs '("elisp" "backups" "snippets" "templates" "ac-dict"))
+            (fulldirs (mapcar (lambda (d) (sizur/emacs.d d)) subdirs)))
+       (dolist (dir fulldirs)
+         (when (not (file-exists-p dir))
+           (message "Make directory: %s" dir)
+           (make-directory dir))))
+
+     (add-to-list 'load-path
+                  (sizur/emacs.d "elisp"))
+
+     (defun sizur/emacs.d/elisp (el)
+       (expand-file-name el sizur/emacs.d))
    #+END_SRC
    
 ** Customizations File
    #+NAME: emacs-customizations
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (setq custom-file "~/.emacs.d/customizations.el")
-     (load custom-file)
+     (setq custom-file (sizur/emacs.d "customizations.el"))
+     (when (file-exists-p custom-file)
+       (load custom-file))
    #+END_SRC
 ** Zone
    #+NAME: emacs-zone
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (require 'zone)
+     ;(require 'zone)
      ;(zone-when-idle 120)
    #+END_SRC
+** Tramp
+   #+NAME: emacs-tramp-mode
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (setq tramp-default-method "ssh")
+   #+END_SRC
+
+   #+RESULTS: emacs-tramp-mode
+   : ssh
+
 * Elisp libs
+** Cl
+   #+NAME: emacs-cl
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (require 'cl)
+     ;(require 'init-support)
+   #+END_SRC
+
+   #+RESULTS: emacs-cl
+
 ** Dash (List lib)
    #+NAME: emacs-dash
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (add-to-list 'load-path "~/.emacs.d/src/dash.el")
-     (require 'dash)
-     (require 'dash-functional)
-     (eval-after-load "dash" '(dash-enable-font-lock))
+     (use-package dash)
+     (use-package dash-functional
+       :config
+       (dash-enable-font-lock))
    #+END_SRC
 ** S (String lib)
    String library
    #+NAME: emacs-s
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (add-to-list 'load-path "~/.emacs.d/src/s.el")
-     (require 's)
+     (use-package s)
    #+END_SRC
+
+   #+RESULTS: emacs-s
+
 ** Ht (Hashtable lib)
    #+NAME: emacs-ht
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (add-to-list 'load-path "~/.emacs.d/src/ht.el")
-     (require 'ht)
+     (use-package ht)
    #+END_SRC
+
+   #+RESULTS: emacs-ht
+
 ** Loop
    #+NAME: emacs-loop
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (add-to-list 'load-path "~/.emacs.d/src/loop.el")
-     (require 'loop)
+     (use-package loop)
    #+END_SRC
+
+   #+RESULTS: emacs-loop
+
 ** Tco (Tail call optimization)
    #+NAME: emacs-tco
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (add-to-list 'load-path "~/.emacs.d/src/tco.el")
-     (require 'tco)
+     (use-package tco)
    #+END_SRC
+
+   #+RESULTS: emacs-tco
+
 ** Names
    Required by Aggressive Indent
    #+NAME: names
    #+BEGIN_SRC emacs-lisp :tangle yes
-   (add-to-list 'load-path "~/.emacs.d/src/names")
+     (use-package names)
    #+END_SRC
-* MELPA
-  #+NAME: emacs-melpa
-  #+BEGIN_SRC emacs-lisp :tangle yes
-    (require 'package)
-    (add-to-list 'package-archives
-                 '("melpa" . "http://melpa.org/packages/") t)
-    (package-initialize)
-  #+END_SRC
 
-  #+RESULTS: emacs-melpa
-  : t
+   #+RESULTS: names
+
 * Font
   #+NAME: emacs-font
   #+BEGIN_SRC emacs-lisp :tangle yes
@@ -191,53 +221,46 @@ Order is important for some items for compatibility.
 ** Yasnippet
    #+NAME: yasnippet
    #+BEGIN_SRC emacs-lisp :tangle yes  
-     (add-to-list 'load-path
-                  "~/.emacs.d/src/yasnippet")
-     (require 'yasnippet)
-     (setq yas-snippet-dirs '("~/.emacs.d/snippets"
-                              "~/.emacs.d/src/yasnippet/yasmate/snippets"
-                              "~/.emacs.d/src/yasnippet/snippets"
-                              ))
-
-     (defun yas/org-very-safe-expand ()
-       (let ((yas/fallback-behavior 'return-nil)) (yas/expand)))
-
-     (add-hook 'org-mode-hook
-               (lambda ()
-                 (make-variable-buffer-local 'yas/trigger-key)
-                 (setq yas/trigger-key [tab])
-                 (add-to-list 'org-tab-first-hook 'yas/org-very-safe-expand)
-                 (define-key yas/keymap [tab] 'yas/next-field)))
-
-     (yas-global-mode 1)
+     (use-package yasnippet
+       :config
+       (yas-global-mode 1)
+       (add-to-list 'yas-snippet-dirs (sizur/emacs.d "snippets"))
+       (defun yas/org-very-safe-expand ()
+         (let ((yas/fallback-behavior 'return-nil)) (yas/expand)))
+       (add-hook 'org-mode-hook
+                 (lambda ()
+                   (make-variable-buffer-local 'yas/trigger-key)
+                   (setq yas/trigger-key [tab])
+                   (add-to-list 'org-tab-first-hook 'yas/org-very-safe-expand)
+                   (define-key yas/keymap [tab] 'yas/next-field))))
    #+END_SRC
 
    #+RESULTS: yasnippet
    : t
     
-** Predictive
-   #+NAME: emacs-predictive
-   #+BEGIN_SRC emacs-lisp :tangle yes
-     ;; (add-to-list 'load-path "~/.emacs.d/src/predictive")
-     ;; (require 'predictive)
-   #+END_SRC
-
 ** Company
    #+NAME: emacs-company
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (add-to-list 'load-path "~/.emacs.d/src/company-mode")
-     (require 'company)
-     (setf company-idle-delay 0
-           company-minimum-prefix-length 2
-           company-show-numbers t
-           company-selection-wrap-around t
-           company-dabbrev-ignore-case t
-           company-dabbrev-ignore-invisible t
-           company-dabbrev-downcase nil)
+     (use-package company
+       :config
+       (setf company-idle-delay 0
+             company-minimum-prefix-length 2
+             company-show-numbers t
+             company-selection-wrap-around t
+             company-dabbrev-ignore-case t
+             company-dabbrev-ignore-invisible t
+             company-dabbrev-downcase nil)
+       (add-to-list 'company-backends 'company-math-symbols-unicode)
+       (add-hook 'after-init-hook 'global-company-mode)
+       :diminish company-mode)
+
+     ;; (use-package company-quickhelp
+     ;;  :config
+     ;;  (company-quickhelp-mode 1))
    #+END_SRC
 
    #+RESULTS: emacs-company
-   : company
+   : t
    
 *** Yasnippet Integration
     #+NAME: emacs-company-yasnippet
@@ -277,97 +300,127 @@ Order is important for some items for compatibility.
 ** Icicles
    #+NAME: emacs-icicles
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (add-to-list 'load-path "~/.emacs.d/src/icicles")
-     (require 'icicles)
-     (icy-mode 1)
+     (use-package icicles
+       :config
+       (icy-mode 1))
    #+END_SRC
 
    #+RESULTS: emacs-icicles
    : t
+** Auto Insertion
+   #+NAME: emacs-autoinsertion
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (use-package autoinsert
+       :init
+       (setq auto-insert-directory (sizur/emacs.d "templates"))
+       (setq auto-insert-query nil)
+       (add-hook 'find-file-hook 'auto-insert)
+       (define-auto-insert "\\.pl$" ["default-perl.pl" ha/autoinsert-yas-expand])
+       (auto-insert-mode 1))
+
+     (defun ha/autoinsert-yas-expand ()
+            (yas-expand-snippet (buffer-string) (point-min) (point-max)))
+   #+END_SRC
+
+   #+RESULTS: emacs-autoinsertion
+   : ha/autoinsert-yas-expand
+
 * Parentheses
 ** Highlight
   #+NAME: emacs-parentheses
   #+BEGIN_SRC emacs-lisp :tangle yes
-    (add-to-list 'load-path "~/.emacs.d/src/highlight-parentheses")
-    (show-paren-mode t)
-    (require 'highlight-parentheses)
+    (use-package highlight-parentheses
+      :init
+      (show-paren-mode t))
   #+END_SRC
+
+  #+RESULTS: emacs-parentheses
+
 ** Smartparens
    #+NAME: emacs-smartparens
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (add-to-list 'load-path "~/.emacs.d/src/smartparens")
-     (require 'smartparens-config)
-     (require 'smartparens-latex)
-     (require 'smartparens-haskell)
-     (require 'smartparens-html)
-     (smartparens-global-mode 1)
-     (add-hook 'emacs-lisp-mode-hook
-               (lambda ()
-                 (turn-on-eldoc-mode)))
+     (use-package smartparens-config
+       :ensure smartparens
+       :config
+       (require 'smartparens-latex)
+       (require 'smartparens-haskell)
+       (require 'smartparens-html)
+       (smartparens-global-mode 1)
+       (add-hook 'emacs-lisp-mode-hook
+                 (lambda ()
+                   (turn-on-eldoc-mode))))
    #+END_SRC
 
    #+RESULTS: emacs-smartparens
-   | lambda | nil | (turn-on-eldoc-mode) |
+   : t
 ** Paredit
    #+NAME: emacs-paredit
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (add-to-list 'load-path "~/.emacs.d/src/paredit")
-     (require 'paredit)
-     ;; (add-hook 'emacs-lisp-mode-hook
-     ;;           (lambda ()
-     ;;             (paredit-mode t)
-     ;;             (turn-on-eldoc-mode)
-     ;;             (eldoc-add-command
-     ;;              'paredit-backward-delete
-     ;;              'paredit-close-round)
-     ;;             (local-set-key (kbd "RET") 'electrify-return-if-match)
-     ;;             (eldoc-add-command 'electrify-return-if-match)
-     ;;             (show-paren-mode t)))
-     ;; (global-set-key (kbd "M-[") 'paredit-backward-slurp-sexp)
-     ;; (global-set-key (kbd "M-{") 'paredit-backward-barf-sexp)
-
+     (use-package paredit
+       :config
+       ;; (add-hook 'emacs-lisp-mode-hook
+       ;;           (lambda ()
+       ;;             (paredit-mode t)
+       ;;             (turn-on-eldoc-mode)
+       ;;             (eldoc-add-command
+       ;;              'paredit-backward-delete
+       ;;              'paredit-close-round)
+       ;;             (local-set-key (kbd "RET") 'electrify-return-if-match)
+       ;;             (eldoc-add-command 'electrify-return-if-match)
+       ;;             (show-paren-mode t)))
+       ;; (global-set-key (kbd "M-[") 'paredit-backward-slurp-sexp)
+       ;; (global-set-key (kbd "M-{") 'paredit-backward-barf-sexp)
+       )
    #+END_SRC
 
    #+RESULTS: emacs-paredit
-   : paredit-backward-barf-sexp
+   : t
 ** Cedit
    #+NAME: emacs-cedit
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (add-to-list 'load-path "~/.emacs.d/src/cedit")
-     (require 'cedit)
-     (global-set-key (kbd "M-]") 'cedit-or-paredit-slurp)
-     (global-set-key (kbd "M-}") 'cedit-or-paredit-barf)
-     (global-set-key (kbd "C-;") 'cedit-beginning-of-statement)
-     (global-set-key (kbd "C-'") 'cedit-end-of-statement)
-     (global-set-key (kbd "C-:") 'cedit-down-block)
-     (global-set-key (kbd "C-M-,") 'cedit-up-block-backward)
-     (global-set-key (kbd "C-M-.") 'cedit-up-block-forward)
+     (use-package cedit
+       :config
+       (global-set-key (kbd "M-]") 'cedit-or-paredit-slurp)
+       (global-set-key (kbd "M-}") 'cedit-or-paredit-barf)
+       (global-set-key (kbd "C-;") 'cedit-beginning-of-statement)
+       (global-set-key (kbd "C-'") 'cedit-end-of-statement)
+       (global-set-key (kbd "C-:") 'cedit-down-block)
+       (global-set-key (kbd "C-M-,") 'cedit-up-block-backward)
+       (global-set-key (kbd "C-M-.") 'cedit-up-block-forward))
    #+END_SRC
+
+   #+RESULTS: emacs-cedit
+   : t
 
 ** Paren-Face
    #+NAME: emacs-paren-face
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (add-to-list 'load-path "~/.emacs.d/src/paren-face")
-     (require 'paren-face)
-     (global-paren-face-mode t)
+     (use-package paren-face
+       :config
+       (global-paren-face-mode t))
    #+END_SRC
+
+   #+RESULTS: emacs-paren-face
+   : t
 
 ** Rainbow-blocks
    #+NAME: elisp-raindbow-blocks
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (add-to-list 'load-path "~/.emacs.d/src/rainbow-blocks")
-     (require 'rainbow-blocks)
+     (use-package rainbow-blocks
+       :config
+       ;; (global-rainbow-blocks-mode t)
+       )
    #+END_SRC
 
    #+RESULTS: elisp-raindbow-blocks
-   : rainbow-blocks
+   : t
 
 ** Highlight-stages
    #+NAME: emacs-highlight-stages
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (add-to-list 'load-path "~/.emacs.d/src/highlight-stages")
-     (require 'highlight-stages)
-     (highlight-stages-global-mode 1)
+     (use-package highlight-stages
+       :config
+       (highlight-stages-global-mode 1))
    #+END_SRC
 
    #+RESULTS: emacs-highlight-stages
@@ -376,26 +429,34 @@ Order is important for some items for compatibility.
 * Highlight Indentation
   #+NAME: emacs-highlight-indentation
   #+BEGIN_SRC emacs-lisp :tangle yes
-    (add-to-list 'load-path "~/.emacs.d/src/highlight-indentation")
-    (require 'highlight-indentation)
+    (use-package highlight-indentation)
   #+END_SRC
 
   #+RESULTS: emacs-highlight-indentation
-  : highlight-indentation
 
 * Origami
   #+NAME: emacs-origami
   #+BEGIN_SRC emacs-lisp :tangle yes
-    (add-to-list 'load-path "~/.emacs.d/src/origami")
-    (require 'origami)
-    (global-origami-mode 1)
-    (global-set-key (kbd "C-M->") 'origami-recursively-toggle-node)
-    (global-set-key (kbd "C-M-<") 'origami-show-only-node)
-    (global-set-key (kbd "C-M-?") 'origami-undo)
+    (use-package origami
+      :config
+      (global-origami-mode 1)
+      (global-set-key (kbd "C-M->") 'origami-recursively-toggle-node)
+      (global-set-key (kbd "C-M-<") 'origami-show-only-node)
+      (global-set-key (kbd "C-M-?") 'origami-undo))
   #+END_SRC
 
   #+RESULTS: emacs-origami
   : t
+
+* Eldoc
+  #+NAME: emacs-eldoc
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (use-package eldoc
+      :diminish eldoc-mode)
+  #+END_SRC
+
+  #+RESULTS: emacs-eldoc
+  |   |
 
 * Orgmode
 ** Basics
@@ -457,8 +518,7 @@ Order is important for some items for compatibility.
         (latex . t)
         (dot . t)
         ))
-     (setq org-plantuml-jar-path
-           (expand-file-name "~/.emacs.d/plantuml.jar"))
+     (setq org-plantuml-jar-path (sizur/emacs.d "plantuml.jar"))
      (setq org-confirm-babel-evaluate nil)
      (setq org-src-fontify-natively t)
      (setq org-export-htmlize-output-type 'inline-css)
@@ -470,11 +530,10 @@ Order is important for some items for compatibility.
 ** Org-Reveal-js
    #+NAME: emacs-org-reveal-js
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (add-to-list 'load-path "~/.emacs.d/src/org-reveal")
-     (require 'ox-reveal)
-     (setq org-reveal-root
-           (concat "file://"
-                   (expand-file-name "~/.emacs.d/src/reveal.js")))
+     (use-package ox-reveal
+       :config
+       (setq org-reveal-root
+             "https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.2.0"))
    #+END_SRC
 
    #+RESULTS: emacs-org-reveal-js
@@ -483,45 +542,51 @@ Order is important for some items for compatibility.
 ** Org-Impress-js
    #+NAME: org-impress.js
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (add-to-list 'load-path "~/.emacs.d/src/org-impress-js")
-     (require 'ox-impress-js)
+     (use-package ox-impress-js)
    #+END_SRC
 
    #+RESULTS: org-impress.js
-   : org-impress-js
 ** Ob-Metapost
    #+NAME: emacs-ob-metapost
    #+BEGIN_SRC emacs-lisp :tangle yes
      (require 'ob-metapost)
    #+END_SRC
-   
+
+   #+RESULTS: emacs-ob-metapost
+   : ob-metapost
+
 ** Org-Eldoc
    #+NAME: org-eldoc
    #+BEGIN_SRC emacs-lisp :tangle yes
-     ; (add-to-list 'load-path "~/.emacs.d/src/org-eldoc")
-     ;(require 'org-eldoc)
-     ;(org-eldoc-hook-setup)
+     (require 'org-eldoc)
+     ;; (org-eldoc-hook-setup)
    #+END_SRC
-   
+
+   #+RESULTS: org-eldoc
+   : org-eldoc
+
 ** Remember
    #+NAME: emacs-org-remember
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (add-to-list 'load-path "~/.emacs.d/src/remember-el")
-     (require 'remember)
-     (setq remember-annotation-functions '(org-remember-annotation))
-     (setq remember-handler-functions '(org-remember-handler))
-     (add-hook 'remember-mode-hook 'org-remember-apply-template)
+     (use-package remember
+       :config
+       (setq remember-annotation-functions '(org-remember-annotation))
+       (setq remember-handler-functions '(org-remember-handler))
+       (add-hook 'remember-mode-hook 'org-remember-apply-template))
    #+END_SRC
 ** TaskJuggler
    #+NAME: emacs-taskjuggler
    #+BEGIN_SRC emacs-lisp :tangle yes
      (require 'ox-taskjuggler)
    #+END_SRC
+
+   #+RESULTS: emacs-taskjuggler
+   : ox-taskjuggler
+
 ** O-Blog
    #+NAME: emacs-o-blog
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (add-to-list 'load-path "~/.emacs.d/src/o-blog/lisp")
-     (require 'o-blog)
+     (use-package o-blog)
    #+END_SRC
 
    #+RESULTS: emacs-o-blog
@@ -599,59 +664,82 @@ Order is important for some items for compatibility.
       '(org-level-5 ((t (:inherit outline-5 :height 1.0))))
       )
    #+END_SRC
-* Smart Mode Line
-  #+NAME: emacs-smart-modeline
-  #+BEGIN_SRC emacs-lisp :tangle yes
-    (add-to-list 'load-path "~/.emacs.d/src/rich-minority")
-    (add-to-list 'load-path "~/.emacs.d/src/smart-mode-line")
-    (require 'rich-minority)
-    (require 'smart-mode-line)
-    (sml/setup)
-    (sml/apply-theme 'dark)
-    (rich-minority-mode 1)    
-  #+END_SRC
 * Theme
 ** Monokai
   #+NAME: emacs-monokai
   #+BEGIN_SRC emacs-lisp :tangle yes
-    ;; (defun setup-window-system-frame-colours (&rest frame)
-    ;;   (if window-system
-    ;;       (let ((f (if (car frame)
-    ;;                    (car frame)
-    ;;                  (selected-frame))))
-    ;;         (progn
-    ;;           (set-frame-font "Bera Sans Mono-11")
-    ;;           (set-face-background 'default "#232F2F" f)
-    ;;           (set-face-foreground 'default "#FFFFFF" f)
-    ;;           (set-face-background 'fringe  "#000000" f)
-    ;;           (set-face-background 'cursor "#2F4F4F" f)
-    ;;           (set-face-background 'mode-line "#2F4F4F" f)
-    ;;           (set-face-foreground 'mode-line "#BCBf91" f)))))
-
-    ;; (require 'server)
-    ;; (defadvice server-create-window-system-frame
-    ;;   (after set-window-system-frame-colours ())
-    ;;   "Set custom frame colours when creating the first frame on a display"
-    ;;   (message "Running after frame-initialize")
-    ;;   (setup-window-system-frame-colours))
-    ;; (ad-activate 'server-create-window-system-frame)
-    ;; (add-hook 'after-make-frame-functions 'setup-window-system-frame-colours t)
-
-    (add-to-list 'custom-theme-load-path "~/.emacs.d/src/monokai-emacs")
-    (load-theme 'monokai t)
+    (use-package monokai-theme
+      :config
+      (load-theme 'monokai t))
   #+END_SRC
 
   #+RESULTS: emacs-monokai
   : t
+* Color Identifiers
+  #+NAME: emacs-color-identifiers
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (use-package color-identifiers-mode
+      :init
+      (add-hook 'after-init-hook 'global-color-identifiers-mode)
+      :diminish color-identifiers-mode)
+  #+END_SRC
 
-  #+RESULTS: emacs-theme
+  #+RESULTS: emacs-color-identifiers
+  |   |
+
+* Highlight Symbol
+  #+NAME: emacs-highlight-symbol
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (use-package highlight-symbol
+      :init
+      (setq highlight-symbol-idle-delay 0)
+      (add-hook 'prog-mode-hook (lambda () (highlight-symbol-mode)))
+      :diminish highlight-symbol-mode)
+  #+END_SRC
+
+  #+RESULTS: emacs-highlight-symbol
+
+* Smart Mode Line
+  #+NAME: emacs-smart-modeline
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (which-function-mode 1)
+    (use-package smart-mode-line-powerline-theme
+      :config
+      (setq sml/theme 'powerline)
+      (sml/setup)
+      (rich-minority-mode 1))
+  #+END_SRC
+
+  #+RESULTS: emacs-smart-modeline
   : t
+* Whitespace Mode
+  #+NAME: emacs-whitespace-mode
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (use-package whitespace
+      :bind (("C-c T w" . whitespace-mode))
+      :config (setq whitespace-line-column nil)
+      :diminish whitespace-mode)
+  #+END_SRC
+
+  #+RESULTS: emacs-whitespace-mode
+
+* Auto-Fill Mode
+  #+NAME: emacs-auto-fill-mode
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (global-set-key (kbd "C-c T f") 'auto-fill-mode)
+    (add-hook 'org-mode-hook 'turn-on-auto-fill)
+    ;; (diminish 'auto-fill-mode)
+  #+END_SRC
+
+  #+RESULTS: emacs-auto-fill-mode
+
 * Popwin
   #+NAME: emacs-popwin
   #+BEGIN_SRC emacs-lisp :tangle yes
-    (add-to-list 'load-path "~/.emacs.d/src/popwin")
-    (require 'popwin)
-    ;; (popwin-mode 1)
+    (use-package popwin
+      :config
+      ;; (popwin-mode 1)
+      )
   #+END_SRC
 
   #+RESULTS: emacs-popwin
@@ -660,85 +748,121 @@ Order is important for some items for compatibility.
 * Guide Key
   #+NAME: emacs-guide-key
   #+BEGIN_SRC emacs-lisp :tangle yes
-    (add-to-list 'load-path "~/.emacs.d/src/guide-key")
-    (require 'guide-key)
-    (setq guide-key/guide-key-sequence '("C-x r" "C-x 4" "C-c"))
-    (guide-key-mode 1)
+    (use-package guide-key
+      :config
+      (setq guide-key/guide-key-sequence '("C-x r" "C-x 4" "C-c"))
+      (guide-key-mode 1))
   #+END_SRC
 
   #+RESULTS: emacs-guide-key
   : t
 
-* Golden Ratio
-  #+NAME: emacs-golden-ratio
-  #+BEGIN_SRC emacs-lisp :tangle yes
-    (add-to-list 'load-path "~/.emacs.d/src/golden-ratio")
-    (require 'golden-ratio)
-    (setq golden-ratio-exclude-modes '("ediff-mode"
-                                       "eshell-mode"
-                                       "dired-mode"
-                                       "calendar-mode"
-                                       ))
-    (setq golden-ratio-exclude-buffer-names '(" *Org tags*"
-                                              " *Org todo*"
-                                              " *Org adenda*"
-                                              "*phi-search*"
-                                              ))
-    (golden-ratio-mode 1)
-  #+END_SRC
+* Window Management
+** Golden Ratio
+   #+NAME: emacs-golden-ratio
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (use-package golden-ratio
+       :config
+       (setq golden-ratio-exclude-modes
+             '("ediff-mode"
+               "eshell-mode"
+               "dired-mode"
+               "calendar-mode"
+               ))
+       (setq golden-ratio-exclude-buffer-names
+             '(" *Org tags*"
+               " *Org todo*"
+               " *Org adenda*"
+               "*phi-search*"
+               ))
+       (golden-ratio-mode 1)
+       :diminish golden-ratio-mode)
+   #+END_SRC
 
-  #+RESULTS: emacs-golden-ratio
-  : t
+   #+RESULTS: emacs-golden-ratio
+   : t
 
-* Tiling
-  #+NAME: emacs-tiling
-  #+BEGIN_SRC emacs-lisp :tangle yes
-    (require 'buffer-move)
-    (require 'tiling)
+** Tiling
+   #+NAME: emacs-tiling
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (use-package buffer-move
+       :config
+       (unless (file-exists-p (sizur/emacs.d/elisp "tiling.el"))
+         (url-copy-file
+          "https://raw.githubusercontent.com/emacsmirror/emacswiki.org/master/tiling.el"
+          (sizur/emacs.d/elisp "tiling.el")))
+       (require 'tiling)
 
-    ;;; Windows related operations
-    ;; Split & Resize
-    (define-key global-map (kbd "C-x |") 'split-window-horizontally)
-    (define-key global-map (kbd "C-x _") 'split-window-vertically)
-    ;; (define-key global-map (kbd "C-{") 'shrink-window-horizontally)
-    ;; (define-key global-map (kbd "C-}") 'enlarge-window-horizontally)
-    ;; (define-key global-map (kbd "C-^") 'enlarge-window)
-    ;; Navgating: Windmove uses C-<up> etc.
-    (define-key global-map (kbd "C-<up>"   )  'windmove-up)
-    (define-key global-map (kbd "C-<down>" )  'windmove-down)
-    (define-key global-map (kbd "C-<right>" ) 'windmove-right)
-    (define-key global-map (kbd "C-<left>")   'windmove-left)
-    ;; Swap buffers: M-<up> etc.
-    (define-key global-map (kbd "M-<up>"   ) 'buf-move-up)
-    (define-key global-map (kbd "M-<down>" ) 'buf-move-down)
-    (define-key global-map (kbd "M-<right>") 'buf-move-right)
-    (define-key global-map (kbd "M-<left>" ) 'buf-move-left)
-    ;; Tile
-    (define-key global-map (kbd "C-\\") 'tiling-cycle) ; accepts prefix number
-    (define-key global-map (kbd "C-M-<up>") 'tiling-tile-up)
-    (define-key global-map (kbd "C-M-<down>") 'tiling-tile-down)
-    (define-key global-map (kbd "C-M-<right>") 'tiling-tile-right)
-    (define-key global-map (kbd "C-M-<left>") 'tiling-tile-left)
-    ;; Another type of representation of same keys, in case your terminal doesn't
-    ;; recognize above key-binding. Tip: C-h k C-up etc. to see into what your
-    ;; terminal tranlated the key sequence.
-    ;; (define-key global-map (kbd "M-[ a"     ) 'windmove-up)
-    ;; (define-key global-map (kbd "M-[ b"     ) 'windmove-down)
-    ;; (define-key global-map (kbd "M-[ c"     ) 'windmove-right)
-    ;; (define-key global-map (kbd "M-[ d"     ) 'windmove-left)
-    ;; (define-key global-map (kbd "ESC <up>"   ) 'buf-move-up)
-    ;; (define-key global-map (kbd "ESC <down>" ) 'buf-move-down)
-    ;; (define-key global-map (kbd "ESC <right>") 'buf-move-right)
-    ;; (define-key global-map (kbd "ESC <left>" ) 'buf-move-left)
-    ;; (define-key global-map (kbd "ESC M-[ a" ) 'tiling-tile-up)
-    ;; (define-key global-map (kbd "ESC M-[ b" ) 'tiling-tile-down)
-    ;; (define-key global-map (kbd "ESC M-[ c" ) 'tiling-tile-right)
-    ;; (define-key global-map (kbd "ESC M-[ d" ) 'tiling-tile-left)
-  #+END_SRC
+       ;; Windows related operations
+       ;; Split & Resize
+       (define-key global-map (kbd "C-x |") 'split-window-horizontally)
+       (define-key global-map (kbd "C-x _") 'split-window-vertically)
+       ;; (define-key global-map (kbd "C-{") 'shrink-window-horizontally)
+       ;; (define-key global-map (kbd "C-}") 'enlarge-window-horizontally)
+       ;; (define-key global-map (kbd "C-^") 'enlarge-window)
+       ;; Navgating: Windmove uses C-<up> etc.
+       (define-key global-map (kbd "C-<up>"   )  'windmove-up)
+       (define-key global-map (kbd "C-<down>" )  'windmove-down)
+       (define-key global-map (kbd "C-<right>" ) 'windmove-right)
+       (define-key global-map (kbd "C-<left>")   'windmove-left)
+       ;; Swap buffers: M-<up> etc.
+       (define-key global-map (kbd "M-<up>"   ) 'buf-move-up)
+       (define-key global-map (kbd "M-<down>" ) 'buf-move-down)
+       (define-key global-map (kbd "M-<right>") 'buf-move-right)
+       (define-key global-map (kbd "M-<left>" ) 'buf-move-left)
+       ;; Tile
+       (define-key global-map (kbd "C-\\") 'tiling-cycle) ; accepts prefix number
+       (define-key global-map (kbd "C-M-<up>") 'tiling-tile-up)
+       (define-key global-map (kbd "C-M-<down>") 'tiling-tile-down)
+       (define-key global-map (kbd "C-M-<right>") 'tiling-tile-right)
+       (define-key global-map (kbd "C-M-<left>") 'tiling-tile-left)
+       ;; Another type of representation of same keys, in case your terminal doesn't
+       ;; recognize above key-binding. Tip: C-h k C-up etc. to see into what your
+       ;; terminal tranlated the key sequence.
+       ;; (define-key global-map (kbd "M-[ a"     ) 'windmove-up)
+       ;; (define-key global-map (kbd "M-[ b"     ) 'windmove-down)
+       ;; (define-key global-map (kbd "M-[ c"     ) 'windmove-right)
+       ;; (define-key global-map (kbd "M-[ d"     ) 'windmove-left)
+       ;; (define-key global-map (kbd "ESC <up>"   ) 'buf-move-up)
+       ;; (define-key global-map (kbd "ESC <down>" ) 'buf-move-down)
+       ;; (define-key global-map (kbd "ESC <right>") 'buf-move-right)
+       ;; (define-key global-map (kbd "ESC <left>" ) 'buf-move-left)
+       ;; (define-key global-map (kbd "ESC M-[ a" ) 'tiling-tile-up)
+       ;; (define-key global-map (kbd "ESC M-[ b" ) 'tiling-tile-down)
+       ;; (define-key global-map (kbd "ESC M-[ c" ) 'tiling-tile-right)
+       ;; (define-key global-map (kbd "ESC M-[ d" ) 'tiling-tile-left)
+       )
+   #+END_SRC
+
+   #+RESULTS: emacs-tiling
+   : t
+
+** Ace Window
+   #+NAME: emacs-ace-window
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (use-package ace-window
+       :config
+       (setq aw-keys '(?a ?s ?d ?f ?j ?k ?l ?o))
+       (global-set-key (kbd "C-x o") 'ace-window)
+       :diminish ace-window-mode)
+   #+END_SRC
+
+   #+RESULTS: emacs-ace-window
+   : t
+
+** Kpm List
+   #+NAME: emacs-kpm-list
+   #+BEGIN_SRC emacs-lisp :tangle yes
+;;     (use-package kpm-list
+;;       :bind ("C-x C-b" . kpm-list))
+   #+END_SRC
+
+   #+RESULTS: emacs-kpm-list
+
 * Comments
   #+NAME: emacs-hide-comnt
   #+BEGIN_SRC emacs-lisp :tangle yes
-    (require 'hide-comnt)
+    (use-package hide-comnt)
   #+END_SRC
   
 * Columnize
@@ -746,44 +870,55 @@ Order is important for some items for compatibility.
 
   #+NAME: emacs-columnize
   #+BEGIN_SRC emacs-lisp :tangle yes
+    (unless (file-exists-p (sizur/emacs.d/elisp "columnize.el"))
+      (url-copy-file
+       "https://raw.githubusercontent.com/emacsmirror/columnize/master/columnize.el"
+       (sizur/emacs.d/elisp "columnize.el")))
     (require 'columnize)
   #+END_SRC
 * Graphviz
   #+NAME: emacs-graphviz
   #+BEGIN_SRC emacs-lisp :tangle yes
-    (load-file "~/.emacs.d/src/graphviz-dot-mode.el")
+    (use-package graphviz-dot-mode)
   #+END_SRC
-  
+
+  #+RESULTS: emacs-graphviz
+
 * PlantUML
    #+NAME: default-path
    #+BEGIN_SRC emacs-lisp :tangle yes
-     ;; (when (file-exists-p "~/.emacs.d/plantuml.jar")
-     ;;   (require 'plantuml-mode))
+     (setq puml-plantuml-jar-path (sizur/emacs.d "plantuml.jar"))
+     (unless (file-exists-p (sizur/emacs.d "plantuml.jar"))
+       (url-copy-file
+        "https://downloads.sourceforge.net/project/plantuml/plantuml.jar"
+        (sizur/emacs.d "plantuml.jar")))
+     (use-package puml-mode)
    #+END_SRC
+
+   #+RESULTS: default-path
+   : sizur/emacs\.d/elisp
   
 * Calfw
   Calendars in ~/calendar should be updated with cron.
   #+NAME: calendar
   #+BEGIN_SRC emacs-lisp :tangle yes
-    (add-to-list 'load-path
-                 "~/.emacs.d/src/emacs-calfw")
-    (require 'calfw)
-    ;(require 'calfw-cal)
-    (require 'calfw-ical)
-    (require 'calfw-org)
+    (use-package calfw
+      :config
+      ;; (require 'calfw-cal)
+      (require 'calfw-ical)
+      (require 'calfw-org)
 
-    (defun my-open-calendar ()
-      (interactive)
-      (cfw:open-calendar-buffer
-       :contents-sources
-       (list
-        ;(cfw:org-create-source "Green")  ; orgmode source
-        ;(cfw:cal-create-source "Orange") ; diary source
-        (cfw:ical-create-source "main"  "~/calendars/my-main.ics" "IndianRed")
-        (cfw:ical-create-source "bdays" "~/calendars/my-birthdays.ics" "Orange")
-        (cfw:org-create-source "Green")
-       )))
-
+      (defun my-open-calendar ()
+        (interactive)
+        (cfw:open-calendar-buffer
+         :contents-sources
+         (list
+          ;; (cfw:org-create-source "Green")  ; orgmode source
+          ;; (cfw:cal-create-source "Orange") ; diary source
+          (cfw:ical-create-source "main"  "~/calendars/my-main.ics" "IndianRed")
+          (cfw:ical-create-source "bdays" "~/calendars/my-birthdays.ics" "Orange")
+          (cfw:org-create-source "Green")
+          ))))
   #+END_SRC
 
   #+RESULTS: calendar
@@ -799,135 +934,219 @@ Order is important for some items for compatibility.
   #+RESULTS: emacs-mu4e
   : t
 
+* Fancy Narrow
+  #+NAME: emacs-fancy-narrow
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (use-package fancy-narrow
+      :config
+      (defun ha/highlight-block ()
+        "Highlights a 'block' in a buffer defined by the first blank
+         line before and after the current cursor position. Uses the
+         'fancy-narrow' mode to high-light the block."
+        (interactive)
+        (let (cur beg end)
+          (setq cur (point))
+          (setq end (or (re-search-forward  "^\s*$" nil t) (point-max)))
+          (goto-char cur)
+          (setq beg (or (re-search-backward "^\s*$" nil t) (point-min)))
+          (fancy-narrow-to-region beg end)
+          (goto-char cur)))
+
+      (defun ha/highlight-section (num)
+        "If some of the buffer is highlighted with the `fancy-narrow'
+         mode, then un-highlight it by calling `fancy-widen'.
+
+         If region is active, call `fancy-narrow-to-region'.
+
+         If NUM is 0, highlight the current block (delimited by blank
+         lines). If NUM is positive or negative, highlight that number
+         of lines.  Otherwise, called `fancy-narrow-to-defun', to
+         highlight current function."
+        (interactive "p")
+        (cond
+         ((fancy-narrow-active-p)  (fancy-widen))
+         ((region-active-p)        (fancy-narrow-to-region (region-beginning) (region-end)))
+         ((= num 0)                (ha/highlight-block))
+         ((= num 1)                (fancy-narrow-to-defun))
+         (t                        (progn (ha/expand-region num)
+                                          (fancy-narrow-to-region (region-beginning) (region-end))))))
+
+      :bind ("C-M-+" . ha/highlight-section))
+  #+END_SRC
+
+  #+RESULTS: emacs-fancy-narrow
+
 * Expand Region
   #+NAME: expand-region
   #+BEGIN_SRC emacs-lisp :tangle yes
-    (add-to-list 'load-path
-                 "~/.emacs.d/src/expand-region.el")
-    (require 'expand-region)
-    (global-set-key (kbd "M-=") 'er/expand-region)
+    (use-package expand-region
+      :config
+      (global-set-key (kbd "M-=") 'er/expand-region))
   #+END_SRC
 
   #+RESULTS: expand-region
-  : er/expand-region
+  : t
   
 * Region Bindings
   #+NAME: emacs-region-bindings
   #+BEGIN_SRC emacs-lisp :tangle yes
-    (add-to-list 'load-path "~/.emacs.d/src/region-bindings-mode")
-    (require 'region-bindings-mode)
-    (region-bindings-mode-enable)
-    (define-key region-bindings-mode-map (kbd "M--") 'mc/mark-all-like-this)
-    (define-key region-bindings-mode-map (kbd "M-[") 'mc/mark-previous-like-this)
-    (define-key region-bindings-mode-map (kbd "M-]") 'mc/mark-next-like-this)
+    (use-package region-bindings-mode
+      :config
+      (region-bindings-mode-enable)
+      (define-key region-bindings-mode-map (kbd "M--") 'mc/mark-all-like-this)
+      (define-key region-bindings-mode-map (kbd "M-[") 'mc/mark-previous-like-this)
+      (define-key region-bindings-mode-map (kbd "M-]") 'mc/mark-next-like-this))
   #+END_SRC
 
   #+RESULTS: emacs-region-bindings
-  : mc/mark-next-like-this
+  : t
 
 * Multiple Cursors
   #+NAME: emacs-mult-cursor
   #+BEGIN_SRC emacs-lisp :tangle yes
-    (add-to-list 'load-path
-                 "~/.emacs.d/src/multiple-cursors.el")
-    (require 'multiple-cursors)
-    (global-set-key (kbd "C-c m /") 'mc/edit-lines)
-    (global-set-key (kbd "C-c m .") 'mc/mark-next-like-this)
-    (global-set-key (kbd "C-c m ,") 'mc/mark-previous-like-this)
-    (global-set-key (kbd "C-c m m") 'mc/mark-all-like-this)
+    (use-package multiple-cursors
+      :config
+      (global-set-key (kbd "C-c m /") 'mc/edit-lines)
+      (global-set-key (kbd "C-c m .") 'mc/mark-next-like-this)
+      (global-set-key (kbd "C-c m ,") 'mc/mark-previous-like-this)
+      (global-set-key (kbd "C-c m m") 'mc/mark-all-like-this))
   #+END_SRC
 
   #+RESULTS: emacs-mult-cursor
-  : mc/mark-all-like-this
+  : t
 
 * Phi-search
   Incremental Search that works with Multiple Cursors.
   #+NAME: emacs-phi-search
   #+BEGIN_SRC emacs-lisp :tangle yes
-    (add-to-list 'load-path
-                 "~/.emacs.d/src/phi-search")
-    (require 'phi-search)
-    (require 'phi-replace)
-    (global-set-key (kbd "C-s") 'phi-search)
-    (global-set-key (kbd "C-r") 'phi-search-backward)
-    (global-set-key (kbd "M-%") 'phi-replace-query)
+    (use-package phi-search
+      :config
+      (require 'phi-replace)
+      (global-set-key (kbd "C-s") 'phi-search)
+      (global-set-key (kbd "C-r") 'phi-search-backward)
+      (global-set-key (kbd "M-%") 'phi-replace-query))
   #+END_SRC
 
   #+RESULTS: emacs-phi-search
-  : phi-replace-query
+  : t
 
 * Smart Movement
+  BUGGY! no tangle
   Requires expand-region
   #+NAME: emacs-smart-forward
   #+BEGIN_SRC emacs-lisp :tangle yes
-    (add-to-list 'load-path "~/.emacs.d/src/smart-forward")
-    (require 'smart-forward)
-    ;(global-set-key (kbd "M-<up>") 'smart-up)
-    ;(global-set-key (kbd "M-<down>") 'smart-down)
-    ;(global-set-key (kbd "M-<left>") 'smart-backward)
-    ;(global-set-key (kbd "M-<right>") 'smart-forward)
+    (use-package smart-forward
+      :config
+      ;; (global-set-key (kbd "M-<up>") 'smart-up)
+      ;; (global-set-key (kbd "M-<down>") 'smart-down)
+      ;; (global-set-key (kbd "M-<left>") 'smart-backward)
+      ;;(global-set-key (kbd "M-<right>") 'smart-forward)
+      )
   #+END_SRC
-  
-* Wrap Selection
+
+  #+RESULTS: emacs-smart-forward
+  : t  
+* Avy
+  #+NAME: emacs-avy
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (use-package avy
+      :bind
+      ("M-g g"   . avy-goto-line)
+      ("C-c j"   . avy-goto-word-1))
+  #+END_SRC
+
+  #+RESULTS: emacs-avy
+
+* Smart Scan
+  #+NAME: emacs-smartscan
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (use-package smartscan
+      :bind ("M-n" . smartscan-symbol-go-forward)
+            ("M-p" . smartscan-symbol-go-backward))
+  #+END_SRC
+* Wrap Region
   #+NAME: emacs-wrap-region
   #+BEGIN_SRC emacs-lisp :tangle yes
-    (add-to-list 'load-path "~/.emacs.d/src/wrap-region")
-    (require 'wrap-region)
-    (wrap-region-mode t)
-    ;(add-to-list 'wrap-region-except-modes 'conflicting-mode)
+    (use-package wrap-region
+      :config
+      (wrap-region-global-mode t)
+      ;; (add-to-list 'wrap-region-except-modes 'conflicting-mode)
+      (wrap-region-add-wrappers
+       '(("(" ")")
+         ("[" "]")
+         ("{" "}")
+         ("<" ">")
+         ("'" "'")
+         ("\"" "\"")
+         ("‘" "’"   "q")
+         ("“" "”"   "Q")
+         ("*" "*"   "b"   org-mode)                 ; bolden
+         ("/" "/"   "i"   org-mode)                 ; italics
+         ("_" "_"   "u" '(org-mode markdown-mode))  ; underline
+         ("=" "="   "c"   org-mode)                 ; code
+         ("**" "**" "b"   markdown-mode)            ; bolden
+         ("*" "*"   "i"   markdown-mode)            ; italics
+         ("`" "`"   "c" '(markdown-mode ruby-mode)) ; code
+         ("`" "'"   "c"   lisp-mode)                ; code
+         ))
+      :diminish wrap-region-mode)
   #+END_SRC
-  
+
+  #+RESULTS: emacs-wrap-region
+  : t
+
 * Cucumber
   #+NAME: emacs-cucumber
   #+BEGIN_SRC emacs-lisp :tangle yes
-    (add-to-list 'load-path "~/.emacs.d/src/cucumber.el")
-    (require 'feature-mode)
+    (use-package feature-mode)
   #+END_SRC
-  
+
+  #+RESULTS: emacs-cucumber
+
 * Fish
   #+NAME: emacs-fish
   #+BEGIN_SRC emacs-lisp :tangle yes
-    (add-to-list 'load-path "~/.emacs.d/src/emacs-fish")
-    (require 'fish-mode)
-    (add-to-list 'auto-mode-alist '("\\.fish\\'" . fish-mode))
-    (add-to-list 'interpreter-mode-alist '("fish" . fish-mode))
+    (use-package fish-mode
+      :mode "\\.fish\\'"
+      :interpreter "fish")
   #+END_SRC
 
   #+RESULTS: emacs-fish
-  : fish-mode
   
 * Yaml
   #+NAME: emacs-yaml
   #+BEGIN_SRC emacs-lisp :tangle yes
-    (add-to-list 'load-path "~/.emacs.d/src/yaml-mode")
-    (require 'yaml-mode)
-    (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
-    (add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
+    (use-package yaml-mode
+      :mode "\\.yml$" "\\.yaml$")
   #+END_SRC
+
+  #+RESULTS: emacs-yaml
 
 * XML
 ** Emmet
    #+NAME: emacs-emmet
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (add-to-list 'load-path
-                  "~/.emacs.d/src/emmet-mode")
-     (require 'emmet-mode)
-     (add-hook 'sgml-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
-     (add-hook 'css-mode-hook  'emmet-mode) ;; enable Emmet's css abbreviation.
-     ;; (add-hook 'emmet-mode-hook (lambda () (setq emmet-indent-after-insert nil)))
-     ;; (add-hook 'emmet-mode-hook (lambda () (setq emmet-indentation 2))) ;; indent 2 spaces.
-     ;; (setq emmet-move-cursor-between-quotes t) ;; default nil
-     ;; (setq emmet-move-cursor-after-expanding nil) ;; default t
+     (use-package emmet-mode
+       :config
+       (add-hook 'sgml-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
+       (add-hook 'css-mode-hook  'emmet-mode) ;; enable Emmet's css abbreviation.
+       ;; (add-hook 'emmet-mode-hook (lambda () (setq emmet-indent-after-insert nil)))
+       ;; (add-hook 'emmet-mode-hook (lambda () (setq emmet-indentation 2))) ;; indent 2 spaces.
+       ;; (setq emmet-move-cursor-between-quotes t) ;; default nil
+       ;; (setq emmet-move-cursor-after-expanding nil) ;; default t
+       )
    #+END_SRC
+
+   #+RESULTS: emacs-emmet
+   : t
 
    #+RESULTS: xpath2xml
    | zencoding-mode |
 * Flycheck
   #+NAME: emacs-flycheck
   #+BEGIN_SRC emacs-lisp :tangle yes
-    (when (not (package-installed-p 'flycheck))
-      (package-install 'flycheck))
-    (when (package-installed-p 'flycheck)
+    (use-package flycheck
+      :init
       (setq flycheck-gcc-language-standard "c++1z")
       (setq flycheck-clang-language-standard "c++1z")
       (setq flycheck-perl-include-path
@@ -938,17 +1157,19 @@ Order is important for some items for compatibility.
               ".." "../lib" "../CPAN"
               "." "lib" "CPAN"
               ))
-      (require 'flycheck))
+      (add-hook 'after-init-hook 'global-flycheck-mode))
   #+END_SRC
+
+  #+RESULTS: emacs-flycheck
 
 * C++
   RTags should come before CMake-IDE
 ** RTags
    #+NAME: emacs-rtags
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (add-to-list 'load-path "~/.emacs.d/local/share/emacs/site-lisp/rtags")
-     (setq rtags-path "~/.emacs.d/local/bin")
-     (require 'rtags)
+     ;; (add-to-list 'load-path "~/.emacs.d/local/share/emacs/site-lisp/rtags")
+     ;; (setq rtags-path "~/.emacs.d/local/bin")
+     ;; (require 'rtags)
    #+END_SRC
 
    #+RESULTS: emacs-rtags
@@ -959,22 +1180,21 @@ Order is important for some items for compatibility.
      (when (executable-find "clang")
        ;; company-clang is used automatically
        (when (executable-find "clang-format")
-         (require 'clang-format)
-         (add-hook 'c-mode-common-hook
-                   (lambda ()
-                     (when (derived-mode-p 'c-mode 'c++-mode 'java-mode 'javascript-mode)
-                       (when (featurep 'flycheck)
-                         ;; (setq flycheck-gcc-language-standard "c++14")
-                         ;; (setq flycheck-clang-language-standard "c++14")
-                         (flycheck-mode 1))
-                       (define-key c++-mode-map [C-M-tab] 'clang-format-region)
-                       (define-key c++-mode-map [C-M-S-tab] 'clang-format-buffer)
-                       (define-key c++-mode-map [C-M-iso-lefttab] 'clang-format-buffer))))))
-
-     (add-to-list 'load-path "~/.emacs.d/src/cmake-ide")
-     ;; (require 'rtags)
-     (require 'cmake-ide)
-     (cmake-ide-setup)
+         (use-package clang-format
+           :config
+           (add-hook 'c-mode-common-hook
+                     (lambda ()
+                       (when (derived-mode-p 'c-mode 'c++-mode 'java-mode 'javascript-mode)
+                         (when (featurep 'flycheck)
+                           ;; (setq flycheck-gcc-language-standard "c++14")
+                           ;; (setq flycheck-clang-language-standard "c++14")
+                           (flycheck-mode 1))
+                         (define-key c++-mode-map [C-M-tab] 'clang-format-region)
+                         (define-key c++-mode-map [C-M-S-tab] 'clang-format-buffer)
+                         (define-key c++-mode-map [C-M-iso-lefttab] 'clang-format-buffer))))
+           (use-package cmake-ide
+             :config
+             (cmake-ide-setup)))))
 
      ;; ;; not working correctly for now
      ;; (when (executable-find "ctags")
@@ -994,15 +1214,13 @@ Order is important for some items for compatibility.
    #+END_SRC
 
    #+RESULTS: emacs-cpp
-   : pop-tag-mark
+   : t
 
 * Haskell
   #+NAME: haskell
   #+BEGIN_SRC emacs-lisp :tangle yes
-    (add-to-list 'load-path "~/.emacs.d/src/haskell-mode")
-    (require 'haskell-mode-autoloads)
-    (add-hook 'haskell-mode-hook 'haskell-indentation-mode)
-    (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
+    (use-package haskell-mode
+      :mode "\\.hs\\'")
   #+END_SRC
 
   #+RESULTS: haskell
@@ -1011,30 +1229,38 @@ Order is important for some items for compatibility.
 * Perl
   #+NAME: perl
   #+BEGIN_SRC emacs-lisp :tangle yes
-    (defalias 'perl-mode 'cperl-mode)
-    (require 'perltidy)
-    (require 'perl-completion)
-    (eval-after-load 'cperl-mode
-      '(define-key cperl-mode-map (kbd "C-c p") 'perltidy-dwim))
-    (add-hook 'cperl-mode-hook
-              (lambda ()
-                (when (featurep 'flycheck)
-                  (flycheck-mode 1))
-                (perl-completion-mode t)
-                (local-unset-key (kbd "{"))
-                ))
+    (use-package anything
+      :config
+      (use-package perl-completion
+        :config
+        (defalias 'perl-mode 'cperl-mode)
+        (unless (file-exists-p (sizur/emacs.d/elisp "perltidy.el"))
+          (url-copy-file
+           "https://raw.githubusercontent.com/emacsmirror/emacswiki.org/master/perltidy.el"
+           (sizur/emacs.d/elisp "perltidy.el")))
+        (require 'perltidy)
+        (eval-after-load 'cperl-mode
+          '(define-key cperl-mode-map (kbd "C-c p") 'perltidy-dwim))
+        (add-hook 'cperl-mode-hook
+                  (lambda ()
+                    (when (featurep 'flycheck)
+                      (flycheck-mode 1))
+                    (perl-completion-mode t)
+                    (local-unset-key (kbd "{"))
+                    ))))
   #+END_SRC
 
   #+RESULTS: perl
-  | lambda | nil | (flymake-mode t) | (perl-completion-mode t) |
-  | lambda | nil | (flymake-mode 1) |                          |
+  : t
 * OCaml
 ** Tuareg
    #+NAME: emacs-tuareg
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (load "~/.emacs.d/src/tuareg/tuareg-site-file.el")
-     (add-to-list 'auto-mode-alist '("\\.eliom$" . tuareg-mode))
+     (use-package tuareg
+       :mode ("\\.eliom$" . tuareg-mode))
    #+END_SRC
+
+   #+RESULTS: emacs-tuareg
 
 ** Opam
    #+NAME: emacs-opam
@@ -1045,15 +1271,19 @@ Order is important for some items for compatibility.
        (add-to-list 'load-path (concat opam-share "/emacs/site-lisp"))
        (provide 'opam-executable-integration))
    #+END_SRC
-   
+
+   #+RESULTS: emacs-opam
+   : opam-executable-integration
+
 ** Merlin
    #+NAME: emacs-merlin
    #+BEGIN_SRC emacs-lisp :tangle yes
      (when (featurep 'opam-executable-integration)
-       (require 'merlin)
-       (add-hook 'tuareg-mode-hook 'merlin-mode)
-       (add-hook 'caml-mode-hook 'merlin-mode)
-       (setq merlin-command 'opam))
+       (use-package merlin
+         :config
+         (add-hook 'tuareg-mode-hook 'merlin-mode)
+         (add-hook 'caml-mode-hook 'merlin-mode)
+         (setq merlin-command 'opam)))
    #+END_SRC
 
 *** Company Integration
@@ -1069,26 +1299,33 @@ Order is important for some items for compatibility.
 ** Geiser
    #+NAME: emacs-geiser
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (load-file "~/.emacs.d/src/geiser/elisp/geiser.el")
-     (add-hook 'geiser-mode-hook
-               (lambda ()
-                 (paredit-mode t)
-                 (local-set-key (kbd "RET") 'electrify-return-if-match)
-                 (show-paren-mode t)))
+     (use-package geiser
+       :config
+       (add-hook 'geiser-mode-hook
+                 (lambda ()
+                   (paredit-mode t)
+                   (local-set-key (kbd "RET") 'electrify-return-if-match)
+                   (show-paren-mode t))))
    #+END_SRC
+
+   #+RESULTS: emacs-geiser
+   : t
+
 ** Quack
    #+NAME: emacs-quack
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (when (executable-find "racket")
-       (require 'quack))
+     (use-package quack
+       :mode ("\\.rkt\\'" . quack-mode))
    #+END_SRC
+
+   #+RESULTS: emacs-quack
+
 * Lua
   #+NAME: emacs-lua
   #+BEGIN_SRC emacs-lisp :tangle yes
-    (add-to-list 'load-path "~/.emacs.d/src/lua-mode")
-    (require 'lua-mode)
-    (add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
-    (add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
+    (use-package lua-mode
+      :mode "\\.lua$"
+      :interpreter "lua")
   #+END_SRC
 
   #+RESULTS: emacs-lua
@@ -1096,9 +1333,8 @@ Order is important for some items for compatibility.
 * Rust
   #+NAME: emacs-rust
   #+BEGIN_SRC emacs-lisp :tangle yes
-    (add-to-list 'load-path "~/.emacs.d/src/rust-mode")
-    (require 'rust-mode)
-    (add-to-list 'auto-mode-alist '("\\.rs$" . rust-mode))
+    (use-package rust-mode
+      :mode "\\.rs$")
   #+END_SRC
 
   #+RESULTS: emacs-rust
@@ -1106,8 +1342,17 @@ Order is important for some items for compatibility.
 * Coq
   #+NAME: emacs-coq
   #+BEGIN_SRC emacs-lisp :tangle yes
-    (when (executable-find "coqtop")
-      (load-file "~/.emacs.d/src/ProofGeneral/generic/proof-site.el")
+    (when (and (executable-find "coqtop")
+               (executable-find "tar"))
+      (unless (file-exists-p (sizur/emacs.d "ProofGeneral"))
+        (url-copy-file
+         "http://proofgeneral.inf.ed.ac.uk/releases/ProofGeneral-latest.tgz"
+         (sizur/emacs.d "ProofGeneral-latest.tgz")
+         t)
+        (shell-command (concat "tar zxvf "
+                               (sizur/emacs.d "ProofGeneral-latest.tgz")
+                               " -C " sizur/emacs.d)))
+      (load-file (sizur/emacs.d "ProofGeneral/generic/proof-site.el"))
       (eval-after-load 'coq
         '(setq coq-prog-args
                `("-emacs-U"
@@ -1124,36 +1369,33 @@ Order is important for some items for compatibility.
   #+NAME: emacs-magit
   #+BEGIN_SRC emacs-lisp :tangle yes
     (when (executable-find "git")
-      (add-to-list 'load-path "~/.emacs.d/src/git-modes")
-      (add-to-list 'load-path "~/.emacs.d/src/magit")
-      (eval-after-load 'info
-        '(progn (info-initialize)
-                (add-to-list 'Info-directory-list "~/.emacs.d/src/magit")))
-      (require 'magit))
+      (use-package magit))
   #+END_SRC
   
 * String Edit
   #+NAME: emacs-string-edit
   #+BEGIN_SRC emacs-lisp :tangle yes
-    (add-to-list 'load-path "~/.emacs.d/src/string-edit.el")
-    (require 'string-edit)
+    (use-package string-edit)
     ;string-edit-at-point
   #+END_SRC
-  
+
+  #+RESULTS: emacs-string-edit
+
 * Ledger
   #+NAME: emacs-ledger
   #+BEGIN_SRC emacs-lisp :tangle yes
-    (when (executable-find "ledger")
-      (add-to-list 'load-path "~/.emacs.d/src/ledger")
-      (require 'ledger-mode)
-      (add-to-list 'auto-mode-alist '("\\.ledger$" . ledger-mode)))
+    (use-package ledger-mode
+      :mode "\\.ledger$")
   #+END_SRC
+
+  #+RESULTS: emacs-ledger
+
 * AUCTeX
   #+NAME: auctex
   #+BEGIN_SRC emacs-lisp :tangle yes
-    (when (executable-find "pdflatex")
-      (load "~/.emacs.d/src/auctex.el" nil t t)
-      (load "~/.emacs.d/src/preview-latex.el" nil t t)
+    (use-package tex-site
+      :ensure auctex
+      :config
       (setq TeX-auto-save t)
       (setq TeX-parse-self t)
       (setq-default TeX-master nil)
@@ -1171,9 +1413,8 @@ Order is important for some items for compatibility.
 * Crontab
   #+NAME: emacs-crontab-mode
   #+BEGIN_SRC emacs-lisp :tangle yes
-    (require 'crontab-mode)
-    (add-to-list 'auto-mode-alist '("\\.cron\\(tab\\)?\\'" . crontab-mode))
-    (add-to-list 'auto-mode-alist '("cron\\(tab\\)?\\."    . crontab-mode))
+    (use-package crontab-mode
+      :mode "\\.cron\\(tab\\)?\\'" "cron\\(tab\\)?\\.")
   #+END_SRC
 
   #+RESULTS: emacs-crontab-mode
@@ -1181,11 +1422,12 @@ Order is important for some items for compatibility.
 * UndoTree
   #+NAME: emacs-undotree
   #+BEGIN_SRC emacs-lisp :tangle yes
-    (add-to-list 'load-path "~/.emacs.d/src/undo-tree")
-    (require 'undo-tree)
-    (global-undo-tree-mode 1)
-    (global-set-key (kbd "C-z") 'undo)
-    (global-set-key (kbd "C-M-z") 'redo)
+    (use-package undo-tree
+      :config
+      (global-undo-tree-mode 1)
+      (global-set-key (kbd "C-z") 'undo)
+      (global-set-key (kbd "C-M-z") 'redo)
+      :diminish undo-tree-mode)
   #+END_SRC
 
   #+RESULTS: emacs-undotree
@@ -1194,27 +1436,27 @@ Order is important for some items for compatibility.
 * Aggressive Indent
   #+NAME: emacs-aggressive-indent
   #+BEGIN_SRC emacs-lisp :tangle yes
-    (add-to-list 'load-path "~/.emacs.d/src/aggressive-indent-mode")
-    (require 'aggressive-indent)
-    ;(global-aggressive-indent-mode nil)
-    (add-to-list 'aggressive-indent-excluded-modes 'html-mode)
+    (use-package aggressive-indent
+      :config
+      ;; (global-aggressive-indent-mode nil)
+      (add-to-list 'aggressive-indent-excluded-modes 'html-mode))
   #+END_SRC
 
   #+RESULTS: emacs-aggressive-indent
-  | html-mode | bibtex-mode | cider-repl-mode | coffee-mode | conf-mode | Custom-mode | diff-mode | dos-mode | erc-mode | jabber-chat-mode | haml-mode | haskell-mode | makefile-mode | makefile-gmake-mode | minibuffer-inactive-mode | netcmd-mode | python-mode | sass-mode | slim-mode | special-mode | shell-mode | snippet-mode | eshell-mode | tabulated-list-mode | term-mode | TeX-output-mode | text-mode | yaml-mode |
+  : t
 
 * Markdown
   #+NAME: emacs-markdown
   #+BEGIN_SRC emacs-lisp :tangle yes
-    (autoload 'markdown-mode "markdown-mode"
-      "Major mode for editing Markdown files" t)
-    (add-to-list 'auto-mode-alist '("\\.text\\'" . markdown-mode))
-    (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
-    (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
+    (use-package markdown-mode
+      :mode "\\.md\\'" "\\.markdown\\'")
   #+END_SRC
+
+  #+RESULTS: emacs-markdown
+
 * Relative Line Numbers
   #+NAME: emacs-relinum
-  #+BEGIN_SRC emacs-lisp :tangle yes
+  #+BEGIN_SRC emacs-lisp :tangle no
     (add-to-list 'load-path "~/.emacs.d/src/linum-relative")
     (require 'linum-relative)
     (linum-relative-toggle) ;; turn off by default
@@ -1247,32 +1489,32 @@ Order is important for some items for compatibility.
 * Key Chord
   #+NAME: emacs-key-Chord
   #+BEGIN_SRC emacs-lisp :tangle yes
-    (require 'key-chord)
-    (key-chord-mode 1)
+    (use-package key-chord
+      :config
+      (key-chord-mode 1))
   #+END_SRC
 
   #+RESULTS: emacs-key-Chord
-  : Key Chord mode on
+  : t
 
 * Hydra
   #+NAME: emacs-hydra
   #+BEGIN_SRC emacs-lisp :tangle yes
-    (add-to-list 'load-path "~/.emacs.d/src/hydra")
-    (require 'hydra)
+    (use-package hydra)
   #+END_SRC
 
   #+RESULTS: emacs-hydra
-  : hydra
 
 ** Scale Text
    #+NAME: emacs-scale-text
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (key-chord-define-global
-      "-="
-      (defhydra hydra-zoom ()
-        "zoom"
-        ("=" text-scale-increase "in")
-        ("-" text-scale-decrease "out")))
+     (when (featurep 'hydra)
+       (key-chord-define-global
+        "-="
+        (defhydra hydra-zoom ()
+          "zoom"
+          ("=" text-scale-increase "in")
+          ("-" text-scale-decrease "out"))))
    #+END_SRC
 
    #+RESULTS: emacs-scale-text
@@ -1281,40 +1523,43 @@ Order is important for some items for compatibility.
 ** Move Text
    #+NAME: emacs-hydra-move-text
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (require 'move-text)
-     (key-chord-define-global
-      "ws"
-      (defhydra hydra-move-text ()
-        "Move text"
-        ("w" move-text-up "up")
-        ("s" move-text-down "down")))
+     (use-package move-text
+       :config
+       (when (featurep 'hydra)
+         (key-chord-define-global
+          "ws"
+          (defhydra hydra-move-text ()
+            "Move text"
+            ("w" move-text-up "up")
+            ("s" move-text-down "down")))))
    #+END_SRC
 
    #+RESULTS: emacs-hydra-move-text
-   : hydra-move-text/body
+   : t
 
 ** Org clock
    #+NAME: emacs-org-clock
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (key-chord-define-global
-      "wc"
-      (defhydra hydra-org-clock (:color blue :hint nil)
-        "
+     (when (featurep 'hydra)
+       (key-chord-define-global
+        "wc"
+        (defhydra hydra-org-clock (:color blue :hint nil)
+          "
      Clock   In/out^     ^Edit^   ^Summary     (_?_)
      -----------------------------------------
              _i_n         _e_dit   _g_oto entry
              _c_ontinue   _q_uit   _d_isplay
              _o_ut        ^ ^      _r_eport
            "
-        ("i" org-clock-in)
-        ("o" org-clock-out)
-        ("c" org-clock-in-last)
-        ("e" org-clock-modify-effort-estimate)
-        ("q" org-clock-cancel)
-        ("g" org-clock-goto)
-        ("d" org-clock-display)
-        ("r" org-clock-report)
-        ("?" (org-info "Clocking commands"))))
+          ("i" org-clock-in)
+          ("o" org-clock-out)
+          ("c" org-clock-in-last)
+          ("e" org-clock-modify-effort-estimate)
+          ("q" org-clock-cancel)
+          ("g" org-clock-goto)
+          ("d" org-clock-display)
+          ("r" org-clock-report)
+          ("?" (org-info "Clocking commands")))))
    #+END_SRC
 
    #+RESULTS: emacs-org-clock
@@ -1323,7 +1568,8 @@ Order is important for some items for compatibility.
 ** Smartparens
    #+NAME: emacs-hydra-smartparens
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (when (featurep 'smartparens)
+     (when (and (featurep 'smartparens)
+                (featurep 'hydra))
        (key-chord-define-global
         "90"
         (defhydra hydra-learn-sp (:hint nil)
@@ -1423,19 +1669,21 @@ Order is important for some items for compatibility.
 ** Origami
    #+NAME: emacs-hydra-origami
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (key-chord-define-global
-      ",."
-      (defhydra hydra-folding (:color red)
-        "
+     (when (and (featurep 'origami)
+                (featurep 'hydra))
+       (key-chord-define-global
+        ",."
+        (defhydra hydra-folding (:color red)
+          "
        _o_pen node    _n_ext fold       toggle _f_orward
        _c_lose node   _p_revious fold   toggle _a_ll
        "
-        ("o" origami-open-node)
-        ("c" origami-close-node)
-        ("n" origami-next-fold)
-        ("p" origami-previous-fold)
-        ("f" origami-forward-toggle-node)
-        ("a" origami-toggle-all-nodes)))
+          ("o" origami-open-node)
+          ("c" origami-close-node)
+          ("n" origami-next-fold)
+          ("p" origami-previous-fold)
+          ("f" origami-forward-toggle-node)
+          ("a" origami-toggle-all-nodes))))
    #+END_SRC
 
    #+RESULTS: emacs-hydra-origami
@@ -1444,44 +1692,48 @@ Order is important for some items for compatibility.
 * CMake
   #+NAME: emacs-cmake
   #+BEGIN_SRC emacs-lisp :tangle yes
+    (unless (file-exists-p (sizur/emacs.d/elisp "cmake-mode.el"))
+      (url-copy-file
+       "https://raw.githubusercontent.com/Kitware/CMake/master/Auxiliary/cmake-mode.el"
+       (sizur/emacs.d/elisp "cmake-mode.el")))
     (require 'cmake-mode)
-    (add-to-list 'load-path "~/.emacs.d/src/cmake-font-lock")
-    (autoload 'cmake-font-lock-activate "cmake-font-lock" nil t)
-    (add-hook 'cmake-mode-hook 'cmake-font-lock-activate)
-    (add-to-list 'load-path "~/.emacs.d/src/cmake-project")
-    (require 'cmake-project)
-    (defun maybe-cmake-project-hook ()
-      (if (file-exists-p "CMakeLists.txt") (cmake-project-mode)))
-    (add-hook 'c-mode-hook 'maybe-cmake-project-hook)
-    (add-hook 'c++-mode-hook 'maybe-cmake-project-hook)
+    (use-package cmake-font-lock
+      :config
+      (autoload 'cmake-font-lock-activate "cmake-font-lock" nil t)
+      (add-hook 'cmake-mode-hook 'cmake-font-lock-activate))
+    (use-package cmake-project
+      :config
+      (defun maybe-cmake-project-hook ()
+        (if (file-exists-p "CMakeLists.txt") (cmake-project-mode)))
+      (add-hook 'c-mode-hook 'maybe-cmake-project-hook)
+      (add-hook 'c++-mode-hook 'maybe-cmake-project-hook))
   #+END_SRC
 
   #+RESULTS: emacs-cmake
-  | maybe-cmake-project-hook |
+  : t
 
 * Sublimity
   #+NAME: emacs-sublime
   #+BEGIN_SRC emacs-lisp :tangle yes
-    ;; (add-to-list 'load-path "~/.emacs.d/src/sublimity")
-    ;; (require 'sublimity)
-    ;; (require 'sublimity-scroll)
-    ;; (require 'sublimity-map)
-    ;; (require 'sublimity-attractive)
-    ;; (sublimity-mode 1)
+    (use-package sublimity
+      :config
+      (require 'sublimity-scroll)
+      (require 'sublimity-map)
+      (require 'sublimity-attractive)
+      ;; (sublimity-mode 1)
+      )
   #+END_SRC
 
   #+RESULTS: emacs-sublime
-  : sublimity-map
+  : t
 
 * Phi-grep
   #+NAME: emacs-phi-grep
   #+BEGIN_SRC emacs-lisp :tangle yes
-    (add-to-list 'load-path "~/.emacs.d/src/phi-grep")
-    (require 'phi-grep)
+    (use-package phi-grep)
   #+END_SRC
 
   #+RESULTS: emacs-phi-grep
-  : phi-grep
 
 * Definitions
 ** Eval elips anywhere and replace with result
@@ -1670,9 +1922,6 @@ Order is important for some items for compatibility.
     (server-start)
     (require 'org-protocol)
     (org-agenda-list)
-    (global-company-mode)
   #+END_SRC
 
   #+RESULTS: emacs-at-start
-
-s

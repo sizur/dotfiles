@@ -4,19 +4,6 @@ SHELL:=$(shell which bash)
 
 install: fonts xmonad tmux emacs oh-my-zsh-install oh-my-zsh plantuml
 
-plantuml:
-	cd .emacs.d && wget -O plantuml.jar http://downloads.sourceforge.net/project/plantuml/plantuml.jar
-
-update:
-	cd .emacs.d/src/haskell-mode && make haskell-mode-autoloads.el
-	cd .emacs.d/src/org-mode && make autoloads
-	cd .emacs.d/src/magit && EFLAGS="-L ../git-modes" make lisp docs
-#	cd .emacs.d/src/predictive && make
-
-grml:
-	wget -O .zshrc http://git.grml.org/f/grml-etc-core/etc/zsh/zshrc
-#	wget -O .zshrc.local  http://git.grml.org/f/grml-etc-core/etc/skel/.zshrc
-
 submodules-update:
 	git pull
 #	git submodule update --init --recursive
