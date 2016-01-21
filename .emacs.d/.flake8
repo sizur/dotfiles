@@ -1,0 +1,6 @@
+# -*- mode: any-ini -*-
+[flake8]
+ignore = E221
+#max-line-length = 160
+#exclude = tests/*
+#max-complexity = 10
