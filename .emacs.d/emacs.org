@@ -1788,6 +1788,15 @@ Order is important for some items for compatibility.
    #+RESULTS: eval-and-replace
    : eval-and-replace
 
+** Alignment
+   #+NAME: emacs-align
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (global-set-key (kbd "C-c SPC") 'align-current)
+   #+END_SRC
+
+   #+RESULTS: emacs-align
+   : align-current
+
 ** Kill file
    #+NAME: kill-file
    #+BEGIN_SRC emacs-lisp :tangle yes
