@@ -4,6 +4,7 @@
 
   (setq package-archives
         '(("org"          . "http://orgmode.org/elpa/")
+          ("elpy"         . "https://jorgenschaefer.github.io/packages/")
           ("gnu"          . "https://elpa.gnu.org/packages/")
           ("melpa"        . "https://melpa.org/packages/")
           ("melpa-stable" . "https://stable.melpa.org/packages/")

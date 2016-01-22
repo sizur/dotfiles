@@ -1158,7 +1158,7 @@ Order is important for some items for compatibility.
               "." "lib" "CPAN"
               ))
       (add-hook 'after-init-hook 'global-flycheck-mode)
-      (add-hook 'python-mode-hook #'flycheck-python-setup)
+      ;; (add-hook 'python-mode-hook #'flycheck-python-setup)
       (setq flycheck-pylintrc (sizur/emacs.d ".pylintrc"))
       (setq flycheck-flake8rc (sizur/emacs.d ".flake8"))
       )
@@ -1275,12 +1275,31 @@ Order is important for some items for compatibility.
   #+NAME: emacs-python
   #+BEGIN_SRC emacs-lisp :tangle yes
     (use-package py-autopep8)
+
+    (setq-default indent-tabs-mode nil)
+    (setq-default tab-width 2)
+
+    (add-hook 'python-mode-hook '(lambda () (setq python-indent 4)))
+
+    (use-package nose)
+
     (use-package jedi
       :config
       (add-hook 'python-mode-hook 'jedi:setup)
-      (add-hook 'python-mode-hook 'jedi:ac-setup)
+      ;; (add-hook 'python-mode-hook 'jedi:ac-setup)
       (setq jedi:setup-keys t)
       (setq jedi:complete-on-dot t))
+
+    (when (fboundp 'global-prettify-symbols-mode)
+      (add-hook 'python-mode-hook
+                (lambda ()
+                  (push '("self" . ?◎) prettify-symbols-alist)
+                  (modify-syntax-entry ?. "."))))
+
+    (use-package elpy
+      :config
+      (elpy-enable)
+      (setq elpy-rpc-backend "jedi"))
   #+END_SRC
 
   #+RESULTS: emacs-python
