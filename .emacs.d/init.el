@@ -13,7 +13,7 @@
   (package-initialize)
 
   ;; update package list
-  ;; (package-refresh-contents)
+  (package-refresh-contents)
 
   ;; ensure use-package is installed
   (unless (package-installed-p 'use-package)
