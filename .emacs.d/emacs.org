@@ -189,7 +189,7 @@ Order is important for some items for compatibility.
   #+NAME: emacs-font
   #+BEGIN_SRC emacs-lisp :tangle yes
     (setq preferred-fonts
-          '(("Monaco" . 13)
+          '(("Monaco" . 10)
             ("Consolas" . 9)
             ("Source Code Pro" . 10)
             ("Anonymous Pro" . 11)
@@ -200,9 +200,15 @@ Order is important for some items for compatibility.
             ("Terminus" . 10)
             ))
 
-    (let* ((f (car (-intersection (-map 'car preferred-fonts) (font-family-list))))
+    (when (eq system-type 'darwin)
+      (setq preferred-fonts
+            (--map (cons (car it) (+ 3 (cdr it))) preferred-fonts)))
+
+    (let* ((f (car (-intersection
+                    (-map 'car preferred-fonts) (font-family-list))))
            (f (if f
-                  (concat f "-" (number-to-string (cdr (assoc f preferred-fonts))))
+                  (concat f "-" (number-to-string
+                                 (cdr (assoc f preferred-fonts))))
                 nil)))
       (if f
           (progn
