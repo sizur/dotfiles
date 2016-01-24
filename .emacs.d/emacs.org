@@ -301,6 +301,11 @@ Order is important for some items for compatibility.
    #+NAME: emacs-icicles
    #+BEGIN_SRC emacs-lisp :tangle yes
      (use-package icicles
+       :init
+       (use-package fuzzy)
+       (use-package fuzzy-match)
+       (use-package el-swank-fuzzy)
+       (use-package icomplete+)
        :config
        (icy-mode 1))
    #+END_SRC
