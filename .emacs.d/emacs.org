@@ -1112,6 +1112,37 @@ Order is important for some items for compatibility.
   #+RESULTS: emacs-wrap-region
   : t
 
+* Dired+
+  #+NAME: emacs-dired+
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (use-package dired+)
+  #+END_SRC
+
+  #+RESULTS: emacs-dired+
+
+* Projectile
+  #+NAME: emacs-projectile
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (use-package projectile
+      :config
+      (when (featurep 'icicles)
+        (progn
+          (setq projectile-completion-system 'default))
+        (use-package grizzl
+          :config
+          (setq projectile-completion-system 'grizzl))
+        ;; (use-package flx-ido
+        ;;   :config
+        ;;   (flx-ido-mode 1)
+        ;;   (setq ido-enable-flex-matching t)
+        ;;   (setq ido-use-faces nil))
+        )
+      (projectile-global-mode))
+  #+END_SRC
+
+  #+RESULTS: emacs-projectile
+  : t
+
 * Cucumber
   #+NAME: emacs-cucumber
   #+BEGIN_SRC emacs-lisp :tangle yes
