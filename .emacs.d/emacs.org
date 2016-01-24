@@ -1322,7 +1322,7 @@ Order is important for some items for compatibility.
 * Python
   #+NAME: emacs-python
   #+BEGIN_SRC emacs-lisp :tangle yes
-    (use-package py-autopep8)
+    (use-package py-yapf)
 
     (setq-default indent-tabs-mode nil)
     (setq-default tab-width 2)
