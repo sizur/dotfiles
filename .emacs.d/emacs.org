@@ -775,30 +775,6 @@ Order is important for some items for compatibility.
   : t
 
 * Window Management
-** Golden Ratio
-   #+NAME: emacs-golden-ratio
-   #+BEGIN_SRC emacs-lisp :tangle yes
-     (use-package golden-ratio
-       :config
-       (setq golden-ratio-exclude-modes
-             '("ediff-mode"
-               "eshell-mode"
-               "dired-mode"
-               "calendar-mode"
-               ))
-       (setq golden-ratio-exclude-buffer-names
-             '(" *Org tags*"
-               " *Org todo*"
-               " *Org adenda*"
-               "*phi-search*"
-               ))
-       (golden-ratio-mode 1)
-       :diminish golden-ratio-mode)
-   #+END_SRC
-
-   #+RESULTS: emacs-golden-ratio
-   : t
-
 ** Tiling
    #+NAME: emacs-tiling
    #+BEGIN_SRC emacs-lisp :tangle yes
@@ -875,6 +851,30 @@ Order is important for some items for compatibility.
    #+END_SRC
 
    #+RESULTS: emacs-kpm-list
+** Golden Ratio
+   #+NAME: emacs-golden-ratio
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (use-package golden-ratio
+       :config
+       (setq golden-ratio-exclude-modes
+             '("ediff-mode"
+               "eshell-mode"
+               "dired-mode"
+               "calendar-mode"
+               ))
+       (setq golden-ratio-exclude-buffer-names
+             '(" *Org tags*"
+               " *Org todo*"
+               " *Org adenda*"
+               "*phi-search*"
+               ))
+       (golden-ratio-mode 1)
+       (setq golden-ratio-auto-scale t)
+       :diminish golden-ratio-mode)
+   #+END_SRC
+
+   #+RESULTS: emacs-golden-ratio
+   : t
 
 * Comments
   #+NAME: emacs-hide-comnt
