@@ -658,6 +658,18 @@ Order is important for some items for compatibility.
    #+RESULTS: emacs-graphviz-notugly
    : org-babel-execute:dot
 
+** Bullets
+   #+NAME: emacs-org-bullets
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (use-package org-bullets
+       :diminish org-bullets-mode
+       :config
+       (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+   #+END_SRC
+
+   #+RESULTS: emacs-org-bullets
+   : t
+
 ** Font Size
    #+NAME: emacs-orgmode-font-size
    #+BEGIN_SRC emacs-lisp :tangle yes
