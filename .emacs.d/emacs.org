@@ -1402,7 +1402,19 @@ Order is important for some items for compatibility.
     #+END_SRC
     
 * Racket
-  Order important
+** Format
+   #+NAME: emacs-format
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (unless (file-exists-p (sizur/emacs.d/elisp "elisp-format.el"))
+       (url-copy-file
+        "https://raw.githubusercontent.com/emacsmirror/elisp-format/master/elisp-format.el"
+        (sizur/emacs.d/elisp "elisp-format.el")))
+     (require 'elisp-format)
+   #+END_SRC
+
+   #+RESULTS: emacs-format
+   : elisp-format
+
 ** Geiser
    #+NAME: emacs-geiser
    #+BEGIN_SRC emacs-lisp :tangle yes
