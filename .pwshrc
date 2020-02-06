@@ -1,0 +1,143 @@
+Import-Module -Name PSUtil
+Import-Module -Name posh-dotnet
+Import-Module -Name PowerShellHumanizer
+Import-Module -Name PowerGit
+Import-Module -Name PSKubectl
+Import-Module -Name GoogleCloudBeta
+# Import-Module -Name PSGraph
+
+Import-Module -Name posh-git
+Import-Module -Name oh-my-posh
+$Global:ThemeSettings.MyThemesLocation = $HOME, '.config', 'oh-my-posh-themes' -join [System.IO.Path]::DirectorySeparatorChar
+[void](New-Item -ItemType Directory -Force $Global:ThemeSettings.MyThemesLocation)
+Set-Theme -name sizur
+
+Set-PSReadLineOption -EditMode Emacs
+Set-PSReadLineKeyHandler -Chord Tab -Function MenuComplete
+Set-PSReadLineOption -ShowToolTips
+
+Remove-PSReadlineKeyHandler 'Ctrl+r'
+Remove-PSReadlineKeyHandler 'Ctrl+t'
+[int]$Script:errCount = $Error.Count
+Import-Module PSFzf -ErrorVariable PSFzfError
+# Don't want to see error on prompt on startup
+$Global:ThemeSettings.ErrorCount = ($Error.Count - $Script:errCount)
+
+Set-Alias -Name l -Value Get-ChildItemColor
+Set-Alias -Name ls -Value Get-ChildItem
+Set-Alias -Name sort -Value Sort-Object
+Set-Alias -Name fj -Value ConvertFrom-Json
+Set-Alias -Name tj -Value ConvertTo-Json
+
+'cd', 'popd' | Remove-Alias -ErrorAction Ignore
+Set-Alias -Name cd -Value Push-Location
+function popd() {
+    Pop-Location
+    Get-Location -Stack
+}
+
+&{  # Scoping to not pollute global namespace.
+    $culture = [cultureinfo]::CurrentCulture.Clone()
+    $culture.DateTimeFormat.ShortDatePattern = 'yyyy-MM-dd'
+    $culture.DateTimeFormat.LongTimePattern = 'HH-mm-ss'
+    [cultureinfo]::CurrentCulture = $culture
+}
+
+if (-not ([System.Management.Automation.PSTypeName]'Microsoft.Z3.Solver').Type -and
+    ($package = Get-Package -Name Microsoft.Z3.x64)) {
+    Add-Type -Path (
+        Get-ChildItem -Recurse (Get-Item $package.Source).Directory |
+        Where-Object Name -eq Microsoft.Z3.dll |
+        Select-Object -First 1).FullName
+}
+
+Add-Type -AssemblyName System.Xml.Linq
+
+function help {
+    Get-Help -Full @args | Out-String -Width $Host.UI.RawUI.WindowSize.Width | less
+}
+
+<#
+    .SYNOPSIS
+    Add a path to a path item.
+
+    .DESCRIPTION
+    Add one or more paths to the list of paths stored in an item.
+    Automatically resolves all paths and removes duplicates.
+#>
+function Add-PathItem {
+    [OutputType([void])]
+    [CmdletBinding(SupportsShouldProcess=$true)]
+    param(
+
+        <#
+            List of paths to add.  Wildcards will be resolved.
+        #>
+        [Parameter( Mandatory=$true
+                  , ValueFromPipeline=$true
+                  )]
+        [ValidateNotNullOrEmpty()]
+        [string[]]
+        $Path,
+
+        <#
+            Controls whether paths are to be pushed to the back of the list,
+            instead of the front.
+        #>
+        [Switch]
+        $Push,
+
+        <#
+            Item name to add paths to.  Defaults to "Env:PATH".
+        #>
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $ItemName = 'Env:PATH',
+
+        [ValidateNotNullOrEmpty()]
+        [string]
+        <#
+            Path separator the path item is using.
+            Defaults to [System.IO.Path]::PathSeparator.
+        #>
+        $PathSeparator = [System.IO.Path]::PathSeparator
+    )
+
+    [string[]] $existingPaths = (
+        (Get-Content -Path $ItemName) -split $PathSeparator |
+        Select-Object -Unique |
+        Resolve-Path -ErrorAction Ignore
+        ).Path
+
+    [string[]] $newPaths = (
+        Resolve-Path -Path $Path |
+        Where-Object -Value $existingPaths -NotIn -Property Path
+        )
+
+    if($Push) {
+        [string] $paths = $existingPaths + $newPaths -join $PathSeparator
+    } else {
+        [string] $paths = $newPaths + $existingPaths -join $PathSeparator
+    }
+
+    if($PSCmdlet.ShouldProcess($ItemName, "=$paths")) {
+        Set-Content -Path $ItemName -Value $paths
+    }
+}
+
+Add-PathItem -Path ~/bin
+Add-PathItem -Path ~/ps -ItemName Env:/PSModulePath
+
+if ($IsMacOS) {
+    Import-Module -Name MacDefaults
+}
+
+if (-not $IsWindows) {
+    (fortune)
+    # Add-PathItem
+}
+
+function mpw() {
+    &$(Get-Command -Type Application -Name bash | ForEach-Object -MemberName Path | Select-Object -First 1)  `
+        -c "source ~/.bashrc && $(Get-Command -Type Application -Name mpw | ForEach-Object -MemberName Path | Select-Object -First 1) $args"
+}
